@@ -26,12 +26,12 @@ Matrix Console will communicate with the device via API.
 * matrix shutdown GET/device/reboot?token=foo
 * matrix ssh
 
-### Deploy Apps:
+### Deploy Apps
 
 * matrix deploy app1 POST /app/deploy
 * matrix start app1 POST /app/start
 * matrix stop app1 POST /app/stop
 
-### Support also the shorthand ad:
+### Support `ad`
 
 * ad set-env, etc...
