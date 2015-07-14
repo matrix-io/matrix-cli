@@ -1,0 +1,16 @@
+{
+  "name": "admatrix-console",
+  "version": "1.0.0",
+  "description": "Matrix Console will communicate with the device via API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/admobilize/admatrix-console.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/admobilize/admatrix-console#readme"
+}
