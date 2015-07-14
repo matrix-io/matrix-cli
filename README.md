@@ -1,7 +1,9 @@
 Matrix Console will communicate with the device via API.
 
 ### Outside of our AdMatrix
+
 Turn any device into an admatrix.
+
 * wget https://downloads.admatrix.com/matrix.latest.tar.gz
 * matrix install
 
