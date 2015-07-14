@@ -2,9 +2,8 @@ Matrix Console will communicate with the device via API.
 
 ### Outside of our AdMatrix
 
-Turn any device into an admatrix.
-
-* wget https://downloads.admatrix.com/matrix.latest.tar.gz
+Turn any device into an admatrix. Specifically for the Raspberry Pi:
+* wget https://downloads.admatrix.com/rpi2/matrix.latest.tar.gz
 * matrix install
 
 ### Setup your local Matrix
