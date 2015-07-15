@@ -12,12 +12,12 @@ require('../lib/app.js');
  * Restarts the workers.
  */
 process.on('SIGHUP', function () {
-  process.kill('SIGTERM');
+  process.exit(0);
 });
 
 /**
  * Gracefully Shuts down the workers.
  */
 process.on('SIGTERM', function () {
-  process.kill('SIGTERM');
+  process.exit(0);
 });
