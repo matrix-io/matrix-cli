@@ -1,1 +1,23 @@
 #!/usr/bin/env node
+
+/**
+ * bin/node-simple-http-daemon
+ */
+
+// Everything above this line will be executed twice
+// require('daemon')();
+require('../lib/app.js');
+
+/**
+ * Restarts the workers.
+ */
+process.on('SIGHUP', function () {
+  process.kill('SIGTERM');
+});
+
+/**
+ * Gracefully Shuts down the workers.
+ */
+process.on('SIGTERM', function () {
+  process.kill('SIGTERM');
+});
