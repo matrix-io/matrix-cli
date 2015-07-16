@@ -8,7 +8,7 @@ Matrix Console will communicate with the device via API.
 
 ### Manage our AdMatrix
 
-[![Build Status](https://bitbucket.org/admobilize/admatrix-console/downloads/Screen%20Shot%202015-07-15%20at%2010.21.03%20PM.png)](https://bitbucket.org/admobilize/admatrix-console/downloads/Screen%20Shot%202015-07-15%20at%2010.21.03%20PM.png)
+[![Build Status](https://bitbucket.org/admobilize/admatrix-console/downloads/Screen%20Shot%202015-07-15%20at%2010.40.23%20PM.png)](https://bitbucket.org/admobilize/admatrix-console/downloads/Screen%20Shot%202015-07-15%20at%2010.40.23%20PM.png)
 
 ### Support `ad`
 
