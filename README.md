@@ -56,3 +56,11 @@ Usage: matrix [options] [command]
 ## Support `ad`
 
 * ad set-env, etc...
+
+## Tokens & Config
+
+Tokens are stored locally in tmp/store.json as JSON storage
+```
+credentials: { username, password }
+token: 34534534
+```
