@@ -7,8 +7,10 @@
 // Everything above this line will be executed twice
 // require('daemon')();
 Matrix = {};
-Matrix.config = require('../package.json')
+Matrix.version = require('../package.json').version;
+
 require('../lib/app.js');
+
 
 /**
  * Restarts the workers.

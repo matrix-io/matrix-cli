@@ -19,6 +19,8 @@
   "homepage": "https://bitbucket.org/admobilize/admatrix-console#readme",
   "dependencies": {
     "admatrix-node-sdk": "https://brianofadmobilize:8071981MkHaz@bitbucket.org/admobilize/admobilize-node-sdk.git",
-    "commander": "^2.8.1"
+    "commander": "^2.8.1",
+    "lodash": "^3.10.0",
+    "prompt": "^0.2.14"
   }
 }
