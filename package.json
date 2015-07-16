@@ -4,7 +4,7 @@
   "description": "Matrix Console will communicate with the device via API.",
   "main": "./lib/app.js",
   "bin": {
-    "matrix": "./bin/matrix"
+    "matrix": "./bin/matrix",
     "ad": "./bin/matrix"
   },
   "scripts": {
