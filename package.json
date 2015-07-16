@@ -5,6 +5,7 @@
   "main": "./lib/app.js",
   "bin": {
     "matrix": "./bin/matrix"
+    "ad": "./bin/matrix"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
