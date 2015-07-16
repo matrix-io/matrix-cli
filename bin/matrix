@@ -6,6 +6,8 @@
 
 // Everything above this line will be executed twice
 // require('daemon')();
+Matrix = {};
+Matrix.config = require('../package.json')
 require('../lib/app.js');
 
 /**
