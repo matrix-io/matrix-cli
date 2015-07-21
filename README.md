@@ -51,6 +51,14 @@ Usage: matrix [options] [command]
 
     -h, --help     output usage information
     -V, --version  output the version number
+
+
+Dictionary
+
+* t = type
+* p = payload
+* d = data
+
 ```
 
 ## Support `ad`
