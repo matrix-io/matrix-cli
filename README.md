@@ -102,58 +102,23 @@ GET /app
   { id: '123abc', name: 'thermo' }
   { id: '123abd', name: 'camera' }
 ]
+```
 
 ## Device Events
 
 All device events will be managed through this endpoint. The endpoint expects the device identifier.
+
 ```
 POST /device/event
 ```
 
-```
-set-env [value]
-```
-{ t: 'matrix.env', p: { env: 'production' } }
-```
-set-config [key=value]
-```
-{ t: 'matrix.cfg', p: { some_key: 'BAZ' } }
-```
-install <app>            
-```
-{ t: 'matrix.app-install', p: [ { name: 'camera' }, { name: 'thermo' } ] }
-```
-uninstall <app>          
-```
-{ t: 'matrix.app-uninstall', p: [ { name: 'camera' }, { name: 'thermo' } ] }
-```
-
-create <app>             Creates a new scaffolding for a Matrix App.
-```
-{ t: 'matrix.app-create', p: { name: 'food-tracker' } }
-```
-
-deploy <app>             Deploys an app to the Matrix
-```
-{ t: 'matrix.app-deploy', p: { name: 'food-tracker' } }
-```
-
-publish <app> [version]  Publishes a version of the App to the store.   
-```
-{ t: 'matrix.app-publish', p: { name: 'food-tracker', version: '0.0.1' } }
-```
-                   
-start <app>
-```
-{ t: 'matrix.app-start', p: { name: 'food-tracker' } }
-```
-
-stop <app>   
-```
-{ t: 'matrix.app-stop', p: { name: 'food-tracker' } }
-```
-
-restart <app>
-```
-{ t: 'matrix.app-restart', p: { name: 'food-tracker' } }
-```
+* set-env [value] `{ t: 'matrix.env', p: { env: 'production' } }`
+* set-config [key=value] `{ t: 'matrix.cfg', p: { some_key: 'BAZ' } }`
+* install <app> `{ t: 'matrix.app-install', p: [ { name: 'camera' }, { name: 'thermo' } ] }`
+* uninstall <app> `{ t: 'matrix.app-uninstall', p: [ { name: 'camera' }, { name: 'thermo' } ] }`
+* create <app> `{ t: 'matrix.app-create', p: { name: 'food-tracker' } }`
+* deploy <app> `{ t: 'matrix.app-deploy', p: { name: 'food-tracker' } }`
+* publish <app> [version] `{ t: 'matrix.app-publish', p: { name: 'food-tracker', version: '0.0.1' } }`
+* start <app> `{ t: 'matrix.app-start', p: { name: 'food-tracker' } }`
+* stop <app> `{ t: 'matrix.app-stop', p: { name: 'food-tracker' } }`
+* restart <app> `{ t: 'matrix.app-restart', p: { name: 'food-tracker' } }`
