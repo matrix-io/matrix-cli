@@ -18,10 +18,10 @@ Usage: matrix [options] [command]
     list-devices             Get a list of devices.
     use <cmd>                Options: Use [name] or [identifier] to interact with device.
     list <cmd>               Options: [info, config, apps] once using a device.
-    set-env [value]          Options: [development, staging, production] `POST /env { t: 'matrix.env', p: { 'FOO': 'BAZ' } }`
-    set-config [key=value]   Options: [info, config, apps] once using a device. `POST /config { t: 'matrix.cfg', p: { 'FOO': 'BAZ' } }`
-    install <app>            Usage: install app1 `POST /app/install { t: 'matrix.app-install', p: { '0': '0123456789', '1': 01234567891 } }`
-    uninstall <app>          Usage: uninstall app1 `POST /app/uninstall { t: 'matrix.app-uninstall', p: { '0': '0123456789', '1': 01234567891 } }`
+    set-env [value]          Options: [development, staging, production]
+    set-config [key=value]   Options: [info, config, apps] once using a device.
+    install <app>            Usage: install app1 `POST /app/install 
+    uninstall <app>          Usage: uninstall app1 `POST /app/uninstall
     logs <app>               Usage: logs app1
     update <app> [version]   Usage: update (matrix), update app1, update app1 v0.1
     logout                   Log out of all Matrix platform and devices.
@@ -64,3 +64,18 @@ Tokens are stored locally in tmp/store.json as JSON storage
 credentials: { username, password }
 token: 34534534
 ```
+
+## API Reference
+
+    login                    Log into the Matrix platform and see your available devices.
+    list-devices             Get a list of devices.
+    use <cmd>                Options: Use [name] or [identifier] to interact with device.
+    list <cmd>               Options: [info, config, apps] once using a device.
+set-env [value]
+`POST /env { t: 'matrix.env', p: { 'env': 'production' } }`
+set-config [key=value]
+`POST /config { t: 'matrix.cfg', p: { 'FOO': 'BAZ' } }`
+install <app>            
+`POST /app/install { t: 'matrix.app-install', p: { '0': '0123456789', '1': 01234567891 } }`
+uninstall <app>          
+POST /app/uninstall { t: 'matrix.app-uninstall', p: { '0': '0123456789', '1': 01234567891 } }`
