@@ -107,9 +107,9 @@ POST /config { t: 'matrix.cfg', p: { some_key: 'BAZ' } }
 ```
 install <app>            
 ```
-POST /app/install { t: 'matrix.app-install', p: { 0: 'camera', 1: 'thermo' } }
+POST /app { t: 'matrix.app-install', p: { 0: 'camera', 1: 'thermo' } }
 ```
 uninstall <app>          
 ```
-POST /app/uninstall { t: 'matrix.app-uninstall', p: { 0: 'camera', 1: 'thermo' } }
+DELETE /app { t: 'matrix.app-uninstall', p: { 0: 'camera', 1: 'thermo' } }
 ```
