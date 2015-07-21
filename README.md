@@ -111,5 +111,5 @@ POST /app { t: 'matrix.app-install', p: { 0: 'camera', 1: 'thermo' } }
 ```
 uninstall <app>          
 ```
-DELETE /app { t: 'matrix.app-uninstall', p: { 0: 'camera', 1: 'thermo' } }
+POST /app { t: 'matrix.app-uninstall', p: { 0: 'camera', 1: 'thermo' } }
 ```
