@@ -92,10 +92,10 @@ list apps
 GET /app
 
 200 OK
-{ 
-  'thermo',
-  'camera'
-}
+[ 
+  { id: '123abc', name: 'thermo' }
+  { id: '123abd', name: 'camera' }
+]
 ```
 set-env [value]
 ```
