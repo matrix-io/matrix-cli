@@ -102,6 +102,14 @@ GET /app
   { id: '123abc', name: 'thermo' }
   { id: '123abd', name: 'camera' }
 ]
+
+## Device Events
+
+All device events will be managed through this endpoint. The endpoint expects the device identifier.
+```
+POST /device/event
+```
+
 ```
 set-env [value]
 ```
