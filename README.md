@@ -71,11 +71,20 @@ token: 34534534
     list-devices             Get a list of devices.
     use <cmd>                Options: Use [name] or [identifier] to interact with device.
     list <cmd>               Options: [info, config, apps] once using a device.
+
 set-env [value]
-`POST /env { t: 'matrix.env', p: { 'env': 'production' } }`
+```
+POST /env { t: 'matrix.env', p: { 'env': 'production' } }
+```
 set-config [key=value]
-`POST /config { t: 'matrix.cfg', p: { 'FOO': 'BAZ' } }`
+```
+POST /config { t: 'matrix.cfg', p: { 'FOO': 'BAZ' } }
+```
 install <app>            
-`POST /app/install { t: 'matrix.app-install', p: { '0': '0123456789', '1': 01234567891 } }`
+```
+POST /app/install { t: 'matrix.app-install', p: { '0': '0123456789', '1': 01234567891 } }
+```
 uninstall <app>          
-POST /app/uninstall { t: 'matrix.app-uninstall', p: { '0': '0123456789', '1': 01234567891 } }`
+```
+POST /app/uninstall { t: 'matrix.app-uninstall', p: { '0': '0123456789', '1': 01234567891 } }
+```
