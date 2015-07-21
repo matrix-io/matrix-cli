@@ -99,17 +99,36 @@ GET /app
 ```
 set-env [value]
 ```
-POST /env { t: 'matrix.env', p: { env: 'production' } }
+{ t: 'matrix.env', p: { env: 'production' } }
 ```
 set-config [key=value]
 ```
-POST /config { t: 'matrix.cfg', p: { some_key: 'BAZ' } }
+{ t: 'matrix.cfg', p: { some_key: 'BAZ' } }
 ```
 install <app>            
 ```
-POST /app { t: 'matrix.app-install', p: { 0: 'camera', 1: 'thermo' } }
+{ t: 'matrix.app-install', p: { 0: 'camera', 1: 'thermo' } }
 ```
 uninstall <app>          
 ```
-POST /app { t: 'matrix.app-uninstall', p: { 0: 'camera', 1: 'thermo' } }
+{ t: 'matrix.app-uninstall', p: { 0: 'camera', 1: 'thermo' } }
 ```
+
+create <app>             Creates a new scaffolding for a Matrix App.
+```
+{ t: 'matrix.app-create', p: { name: 'food-tracker' } }
+```
+
+deploy <app>             Deploys an app to the Matrix
+```
+{ t: 'matrix.app-deploy', p: { 0: 'food-tracker' } }
+```
+
+publish <app> [version]  Publishes a version of the App to the store.   
+```
+{ t: 'matrix.app-publish', p: { name: 'food-tracker', version: '0.0.1' } }
+```
+                   
+start <app>
+stop <app>               
+restart <app>
