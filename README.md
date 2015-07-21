@@ -2,8 +2,9 @@ Matrix Console will communicate with the device via API.
 
 ### Turn any device into an admatrix
 
-* wget https://download.matrix.io/rpi2/matrix.latest.tar.gz
-* matrix install
+* wget https://download.matrix.io/rpi2/matrix.latest.tar.gz;
+* tar czvf matrix.latest.tar.gz matrix && cd matrix;
+* matrix install;
 
 
 ### Manage your AdMatrix
@@ -89,6 +90,12 @@ GET /config
 list apps
 ```
 GET /app
+
+200 OK
+{ 
+  'thermo',
+  'camera'
+}
 ```
 set-env [value]
 ```
@@ -100,9 +107,9 @@ POST /config { t: 'matrix.cfg', p: { some_key: 'BAZ' } }
 ```
 install <app>            
 ```
-POST /app/install { t: 'matrix.app-install', p: { 0: '0123456789', 1: 01234567891 } }
+POST /app/install { t: 'matrix.app-install', p: { 0: 'camera', 1: 'thermo' } }
 ```
 uninstall <app>          
 ```
-POST /app/uninstall { t: 'matrix.app-uninstall', p: { 0: '0123456789', 1: 01234567891 } }
+POST /app/uninstall { t: 'matrix.app-uninstall', p: { 0: 'camera', 1: 'thermo' } }
 ```
