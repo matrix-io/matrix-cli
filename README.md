@@ -113,11 +113,11 @@ set-config [key=value]
 ```
 install <app>            
 ```
-{ t: 'matrix.app-install', p: { 0: 'camera', 1: 'thermo' } }
+{ t: 'matrix.app-install', p: [ { name: 'camera' }, { name: 'thermo' } ] }
 ```
 uninstall <app>          
 ```
-{ t: 'matrix.app-uninstall', p: { 0: 'camera', 1: 'thermo' } }
+{ t: 'matrix.app-uninstall', p: [ { name: 'camera' }, { name: 'thermo' } ] }
 ```
 
 create <app>             Creates a new scaffolding for a Matrix App.
@@ -127,7 +127,7 @@ create <app>             Creates a new scaffolding for a Matrix App.
 
 deploy <app>             Deploys an app to the Matrix
 ```
-{ t: 'matrix.app-deploy', p: { 0: 'food-tracker' } }
+{ t: 'matrix.app-deploy', p: { name: 'food-tracker' } }
 ```
 
 publish <app> [version]  Publishes a version of the App to the store.   
@@ -137,15 +137,15 @@ publish <app> [version]  Publishes a version of the App to the store.
                    
 start <app>
 ```
-{ t: 'matrix.app-start', p: { 0: 'food-tracker' } }
+{ t: 'matrix.app-start', p: { name: 'food-tracker' } }
 ```
 
 stop <app>   
 ```
-{ t: 'matrix.app-stop', p: { 0: 'food-tracker' } }
+{ t: 'matrix.app-stop', p: { name: 'food-tracker' } }
 ```
 
 restart <app>
 ```
-{ t: 'matrix.app-restart', p: { 0: 'food-tracker' } }
+{ t: 'matrix.app-restart', p: { name: 'food-tracker' } }
 ```
