@@ -78,6 +78,12 @@ token: 34534534
 list-devices
 ```
 GET /device?access_token={account_identifier}
+
+200 OK
+[ 
+  { id: '123abc', name: 'device1' }
+  { id: '123abd', name: 'device2' }
+]
 ```
 list info
 ```
