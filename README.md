@@ -136,5 +136,16 @@ publish <app> [version]  Publishes a version of the App to the store.
 ```
                    
 start <app>
-stop <app>               
+```
+{ t: 'matrix.app-start', p: { 0: 'food-tracker' } }
+```
+
+stop <app>   
+```
+{ t: 'matrix.app-stop', p: { 0: 'food-tracker' } }
+```
+
 restart <app>
+```
+{ t: 'matrix.app-restart', p: { 0: 'food-tracker' } }
+```
