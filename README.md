@@ -67,11 +67,22 @@ token: 34534534
 
 ## API Reference
 
-    login                    Log into the Matrix platform and see your available devices.
-    list-devices             Get a list of devices.
-    use <cmd>                Options: Use [name] or [identifier] to interact with device.
-    list <cmd>               Options: [info, config, apps] once using a device.
-
+list-devices
+```
+GET /device?access_token={account_identifier}
+```
+list info
+```
+GET /device?device_token={device_identifier}
+```
+list config
+```
+GET /config
+```
+list apps
+```
+GET /app
+```
 set-env [value]
 ```
 POST /env { t: 'matrix.env', p: { 'env': 'production' } }
