@@ -52,13 +52,6 @@ Usage: matrix [options] [command]
     -h, --help     output usage information
     -V, --version  output the version number
 
-
-Dictionary
-
-* t = type
-* p = payload
-* d = data
-
 ```
 
 ## Support `ad`
@@ -72,6 +65,12 @@ Tokens are stored locally in tmp/store.json as JSON storage
 credentials: { username, password }
 token: 34534534
 ```
+
+
+## Legend
+
+* t = type
+* p = payload
 
 ## API Reference
 
