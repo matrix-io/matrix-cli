@@ -91,11 +91,11 @@ GET /device?device_token={device_identifier}
 ```
 list config
 ```
-GET /config
+GET /device
 ```
 list apps
 ```
-GET /app
+GET /device
 
 200 OK
 [ 
