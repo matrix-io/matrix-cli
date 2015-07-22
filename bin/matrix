@@ -6,8 +6,9 @@
 
 // Everything above this line will be executed twice
 // require('daemon')();
-Matrix = {};
-Matrix.version = require('../package.json').version;
+Matrix 						= {};
+Matrix.version 		= require('../package.json').version;
+Matrix.config 		= require('../config/index');
 
 require('../lib/app.js');
 
