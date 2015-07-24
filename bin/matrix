@@ -1,28 +1,21 @@
 #!/usr/bin/env node
 
-/**
- * bin/node-simple-http-daemon
- */
-
 // Everything above this line will be executed twice
-// require('daemon')();
 Matrix 						= {};
 Matrix.version 		= require('../package.json').version;
-Matrix.config 		= require('../config/index');
+Matrix.config     = require('../config/index');
+Matrix.api        = require('admatrix-node-sdk');
+_                 = require('lodash');
 
+// load app
 require('../lib/app.js');
 
-
-/**
- * Restarts the workers.
- */
+// exit on SIGHUP
 process.on('SIGHUP', function () {
   process.exit(0);
 });
 
-/**
- * Gracefully Shuts down the workers.
- */
+// exit on SIGTERM
 process.on('SIGTERM', function () {
   process.exit(0);
 });
