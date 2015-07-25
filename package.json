@@ -18,7 +18,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/admobilize/admatrix-console#readme",
   "dependencies": {
-    "admatrix-node-sdk": "https://brianofadmobilize:8071981MkHaz@bitbucket.org/admobilize/admobilize-node-sdk.git",
+    "admatrix-node-sdk": "git+https://brianofadmobilize:8071981MkHaz@bitbucket.org/admobilize/admobilize-node-sdk.git",
     "cli-table": "^0.3.1",
     "commander": "^2.8.1",
     "lodash": "^3.10.0",
