@@ -20,6 +20,7 @@
   "dependencies": {
     "admatrix-node-sdk": "git+https://brianofadmobilize:8071981MkHaz@bitbucket.org/admobilize/admobilize-node-sdk.git",
     "cli-table": "^0.3.1",
+    "colors": "^1.1.2",
     "commander": "^2.8.1",
     "lodash": "^3.10.0",
     "moment": "^2.10.3",
