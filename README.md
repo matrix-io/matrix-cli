@@ -23,7 +23,7 @@ Usage: matrix [options] [command]
     set-config [key=value]   Options: [info, config, apps] once using a device.
     install <app>            Usage: install app1 `POST /app/install 
     uninstall <app>          Usage: uninstall app1 `POST /app/uninstall
-    logs <app>               Usage: logs [-f --follow]
+    log [options]            Usage: logs [-f --follow]
     update <app> [version]   Usage: update (matrix), update app1, update app1 v0.1
     logout                   Log out of all Matrix platform and devices.
     reboot                   Reboots the Matrix.
