@@ -6,6 +6,24 @@ Matrix Console will communicate with the device via API.
 * tar czvf matrix.latest.tar.gz matrix && cd matrix;
 * matrix install;
 
+### Login First
+
+```
+matrix login
+```
+
+### Then List devices
+
+```
+matrix list devices
+```
+
+### Then Use a Device
+
+```
+matrix use 12:23:34:45:56
+```
+
 
 ### Manage your AdMatrix
 
@@ -21,7 +39,7 @@ Usage: matrix [options] [command]
     list <cmd>               Options: [info, config, apps] once using a device.
     set-env [value]          Options: [development, staging, production]
     set-config [key=value]   Options: [info, config, apps] once using a device.
-    install <app>            Usage: install app1 `POST /app/install 
+    install <app>            Usage: install app1 `POST /app/install
     uninstall <app>          Usage: uninstall app1 `POST /app/uninstall
     log [options]            Usage: logs [-f --follow]
     update <app> [version]   Usage: update (matrix), update app1, update app1 v0.1
@@ -80,7 +98,7 @@ list-devices
 GET /device?access_token={account_identifier}
 
 200 OK
-[ 
+[
   { id: '123abc', name: 'device1' }
   { id: '123abd', name: 'device2' }
 ]
@@ -98,7 +116,7 @@ list apps
 GET /device
 
 200 OK
-[ 
+[
   { id: '123abc', name: 'thermo' }
   { id: '123abd', name: 'camera' }
 ]
