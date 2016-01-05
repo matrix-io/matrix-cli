@@ -1,14 +1,8 @@
 #!/usr/bin/env node
 
-// Everything above this line will be executed twice
-Matrix 						= {};
-Matrix.version 		= require('../package.json').version;
-Matrix.config     = require('../config/index');
-Matrix.api        = require('admatrix-node-sdk');
-_                 = require('lodash');
-
+require('./matrix-init');
 // load app
-require('../lib/app.js');
+require('../lib/app2.js');
 
 // exit on SIGHUP
 process.on('SIGHUP', function () {
