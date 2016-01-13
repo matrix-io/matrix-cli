@@ -2,10 +2,9 @@
   "name": "matrix",
   "version": "1.0.0",
   "description": "Matrix Console will communicate with the device via API.",
-  "main": "./lib/app.js",
+  "preferGlobal": true,
   "bin": {
-    "matrix": "./bin/matrix",
-    "ad": "./bin/matrix"
+    "matrix": "./bin/matrix"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
