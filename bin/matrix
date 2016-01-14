@@ -2,7 +2,7 @@
 
 require('./matrix-init');
 // load app
-require('../lib/app2.js');
+require('../lib/app.js');
 
 // exit on SIGHUP
 process.on('SIGHUP', function () {

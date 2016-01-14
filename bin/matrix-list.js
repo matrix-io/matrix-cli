@@ -8,26 +8,21 @@ program
 var pkgs = program.args;
 
 if (!pkgs.length) {
-  console.log('\n> matrix list ¬\n');
-  console.log('\t   matrix list apps -', 'display apps on current device'.grey)
-  console.log('\tmatrix list devices -', 'display available devices'.grey)
-  console.log('\t matrix list groups -', 'display groups of devices'.grey)
-  console.log('\n')
-  process.exit(1);
+  displayHelp();
 }
 
-var target = pkgs[1];
+var target = pkgs[0];
 
-if (target.match(/app/).length > -1) {
+if (target.match(/app/)) {
 
   console.warn('list apps not implemented')
   Matrix.api.app.list(function(apps){
     console.log(Matrix.helpers.displayApps(apps));
   });
 
-} else if (target.match(/device/).length > -1) {
+} else if (target.match(/device/)) {
 
-  var group = pkgs[2];
+  var group = pkgs[1];
   /** do nothing if not device **/
   Matrix.helpers.getConfig();
   if (group !== undefined) {
@@ -46,7 +41,7 @@ if (target.match(/app/).length > -1) {
     });
   }
 
-} else if (target.match(/group/).length > -1) {
+} else if (target.match(/group/)) {
 
   /** do nothing if not device **/
   Matrix.helpers.getConfig();
@@ -54,7 +49,17 @@ if (target.match(/app/).length > -1) {
     //print group
     console.log(Matrix.helpers.displayGroups(body));
   });
+} else {
+  displayHelp();
+}
 
+function displayHelp(){
+  console.log('\n> matrix list ¬\n');
+  console.log('\t   matrix list apps -', 'display apps on current device'.grey)
+  console.log('\tmatrix list devices -', 'display available devices'.grey)
+  console.log('\t matrix list groups -', 'display groups of devices'.grey)
+  console.log('\n')
+  process.exit(1);
 }
 
 // TODO: support config <app>

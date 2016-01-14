@@ -12,12 +12,19 @@ Matrix.helpers = require('../lib/helpers');
 var options = {
   clientId: 'AdMobilizeAPIDev',
   clientSecret: 'AdMobilizeAPIDevSecret',
-  apiUrl: process.env['ADMATRIX_API_SERVER'] || 'http://dev-demo.admobilize.com'
+  apiUrl: process.env['MATRIX_API_SERVER'] || 'http://dev-demo.admobilize.com',
+  mxssUrl: process.env['MATRIX_STREAMING_SERVER'] || 'http://dev-mxss.admobilize.com',
 };
+
 Matrix.options = options;
 
-Matrix.api.makeUrls(options.apiUrl);
+Matrix.api.makeUrls(options.apiUrl, options.mxssUrl);
 
+//sets Matrix.config with local variables
 Matrix.helpers.getConfig();
+
+// to make user / device / etc available to sdk
+Matrix.api.setConfig(Matrix.config);
+
 //TODO: Needs to not be needed
 Matrix.deviceId = Matrix.config.device.identifier;
