@@ -16,14 +16,16 @@ if (!pkgs.length) {
   process.exit(1);
 }
 
-if (pkgs.indexOf('app') > -1) {
+var target = pkgs[1];
+
+if (target.match(/app/).length > -1) {
 
   console.warn('list apps not implemented')
   Matrix.api.app.list(function(apps){
     console.log(Matrix.helpers.displayApps(apps));
-  })
+  });
 
-} else if (pkgs.indexOf('device') > -1) {
+} else if (target.match(/device/).length > -1) {
 
   var group = pkgs[2];
   /** do nothing if not device **/
@@ -44,7 +46,7 @@ if (pkgs.indexOf('app') > -1) {
     });
   }
 
-} else if (pkgs.indexOf('group') > -1) {
+} else if (target.match(/group/).length > -1) {
 
   /** do nothing if not device **/
   Matrix.helpers.getConfig();
