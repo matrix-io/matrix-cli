@@ -9,31 +9,31 @@ program
 var pkgs = program.args;
 
 if (!pkgs.length) {
-  console.log('\n> matrix set ¬\n');
-  console.log('\t         matrix set env -', 'set device environment'.grey)
-  console.log('\tmatrix set config <app> [k=v] -', 'configure an application variables'.grey)
-  console.log('\t    matrix list groups -', 'display groups of devices'.grey)
-  console.log('\n')
-  process.exit(1);
+  showHelp();
 }
 
 if (pkgs.indexOf('env') === 0) {
 
   var value = pkgs[1];
 
-  if (value.match(/development|staging|production/)){
+  if (value.match(/sandbox|production/)){
     Matrix.config.environment = value;
     Matrix.helpers.saveConfig();
     // TODO: set-env [value] set a environment on the AdMatrix
-    console.log('Env:', Matrix.config.environment );
+    console.log('Env:'.grey, Matrix.config.environment );
   } else {
-    console.error('Valid Environments = [ development, staging, production ]')
+    console.error('Valid Environments = [ sandbox, production ]')
   }
 
 } else if (pkgs.indexOf('config') === 0) {
   var appName = pkgs[1];
   var configStr = pkgs[2];
   var key, val;
+
+  if (_.isUndefined(Matrix.deviceId)){
+    console.warn('No Device Set. Use `matrix use`.')
+    process.exit(0);
+  }
 
   if (_.isUndefined(appName)) {
     console.warn('App Name Required: `matrix set config <appName> [key=value]` ')
@@ -55,38 +55,22 @@ if (pkgs.indexOf('env') === 0) {
     key: key,
     value: val
   }
+
   Matrix.api.app.configure(options, function(err, resp) {
     if (err) console.error(err);
     console.log('[' + options.deviceId + '](' + options.name + ')', options.key, '=', options.value);
     setTimeout(process.exit, 1000);
   });
 
-  var group = pkgs[2];
-  /** do nothing if not device **/
-  Matrix.helpers.getConfig();
-  if (group !== undefined) {
-    // Matrix.api.user.setToken(Matrix.config.user.token);
-    var options = {
-      group: group
-    };
-    Matrix.api.device.list(options, function(body) {
-      //print device
-      console.log(Matrix.helpers.displayDevices(body));
-    });
-  } else {
-    Matrix.api.device.list({}, function(body) {
-      //print device
-      console.log(Matrix.helpers.displayDevices(body));
-    });
-  }
+} else {
+  showHelp();
+}
 
-} else if (pkgs.indexOf('group') > -1) {
+function showHelp(){
 
-  /** do nothing if not device **/
-  Matrix.helpers.getConfig();
-  Matrix.api.group.list(function(body) {
-    //print group
-    console.log(Matrix.helpers.displayGroups(body));
-  });
-
+  console.log('\n> matrix set ¬\n');
+  console.log('\t         matrix set env [env] -', 'set device environment ( production | sandbox )'.grey)
+  console.log('\tmatrix set config <app> [k=v] -', 'configure an application variables'.grey)
+  console.log('\n')
+  process.exit(1);
 }

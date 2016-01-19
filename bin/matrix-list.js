@@ -38,6 +38,11 @@ if (target.match(/app/)) {
     Matrix.api.device.list({}, function(body) {
       //print device
       console.log(Matrix.helpers.displayDevices(body));
+      // save device map to config
+      Matrix.config.deviceMap = _.map(JSON.parse(body).results, function(d){
+        return { name: d.name, id: d.deviceId }
+      });
+      Matrix.helpers.saveConfig();
     });
   }
 
