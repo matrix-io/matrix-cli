@@ -32,6 +32,8 @@ prompt.get(['username', 'password'], function(err, result) {
       Matrix.helpers.saveConfig();
 
       console.log('Login Successful'.green, ':'.grey, result.username);
+      process.exit();
+
       // set user token
     });
   });

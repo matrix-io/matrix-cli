@@ -16,11 +16,11 @@ if (pkgs.indexOf('env') === 0) {
 
   var value = pkgs[1];
 
-  if (value.match(/sandbox|production/)){
+  if (value && value.match(/sandbox|production/)) {
     Matrix.config.environment = value;
     Matrix.helpers.saveConfig();
     // TODO: set-env [value] set a environment on the AdMatrix
-    console.log('Env:'.grey, Matrix.config.environment );
+    console.log('Env:'.grey, Matrix.config.environment);
   } else {
     console.error('Valid Environments = [ sandbox, production ]')
   }
@@ -30,7 +30,7 @@ if (pkgs.indexOf('env') === 0) {
   var configStr = pkgs[2];
   var key, val;
 
-  if (_.isUndefined(Matrix.deviceId)){
+  if (_.isUndefined(Matrix.deviceId)) {
     console.warn('No Device Set. Use `matrix use`.')
     process.exit(0);
   }
@@ -66,7 +66,7 @@ if (pkgs.indexOf('env') === 0) {
   showHelp();
 }
 
-function showHelp(){
+function showHelp() {
 
   console.log('\n> matrix set ¬\n');
   console.log('\t         matrix set env [env] -', 'set device environment ( production | sandbox )'.grey)

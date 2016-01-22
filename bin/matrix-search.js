@@ -18,6 +18,8 @@ if (pkgs[0] === 'search'){
   Matrix.api.app.search(needle, function(err, results){
     if (err) return console.error(err);
     console.log(Matrix.helpers.appSearch);
+    process.exit();
+
   })
 }
 

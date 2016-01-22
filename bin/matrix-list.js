@@ -18,6 +18,7 @@ if (target.match(/app/)) {
   console.warn('list apps not implemented')
   Matrix.api.app.list(function(apps){
     console.log(Matrix.helpers.displayApps(apps));
+    process.exit();
   });
 
 } else if (target.match(/device/)) {
@@ -33,6 +34,7 @@ if (target.match(/app/)) {
     Matrix.api.device.list(options, function(body) {
       //print device
       console.log(Matrix.helpers.displayDevices(body));
+      process.exit();
     });
   } else {
     Matrix.api.device.list({}, function(body) {
@@ -43,6 +45,7 @@ if (target.match(/app/)) {
         return { name: d.name, id: d.deviceId }
       });
       Matrix.helpers.saveConfig();
+      process.exit();
     });
   }
 
@@ -53,6 +56,8 @@ if (target.match(/app/)) {
   Matrix.api.group.list(function(body) {
     //print group
     console.log(Matrix.helpers.displayGroups(body));
+    process.exit();
+
   });
 } else {
   displayHelp();
