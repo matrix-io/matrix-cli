@@ -29,10 +29,11 @@ prompt.get(['username', 'password'], function(err, result) {
       /** token stores, delete extra stuff **/
       // delete Matrix.config.user.username;
       delete Matrix.config.user.password;
-      Matrix.helpers.saveConfig();
+      Matrix.helpers.saveConfig(function() {
+        console.log('Login Successful'.green, ':'.grey, result.username);
+        process.exit();
+      });
 
-      console.log('Login Successful'.green, ':'.grey, result.username);
-      process.exit();
 
       // set user token
     });

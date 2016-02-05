@@ -25,7 +25,6 @@ if (target.match(/app/)) {
 
   var group = pkgs[1];
   /** do nothing if not device **/
-  Matrix.helpers.getConfig();
   if (group !== undefined) {
     // Matrix.api.user.setToken(Matrix.config.user.token);
     var options = {
@@ -44,20 +43,20 @@ if (target.match(/app/)) {
       Matrix.config.deviceMap = _.map(JSON.parse(body).results, function(d){
         return { name: d.name, id: d.deviceId }
       });
-      Matrix.helpers.saveConfig();
-      process.exit();
+      Matrix.helpers.saveConfig(function(){
+        process.exit();
+      });
+
     });
   }
 
 } else if (target.match(/group/)) {
 
   /** do nothing if not device **/
-  Matrix.helpers.getConfig();
   Matrix.api.group.list(function(body) {
     //print group
     console.log(Matrix.helpers.displayGroups(body));
     process.exit();
-
   });
 } else {
   displayHelp();

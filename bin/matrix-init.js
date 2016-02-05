@@ -21,7 +21,12 @@ Matrix.options = options;
 Matrix.api.makeUrls(options.apiUrl, options.mxssUrl);
 
 //sets Matrix.config with local variables
-Matrix.helpers.getConfig();
+Matrix.config = Matrix.helpers.getConfig();
+
+// Save init config
+if( Matrix.config.user === {} ){
+  Matrix.helpers.saveConfig();
+}
 
 // to make user / device / etc available to sdk
 Matrix.api.setConfig(Matrix.config);
