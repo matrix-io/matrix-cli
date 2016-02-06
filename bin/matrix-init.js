@@ -1,6 +1,7 @@
 
 require('colors');
 
+debugLog          = require('debug');
 Matrix 						= {};
 Matrix.version 		= require('../package.json').version;
 Matrix.config     = require('../config/index');
@@ -24,12 +25,14 @@ Matrix.api.makeUrls(options.apiUrl, options.mxssUrl);
 Matrix.config = Matrix.helpers.getConfig();
 
 // Save init config
-if( Matrix.config.user === {} ){
-  Matrix.helpers.saveConfig();
-}
+// if( Matrix.config.user === {} ){
+//   Matrix.helpers.saveConfig();
+// }
 
 // to make user / device / etc available to sdk
 Matrix.api.setConfig(Matrix.config);
 
 //TODO: Needs to not be needed
-Matrix.deviceId = Matrix.config.device.identifier;
+if ( _.has(Matrix.config, 'device.identifier')){
+  Matrix.deviceId = Matrix.config.device.identifier;
+}

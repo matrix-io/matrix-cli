@@ -13,3 +13,8 @@ process.on('SIGHUP', function () {
 process.on('SIGTERM', function () {
   process.exit(0);
 });
+
+process.on('uncaughtException', function(e){
+  console.error('Matrix CLI Error:', e);
+  process.exit(0)
+})
