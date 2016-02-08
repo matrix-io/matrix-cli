@@ -4,6 +4,8 @@ program
   .parse(process.argv);
 var cmd = program.args;
 
+var debug = debugLog('use');
+
 var targetDevice = cmd[0];
 //TODO: exit if no targetDevice
 //TODO: store device list locally
@@ -27,7 +29,12 @@ if (!_.isUndefined(targetDevice)) {
       Matrix.config.device.token = state.results.device_token;
       Matrix.helpers.saveConfig(process.exit);
     } else {
-      console.error('Use Error', state);
+      debug('Matrix Use Error Object:', state);
+      if ( state.error === 'access_token not valid.' ) {
+        console.log('Not Authorized'.red, '\nYour token is invalid. Try'.grey, 'matrix login')
+      } else {
+        console.error('Error', state.status_code.red, state.error);
+      }
     }
 
   });
