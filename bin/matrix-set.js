@@ -17,13 +17,17 @@ if (pkgs.indexOf('env') === 0) {
   var value = pkgs[1];
 
   if (value && value.match(/sandbox|production/)) {
+    if (Matrix.config.device.identifier.length === 0) {
+      console.log('Select an Active Device with `matrix use {deviceid}`')
+      return false;
+    }
     Matrix.config.environment = value;
-    Matrix.helpers.saveConfig(process.exit);
+    Matrix.helpers.saveConfig();
     // TODO: set-env [value] set a environment on the AdMatrix
     console.log('Env:'.grey, Matrix.config.environment);
-  } else {
-    console.error('Valid Environments = [ sandbox, production ]')
-  }
+} else {
+  console.error('Valid Environments = [ sandbox, production ]')
+}
 
 } else if (pkgs.indexOf('config') === 0) {
   var appName = pkgs[1];
