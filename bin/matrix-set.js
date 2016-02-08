@@ -49,6 +49,9 @@ if (pkgs.indexOf('env') === 0) {
     process.exit(0);
   }
 
+  // validate keys
+  key = _.snakeCase(key.toLowerCase());
+
   var options = {
     deviceId: Matrix.config.device.identifier,
     name: appName,
