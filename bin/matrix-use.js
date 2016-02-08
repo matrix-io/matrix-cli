@@ -25,8 +25,7 @@ if (!_.isUndefined(targetDevice)) {
       Matrix.config.device = {}
       Matrix.config.device.identifier = targetDevice;
       Matrix.config.device.token = state.results.device_token;
-      Matrix.helpers.saveConfig();
-      process.exit();
+      Matrix.helpers.saveConfig(process.exit);
     } else {
       console.error('Use Error', state);
     }

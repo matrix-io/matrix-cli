@@ -18,7 +18,7 @@ if (pkgs.indexOf('env') === 0) {
 
   if (value && value.match(/sandbox|production/)) {
     Matrix.config.environment = value;
-    Matrix.helpers.saveConfig();
+    Matrix.helpers.saveConfig(process.exit);
     // TODO: set-env [value] set a environment on the AdMatrix
     console.log('Env:'.grey, Matrix.config.environment);
   } else {

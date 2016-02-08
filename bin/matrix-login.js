@@ -1,5 +1,7 @@
 require('./matrix-init');
 
+var debug = debugLog('login');
+
 var prompt = require('prompt');
 
 prompt.delimiter = '';
@@ -18,10 +20,13 @@ prompt.get(['username', 'password'], function(err, result) {
   Matrix.config.client = {}
 
   /** authenticate client and user **/
+  debug('Client', Matrix.options);
   Matrix.api.auth.client(Matrix.options, function(err, out) {
     if (err) throw err;
+    debug('User', Matrix.config.user, out);
     Matrix.api.auth.user(Matrix.config.user, function(err, state) {
-      if (err) return console.error(err.message.red);
+      if (err) return console.error('User Authentication Error:'.grey, err.message.red);
+      debug('User Login OK');
       Matrix.config.user.token = state.access_token;
       Matrix.config.client.token = out.access_token;
       Matrix.config.user.id = state.id;
