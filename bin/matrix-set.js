@@ -17,6 +17,7 @@ if (pkgs.indexOf('env') === 0) {
   var value = pkgs[1];
 
   if (value && value.match(/sandbox|production/)) {
+    // TODO: doesn't fire
     if ( _.isUndefined(Matrix.config.device.identifier) ) {
       console.log('No Device Selected'.red, '\nSelect an Active Device with'.grey,'matrix use {deviceid}')
       return false;
