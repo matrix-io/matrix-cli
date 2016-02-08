@@ -34,7 +34,7 @@ if (pkgs.indexOf('env') === 0) {
   var configStr = pkgs[2];
   var key, val;
 
-  if (_.isUndefined(Matrix.deviceId)) {
+  if (_.isUndefined(Matrix.config.device.identifier)) {
     console.warn('No Device Set. Use `matrix use`.')
     process.exit(0);
   }
