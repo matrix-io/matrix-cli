@@ -15,7 +15,6 @@ var target = pkgs[0];
 
 if (target.match(/app/)) {
 
-  console.warn('list apps not implemented')
   Matrix.api.app.list(function(apps){
     console.log(Matrix.helpers.displayApps(apps));
     process.exit();

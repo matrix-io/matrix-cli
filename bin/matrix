@@ -15,6 +15,6 @@ process.on('SIGTERM', function () {
 });
 
 process.on('uncaughtException', function(e){
-  console.error('Matrix CLI Error:', e);
+  console.error('Matrix CLI Error:'.red, e.stack );
   process.exit(0)
 })
