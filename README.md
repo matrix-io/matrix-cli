@@ -1,6 +1,3 @@
-Matrix Console will communicate with the device via API and Socket Server.
-
-
 ## Welcome to your AdMatrix
 
 ```
