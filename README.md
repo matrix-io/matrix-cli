@@ -15,6 +15,7 @@ API: http://dev-demo.admobilize.com Streaming: http://dev-mxss.admobilize.com:80
 User: brian@rokk3rlabs.com Device: 12:23:34:45:56
 
 
+    search <sensor/app/tag> - look for sensors, app names or tags
               list [target] - list apps, devices, groups
                set [target] - set env, config
      update <app> [version] - Update, update app1, update app1 v0.1
@@ -76,4 +77,12 @@ matrix log
 
 ```
 matrix stop base
+```
+
+### Developing Matrix Console
+
+#### Refreshing Tarfile
+```
+# dont gzip, not supported
+tar vcf baseapp.tar baseapp/
 ```
