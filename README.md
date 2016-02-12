@@ -1,5 +1,17 @@
-## Welcome to your AdMatrix
+## Read This Console Developers
 
+### Globalize Master Command
+Use `sudo npm link` from this registry to make `matrix` available globally.
+
+
+### Refreshing Tarfile
+```
+#dont gzip, not supported
+tar vcf baseapp.tar baseapp/
+```
+
+
+## Welcome to your Matrix Console
 ```
 
            _  _ ____ ___ ____ _ _  _
@@ -31,14 +43,6 @@ User: brian@rokk3rlabs.com Device: 12:23:34:45:56
               restart <app> - Restarts an app running on the MATRIX.
            trigger <string> - Runs a trigger test
 ```
-
-
-## Turn any device into an admatrix
-
-//TODO: insert proper workflow
-* wget https://download.matrix.io/rpi2/matrix.latest.tar.gz;
-* tar czvf matrix.latest.tar.gz matrix && cd matrix;
-* matrix install;
 
 ### Login First
 
@@ -77,9 +81,3 @@ matrix stop base
 ```
 
 ### Developing Matrix Console
-
-#### Refreshing Tarfile
-```
-# dont gzip, not supported
-tar vcf baseapp.tar baseapp/
-```
