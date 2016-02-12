@@ -26,3 +26,5 @@ Matrix.config = Matrix.helpers.getConfig();
 
 // to make user / device / etc available to sdk
 Matrix.api.setConfig(Matrix.config);
+
+// debug(Matrix.config);

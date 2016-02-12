@@ -13,6 +13,14 @@ if (!pkgs.length) {
 
 var target = pkgs[0];
 
+
+if (target.match(/all/)){
+  Matrix.api.device.getAppList(Matrix.config.device.identifier, function(err, resp){
+    if (err) console.error(err);
+    debug('Device List>', resp);
+    console.log( Matrix.helpers.displayDeviceApps(resp));
+  });
+} else
 if (target.match(/app/)) {
 
   Matrix.api.app.list(function(apps){
@@ -63,9 +71,10 @@ if (target.match(/app/)) {
 
 function displayHelp(){
   console.log('\n> matrix list ¬\n');
-  console.log('\t   matrix list apps -', 'display apps on current device'.grey)
-  console.log('\tmatrix list devices -', 'display available devices'.grey)
-  console.log('\t matrix list groups -', 'display groups of devices'.grey)
+  console.log('\t    matrix list devices -', 'display available devices'.grey)
+  console.log('\t     matrix list groups -', 'display groups of devices'.grey)
+  console.log('\t       matrix list apps -', 'display apps on current device'.grey)
+  console.log('\t        matrix list all -', 'display all devices with installed apps'.grey)
   console.log('\n')
   process.exit(1);
 }

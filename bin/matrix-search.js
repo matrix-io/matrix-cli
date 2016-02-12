@@ -11,17 +11,17 @@ if (!pkgs.length) {
   console.log('\n')
   process.exit(1);
 }
-
-if (pkgs[0] === 'search'){
-  var needle = pkgs[1];
-  console.warn('Search not implemented yet')
+debug(pkgs);
+  var needle = pkgs[0];
+  if (needle.length <= 2){
+    return console.error('Your needle is too small to find in our haystack.')
+  }
+  // console.warn('Search not implemented yet')
   Matrix.api.app.search(needle, function(err, results){
     if (err) return console.error(err);
-    console.log(Matrix.helpers.appSearch);
+    console.log(Matrix.helpers.displaySearch(results, needle));
     process.exit();
 
   })
-}
 
 var search = pkgs[0];
-a
