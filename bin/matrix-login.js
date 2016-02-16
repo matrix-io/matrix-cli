@@ -25,8 +25,11 @@ prompt.get(['username', 'password'], function(err, result) {
     if (err) throw err;
     debug('User', Matrix.config.user, out);
     Matrix.api.auth.user(Matrix.config.user, function(err, state) {
-      if (err) return console.error('User Authentication Error:'.grey, err.message.red);
-      debug('User Login OK');
+
+        return console.error('User Authentication Error:'.grey, err.message.red);
+      
+
+      debug('User Login OK', state);
       Matrix.config.user.token = state.access_token;
       Matrix.config.client.token = out.access_token;
       Matrix.config.user.id = state.id;
