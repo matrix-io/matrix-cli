@@ -16,12 +16,13 @@ var target = pkgs[0];
 
 if (target.match(/all/)){
   Matrix.api.device.getAppList(Matrix.config.device.identifier, function(err, resp){
-    if (err) console.error(err);
+    if (err) return console.error('App List Error:', err);
+    if (_.isEmpty(resp)) return console.error('No Results Found');
     debug('Device List>', resp);
-    console.log( Matrix.helpers.displayDeviceApps(resp));
+    console.log( Matrix.helpers.displayDeviceApps(resp) );
   });
-} else
-if (target.match(/app/)) {
+
+} else if (target.match(/app/)) {
 
   Matrix.api.app.list(function(apps){
     console.log(Matrix.helpers.displayApps(apps));

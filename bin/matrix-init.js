@@ -14,7 +14,7 @@ var options = {
   clientId: 'AdMobilizeAPIDev',
   clientSecret: 'AdMobilizeAPIDevSecret',
   apiUrl: process.env['MATRIX_API_SERVER'] || 'http://dev-demo.admobilize.com',
-  mxssUrl: process.env['MATRIX_STREAMING_SERVER'] || 'http://dev-mxss.admobilize.com',
+  mxssUrl: process.env['MATRIX_STREAMING_SERVER'] || 'http://dev-mxss.admobilize.com:80',
 };
 
 Matrix.options = options;
