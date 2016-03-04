@@ -2,6 +2,7 @@ require('./matrix-init');
 
 var debug = debugLog('sim');
 
+var prompt = require('prompt');
 var program = require('commander');
 
 program
@@ -34,7 +35,6 @@ if (cmd === 'init') {
 
   debug(deviceId);
 
-  var prompt = require('prompt');
 
   prompt.delimiter = '';
 
@@ -82,19 +82,8 @@ if (cmd === 'init') {
   // TODO: abstract away docker machine?
 
   //test for docker
-  try {
-    var proc = require('child_process').execSync('which docker', {
-      stdio: [null, null, null]
-    });
-  } catch (e) {
-    if (e.toString().indexOf('Command failed') > -1) {
-      console.error('Docker not found.'.red, '\nPlease install docker from https://docs.docker.com/engine/installation/')
 
-      console.eror('Then `docker-machine create --driver virtualbox matrix`')
-      process.exit(1);
-    }
-  }
-
+  checkDocker();
   var dockerEnvs = _.pick(process.env, ['DOCKER_TLS_VERIFY', 'DOCKER_HOST', 'DOCKER_CERT_PATH', 'DOCKER_MACHINE_NAME']);
 
   // MATRIX_DEVICE_ID='12:23:34:45:56' -e MATRIX_DEVICE_NAME='really. go away' -e DEBUG='*,-engine*' -e 'MATRIX_USER=brian@rokk3rlabs.com'  admobilize/matrix-os
@@ -131,6 +120,22 @@ if (cmd === 'init') {
   proc.on('error', function(err) {
     // console.error('ERROR'.red, err, proc);
   })
+} else if (cmd === 'refresh'){
+  checkDocker();
+
+
+  console.log('Downloading latest MatrixOS image.')
+
+  var cmd = 'docker pull admobilize/matrix-os:latest';
+
+  var proc = require('child_process').exec(cmd, {}, function(err, out,stderr){
+    if (stderr) console.error('ERROR'.red, stderr);
+  })
+
+  proc.stdout.on('data', function (data) {
+    console.log(data);
+  })
+
 } else if ( cmd === 'clear'){
   Matrix.config.sim = null;
   Matrix.helpers.saveConfig();
@@ -147,4 +152,19 @@ function showHelp(){
   console.log('\t                 matrix sim reset -', 'find matrix apps'.grey)
   console.log('\n')
   process.exit(1);
+}
+
+function checkDocker(){
+  try {
+    var proc = require('child_process').execSync('which docker', {
+      stdio: [null, null, null]
+    });
+  } catch (e) {
+    if (e.toString().indexOf('Command failed') > -1) {
+      console.error('Docker not found.'.red, '\nPlease install docker from https://docs.docker.com/engine/installation/')
+
+      console.eror('Then `docker-machine create --driver virtualbox matrix`')
+      process.exit(1);
+    }
+  }
 }
