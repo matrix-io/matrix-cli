@@ -2,6 +2,7 @@
 
 require('./matrix-init');
 var program = require('commander');
+var debug = debugLog('sdk');
 
 program
   .parse(process.argv);
