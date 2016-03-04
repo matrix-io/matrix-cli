@@ -80,8 +80,6 @@ if (cmd === 'init') {
 } else if (cmd === 'start') {
   var option = pkgs[1];
 
-  // TODO: abstract away docker machine?
-
   //test for docker
 
   checkDocker();
@@ -93,8 +91,8 @@ if (cmd === 'init') {
     ( option === 'debug' ) ? '-e DEBUG="*,-engine*"' : '',
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
     '-e MATRIX_USER="' + Matrix.config.user.username + '"',
-    'admobilize/matrix-os'
-    //  + ( Matrix.config.sim.custom ) ? ':custom' : ':latest'
+    'admobilize/matrix-os' +
+    ( ( _.get(Matrix.config, 'sim.custom' ) === true) ? ':custom' : ':latest')
   ].join(' ');
 
   debug(cmd);
@@ -146,12 +144,15 @@ if (cmd === 'init') {
   Matrix.helpers.saveConfig();
 
 } else if ( cmd === 'clear'){
+
   Matrix.config.sim = null;
   Matrix.helpers.saveConfig();
+
 } else if ( cmd === 'ssh' ){
-  var p = require('child_process');
-  var lastDockerId = p.execSync('docker ps -q | head -n1')
-  p.spawn('docker exec -it '+ lastDockerId +  ' bash')
+
+  console.log('Run this command\n');
+  console.log('docker exec -it %s bash'.grey, getContainerId());
+
 } else {
   showHelp();
 }
