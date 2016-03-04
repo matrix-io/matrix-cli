@@ -93,7 +93,8 @@ if (cmd === 'init') {
     ( option === 'debug' ) ? '-e DEBUG="*,-engine*"' : '',
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
     '-e MATRIX_USER="' + Matrix.config.user.username + '"',
-    'admobilize/matrix-os' + ( Matrix.config.sim.custom ) ? ':custom' : ':latest'
+    'admobilize/matrix-os'
+    //  + ( Matrix.config.sim.custom ) ? ':custom' : ':latest'
   ].join(' ');
 
   debug(cmd);
