@@ -79,6 +79,8 @@ if (cmd === 'init') {
 } else if (cmd === 'start') {
   var option = pkgs[1];
 
+  // TODO: abstract away docker machine?
+
   //test for docker
   try {
     var proc = require('child_process').execSync('which docker', {
@@ -86,7 +88,9 @@ if (cmd === 'init') {
     });
   } catch (e) {
     if (e.toString().indexOf('Command failed') > -1) {
-      console.error('Docker not found.'.red, '\nPlease install docker from https://docs.docker.com/engine/installation/ ')
+      console.error('Docker not found.'.red, '\nPlease install docker from https://docs.docker.com/engine/installation/')
+
+      console.eror('Then `docker-machine create --driver virtualbox matrix`')
       process.exit(1);
     }
   }
@@ -94,20 +98,30 @@ if (cmd === 'init') {
   var dockerEnvs = _.pick(process.env, ['DOCKER_TLS_VERIFY', 'DOCKER_HOST', 'DOCKER_CERT_PATH', 'DOCKER_MACHINE_NAME']);
 
   // MATRIX_DEVICE_ID='12:23:34:45:56' -e MATRIX_DEVICE_NAME='really. go away' -e DEBUG='*,-engine*' -e 'MATRIX_USER=brian@rokk3rlabs.com'  admobilize/matrix-os
-  var proc = require('child_process').exec('docker run ' + [
+
+  var cmd = 'docker run ' + [
+    // show debug if `matrix sim start debug`
     ( option === 'debug' ) ? '-e DEBUG="*,-engine*"' : '',
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
     '-e MATRIX_USER="' + Matrix.config.user.username + '"',
     'admobilize/matrix-os'
-  ].join(' '), {}, function(err, out, stderr) {
+  ].join(' ');
+
+  debug(cmd);
+  var proc = require('child_process').exec(cmd, {}, function(err, out, stderr) {
     // if (err) console.error('ERROR'.red, err);
-    if (stderr) console.error('ERROR'.red, stderr);
+    if (stderr) {
+      console.error('ERROR'.red, stderr);
+      if (stderr.indexOf('Cannot connect to the Docker daemon.') > -1){
+        console.log('Please `docker-machine start matrix`. Then `eval $(docker-machine env matrix)`. If you have a different machine name, use that.')
+      }
+    }
     console.log(out);
   })
 
 
   proc.stdout.on('data', function(data) {
-    // console.log(data);
+    console.log(data);
   });
 
   proc.stderr.on('data', function(data) {
