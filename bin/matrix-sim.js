@@ -84,7 +84,6 @@ if (cmd === 'init') {
   //test for docker
 
   checkDocker();
-  var dockerEnvs = _.pick(process.env, ['DOCKER_TLS_VERIFY', 'DOCKER_HOST', 'DOCKER_CERT_PATH', 'DOCKER_MACHINE_NAME']);
 
   // MATRIX_DEVICE_ID='12:23:34:45:56' -e MATRIX_DEVICE_NAME='really. go away' -e DEBUG='*,-engine*' -e 'MATRIX_USER=brian@rokk3rlabs.com'  admobilize/matrix-os
 
@@ -120,9 +119,8 @@ if (cmd === 'init') {
   proc.on('error', function(err) {
     // console.error('ERROR'.red, err, proc);
   })
-} else if (cmd === 'refresh'){
+} else if (cmd.match(/restore|upgrade/)){
   checkDocker();
-
 
   console.log('Downloading latest MatrixOS image.')
 
@@ -136,20 +134,49 @@ if (cmd === 'init') {
     console.log(data);
   })
 
+} else if ( cmd === 'save'){
+  checkDocker();
+
+
+  runDockerCmd('commit '+ getContainerId() + ' admobilize/matrix-os:custom');
+
 } else if ( cmd === 'clear'){
   Matrix.config.sim = null;
   Matrix.helpers.saveConfig();
+} else if ( cmd === 'ssh' ){
+  var p = require('child_process');
+  var lastDockerId = p.execSync('docker ps -q | head -n1')
+  p.spawn('docker exec -it '+ lastDockerId +  ' bash')
 } else {
   showHelp();
 }
 
 
+function getContainerId(){
+  var id = require('child_process').execSync('docker ps -q --filter "ancestor=admobilize/matrix-os"');
+  return id.toString().trim();
+}
+
+function runDockerCmd(cmd){
+  log(cmd);
+  var proc = require('child_process').exec('docker ' + cmd, {}, function(err, out,stderr){
+    if (stderr) console.error('ERROR'.red, stderr);
+  })
+
+  proc.stdout.on('data', function (data) {
+    console.log(data);
+  })
+}
+
+
 function showHelp(){
   console.log('\n> matrix sim ¬\n');
+  console.log('\t               matrix sim upgrade -', 'initialize your MatrixOS simulator'.grey)
+  console.log('\t               matrix sim restore -', 'initialize your MatrixOS simulator'.grey)
   console.log('\t                  matrix sim init -', 'initialize your MatrixOS simulator'.grey)
   console.log('\t                 matrix sim start -', 'start MatrixOS virtual environment'.grey)
   console.log('\t                  matrix sim save -', 'save MatrixOS state, use after deploy / install'.grey)
-  console.log('\t                 matrix sim reset -', 'find matrix apps'.grey)
+  console.log('\t                 matrix sim clear -', 'remove simulation local data'.grey)
   console.log('\n')
   process.exit(1);
 }
