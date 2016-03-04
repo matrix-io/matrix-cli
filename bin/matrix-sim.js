@@ -20,6 +20,7 @@ if ( _.isUndefined( Matrix.config.user.id )){
   return console.log('Please','matrix login'.grey, 'before attempting to use the simulator');
 }
 
+
 if (cmd === 'init') {
 
   if ( _.has( Matrix.config, 'sim.id' )){
@@ -92,7 +93,7 @@ if (cmd === 'init') {
     ( option === 'debug' ) ? '-e DEBUG="*,-engine*"' : '',
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
     '-e MATRIX_USER="' + Matrix.config.user.username + '"',
-    'admobilize/matrix-os'
+    'admobilize/matrix-os' + ( Matrix.config.sim.custom ) ? ':custom' : ':latest'
   ].join(' ');
 
   debug(cmd);
@@ -139,6 +140,9 @@ if (cmd === 'init') {
 
 
   runDockerCmd('commit '+ getContainerId() + ' admobilize/matrix-os:custom');
+
+  Matrix.config.sim.custom = true;
+  Matrix.helpers.saveConfig();
 
 } else if ( cmd === 'clear'){
   Matrix.config.sim = null;
