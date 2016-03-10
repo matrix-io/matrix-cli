@@ -76,7 +76,7 @@ if ( cmd === 'init' ) {
 
         console.log( 'Success'.green )
         console.log( '\nTo target this device:\n' );
-        console.log( 'matrix use %s'.grey, Matrix.config.sim.id );
+        console.log( 'matrix use %s'.grey, Matrix.config.sim.id, '\n' );
       });
     });
   });
