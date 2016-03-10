@@ -8,7 +8,7 @@ program
   .parse(process.argv);
 var pkgs = program.args;
 
-if (!pkgs.length) {
+if (!pkgs.length || showTheHelp) {
   displayHelp();
 }
 

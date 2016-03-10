@@ -6,6 +6,9 @@ var cmd = program.args;
 
 var debug = debugLog('use');
 
+if (showTheHelp){
+  showHelp();
+}
 var targetDevice = cmd[0];
 //TODO: exit if no targetDevice
 //TODO: store device list locally

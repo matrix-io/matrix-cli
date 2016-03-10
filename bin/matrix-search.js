@@ -5,7 +5,7 @@ program
   .parse(process.argv);
 var pkgs = program.args;
 
-if (!pkgs.length) {
+if (!pkgs.length || showTheHelp ) {
   console.log('\n> matrix search ¬\n');
   console.log('\t                 matrix search <app> -', 'find matrix apps'.grey)
   console.log('\n')

@@ -12,7 +12,7 @@ var pkgs = program.args;
 
 var cmd = pkgs[ 0 ];
 
-if ( _.isEmpty( cmd ) ) {
+if ( _.isEmpty( cmd ) || showTheHelp ) {
   showHelp();
 }
 
@@ -90,14 +90,12 @@ if ( cmd === 'init' ) {
   // TODO: abstract away docker machine?
 
   //test for docker
-
   checkDocker();
-
-  // MATRIX_DEVICE_ID='12:23:34:45:56' -e MATRIX_DEVICE_NAME='really. go away' -e DEBUG='*,-engine*' -e 'MATRIX_USER=brian@rokk3rlabs.com'  admobilize/matrix-os
 
   var cmd = 'docker run ' + [
     // show debug if `matrix sim start debug`
     ( option === 'debug' ) ? '-e DEBUG=*,-engine*' : '',
+    // TODO: add NODE_ENV for local, dev, stage and prod
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
     '-e MATRIX_USER="' + Matrix.config.user.username + '"',
     'admobilize/matrix-os'
@@ -150,7 +148,7 @@ if ( cmd === 'init' ) {
   Matrix.config.sim.custom = true;
   Matrix.helpers.saveConfig();
 
-} else if ( cmd === 'clear' ) {
+} else if ( cmd === 'clear' || cmd === 'reset' ) {
   Matrix.config.sim = null;
   Matrix.helpers.saveConfig();
   console.log('Simulation Cleared'.blue)

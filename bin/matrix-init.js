@@ -3,6 +3,8 @@ require( 'colors' );
 debugLog = require( 'debug' );
 var debug = debugLog( 'cli' );
 
+showTheHelp = ( process.argv.indexOf('--help') > -1 );
+
 Matrix = {};
 Matrix.version = require( '../package.json' ).version;
 Matrix.config = require( '../config/index' );
