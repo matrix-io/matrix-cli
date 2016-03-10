@@ -84,6 +84,9 @@ if ( cmd === 'init' ) {
 } else if ( cmd === 'start' ) {
   var option = pkgs[ 1 ];
 
+  if (option === 'debug'){
+    console.log('Debug mode on');
+  }
   // TODO: abstract away docker machine?
 
   //test for docker
@@ -94,7 +97,7 @@ if ( cmd === 'init' ) {
 
   var cmd = 'docker run ' + [
     // show debug if `matrix sim start debug`
-    ( option === 'debug' ) ? '-e DEBUG="*,-engine*"' : '',
+    ( option === 'debug' ) ? '-e DEBUG=*,-engine*' : '',
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
     '-e MATRIX_USER="' + Matrix.config.user.username + '"',
     'admobilize/matrix-os'
@@ -119,12 +122,10 @@ if ( cmd === 'init' ) {
   });
 
   proc.stderr.on( 'data', function ( data ) {
-    // console.log('ERROR'.red, data);
+    console.log('DEBUG'.green, data);
   });
 
-  proc.on( 'error', function ( err ) {
-    // console.error('ERROR'.red, err, proc);
-  })
+
 } else if ( cmd.match( /restore|upgrade/ ) ) {
   checkDocker();
 
