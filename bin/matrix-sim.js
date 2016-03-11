@@ -4,6 +4,7 @@ var debug = debugLog( 'sim' );
 
 var prompt = require( 'prompt' );
 var program = require( 'commander' );
+var p = require( 'child_process' );
 
 program
   .parse( process.argv );
@@ -153,9 +154,16 @@ if ( cmd === 'init' ) {
   Matrix.helpers.saveConfig();
   console.log('Simulation Cleared'.blue)
 } else if ( cmd === 'ssh' ) {
-  var p = require( 'child_process' );
   var lastDockerId = p.execSync( 'docker ps -q | head -n1' )
   p.spawn( 'docker exec -it ' + lastDockerId + ' bash' )
+} else if ( cmd === 'stop') {
+  // find processes by Name
+  var stopList = p.execSync('docker ps | grep admobilize/matrix-os').toString().substr(0,12);
+  console.log(stopList);
+  p.exec('docker stop ' + stopList, function (err) {
+    if (err) console.error(err);
+    console.log("Matrix Simulator Stopped")
+  })
 } else {
   showHelp();
 }
