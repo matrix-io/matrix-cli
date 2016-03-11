@@ -105,7 +105,7 @@ if ( cmd === 'init' ) {
 
   debug( cmd );
   var proc = require( 'child_process' ).exec( cmd, {}, function ( err, out, stderr ) {
-    // if (err) console.error('ERROR'.red, err);
+    if (err) console.error('ERROR'.red, err);
     if ( stderr ) {
       console.error( 'ERROR'.red, stderr );
       if ( stderr.indexOf( 'Cannot connect to the Docker daemon.' ) > -1 ) {
