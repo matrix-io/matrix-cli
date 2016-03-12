@@ -96,7 +96,8 @@ if ( cmd === 'init' ) {
   var cmd = 'docker run ' + [
     // show debug if `matrix sim start debug`
     ( option === 'debug' ) ? '-e DEBUG=*,-engine*' : '',
-    // TODO: add NODE_ENV for local, dev, stage and prod
+    // TODO: add NODE_ENV and options for local, dev, stage and prod
+    '-e NODE_ENV=dev',
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
     '-e MATRIX_USER="' + Matrix.config.user.username + '"',
     'admobilize/matrix-os'
