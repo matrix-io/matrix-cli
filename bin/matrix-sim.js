@@ -66,7 +66,12 @@ if ( cmd === 'init' ) {
       if ( err ) return console.error( 'Create Error', err );
       debug( 'Create Device:', device );
       Matrix.api.device.register(deviceObj, function ( err, results ) {
-        if ( err ) return console.error( 'Register Error', err );
+        if ( err ) {
+          if (err.status_code === 401){
+            return console.error('Invalid Session. Please', 'matrix login'.grey, 'and', 'matrix use', deviceId );
+          }
+          return console.error( 'Register Error', err );
+        }
         debug( results );
         // local config
         Matrix.config.sim = {
