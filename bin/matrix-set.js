@@ -12,20 +12,37 @@ if (!pkgs.length) {
   showHelp();
 }
 
+var environments = {
+  local : {
+    api: 'http://dev-demo.admobilize.com',
+    mxss: 'http://localhost:3000'
+  },
+  dev : {
+    api: 'http://dev-demo.admobilize.com',
+    mxss: 'http://dev-mxss.admobilize.com:80'
+  },
+  stage: {
+    api: 'http://stage-api.admobilize.com',
+    mxss: 'http://stage-mxss.admobilize.com:80'
+  },
+  production: {
+    api: 'http://api.admobilize.com',
+    mxss: 'http://mxss.admobilize.com:80'
+  }
+}
+
 if (pkgs.indexOf('env') === 0) {
 
   var value = pkgs[1];
 
-  if (value && value.match(/sandbox|production/)) {
-    // TODO: doesn't fire
+  if (value && value.match(/sandbox|dev|stage|local|production/)) {
+    Matrix.config.environment = _.assign(environments[value], {name: value});
+    Matrix.helpers.saveConfig();
+    console.log('Env:'.grey, Matrix.config.environment.name.green);
+    // TODO: set-env [value] sets a environment on the Matrix
     if ( _.isUndefined(Matrix.config.device.identifier) ) {
       console.log('No Device Selected'.red, '\nSelect an Active Device with'.grey,'matrix use {deviceid}')
-      return false;
     }
-    Matrix.config.environment = value;
-    Matrix.helpers.saveConfig();
-    // TODO: set-env [value] set a environment on the AdMatrix
-    console.log('Env:'.grey, Matrix.config.environment);
 } else {
   console.error('Valid Environments = [ sandbox, production ]')
 }
