@@ -105,7 +105,7 @@ if ( cmd === 'init' ) {
     // TODO: add NODE_ENV and options for local, dev, stage and prod
     '-e NODE_ENV=dev',
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
-    '-e MATRIX_USER="' + Matrix.config.user.username + '"',
+    '-e MATRIX_USERNAME="' + Matrix.config.user.username + '"',
     'admobilize/matrix-os' +
     ( ( _.get(Matrix.config, 'sim.custom' ) === true) ? ':custom' : ':latest')
   ].join(' ');
