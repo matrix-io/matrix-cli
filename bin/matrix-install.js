@@ -21,12 +21,12 @@ if (_.isUndefined(cmd)) {
   if ( cmd.match(/a|ap|app|-a|--app/) ){
     console.log('____ | installing', t, ' ==> '.yellow, Matrix.config.device.identifier )
     Matrix.api.app.install(t, Matrix.config.device.identifier, function(err, resp) {
-      if (err) console.error(err);
-      console.log('Installed'.yellow, name);
+      if (err) return console.error(err);
+      console.log('Installed app'.yellow, t);
       debug(resp);
 
       //manage api records
-      Matrix.api.app.assign( name, function (err, resp) {
+      Matrix.api.app.assign( t, function (err, resp) {
         if (err) return console.error(err);
         debug('App Assigned to', Matrix.config.device.identifier );
         process.exit();
@@ -34,9 +34,9 @@ if (_.isUndefined(cmd)) {
     });
   } else if ( cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
     Matrix.api.sensor.install(t, Matrix.config.device.identifier, function(err, resp){
-      if (err) console.error(err);
+      if (err) return console.error(err);
       debug(resp);
-      console.log(t,'installed.')
+      console.log(t,' sensor installed.')
       process.exit();
     })
   }

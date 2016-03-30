@@ -65,7 +65,7 @@ if ( cmd === 'init' ) {
     Matrix.api.device.create(deviceObj, function ( err, device ) {
       if ( err ) return console.error( 'Create Error', err );
       debug( 'Create Device:', device );
-      Matrix.api.device.register(deviceObj, function ( err, results ) {
+      Matrix.api.device.register(deviceObj.deviceId, function ( err, results ) {
         if ( err ) {
           if (err.status_code === 401){
             return console.error('Invalid Session. Please', 'matrix login'.grey, 'and', 'matrix use', deviceId );
@@ -101,7 +101,7 @@ if ( cmd === 'init' ) {
 
   var cmd = 'docker run ' + [
     // show debug if `matrix sim start debug`
-    ( option === 'debug' ) ? '-e DEBUG=*,-engine*' : '',
+    ( option === 'debug' ) ? '-e DEBUG=*' : '',
     // TODO: add NODE_ENV and options for local, dev, stage and prod
     '-e NODE_ENV=dev',
     '-e MATRIX_DEVICE_ID="' + Matrix.config.device.identifier + '"',
