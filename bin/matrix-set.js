@@ -26,8 +26,12 @@ var environments = {
     mxss: 'http://stage-mxss.admobilize.com:80'
   },
   production: {
-    api: 'http://api.admobilize.com',
+    api: 'http://demo.admobilize.com',
     mxss: 'http://mxss.admobilize.com:80'
+  },
+  hardcode: {
+    api: 'http://dev-demo.admobilize.com',
+    mxss: 'http://104.196.123.3:80'
   }
 }
 
@@ -35,7 +39,7 @@ if (pkgs.indexOf('env') === 0) {
 
   var value = pkgs[1];
 
-  if (value && value.match(/sandbox|dev|stage|local|production/)) {
+  if (value && value.match(/sandbox|dev|stage|local|production|hardcode/)) {
     Matrix.config.environment = _.assign(environments[value], {name: value});
     Matrix.helpers.saveConfig();
     console.log('Env:'.grey, Matrix.config.environment.name.green);
