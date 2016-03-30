@@ -14,8 +14,10 @@ var cmd = pkgs[0];
 //target
 var t = pkgs[1];
 
-if (_.isUndefined(cmd)) {
-  return console.error('Must specify command');
+//Defaults to app
+if (pkgs.length === 1) {
+  t = cmd;
+  cmd = 'app';
 }
 
   if ( cmd.match(/a|ap|app|-a|--app/) ){
