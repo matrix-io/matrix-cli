@@ -4,10 +4,21 @@ var debug = debugLog('login');
 
 var prompt = require('prompt');
 
+var schema = {
+  properties: {
+    username: {
+      required: true
+    },
+    password: {
+      hidden: true
+    }
+  }
+};
+
 prompt.delimiter = '';
 prompt.message = 'matrix login -- ';
 prompt.start();
-prompt.get(['username', 'password'], function(err, result) {
+prompt.get(schema, function(err, result) {
   if (err) throw err;
 
   /** set the creds **/

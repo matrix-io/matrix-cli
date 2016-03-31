@@ -90,6 +90,9 @@ if ( cmd === 'init' ) {
 } else if ( cmd === 'start' ) {
   var option = pkgs[ 1 ];
 
+  if ( Matrix.config.device.indentifier.indexOf('sim-') !== 0 ){
+    return console.log('Device', Matrix.config.device.indentifier, 'is not a virtual MatrixOS. Please `matrix sim init` and `matrix use`.')
+  }
 
   if (option === 'debug'){
     console.log('Debug mode on');
@@ -120,8 +123,9 @@ if ( cmd === 'init' ) {
       }
     }
     console.log( out );
-  })
+  });
 
+  console.log('MatrixOS Simulator Starting [', Matrix.config.device.identifier, ']', '\n Stop with ^C or matrix sim stop');
 
   proc.stdout.on( 'data', function ( data ) {
     console.log( data );
@@ -195,9 +199,9 @@ function runDockerCmd( cmd ) {
 
 function showHelp() {
   console.log( '\n> matrix sim ¬\n' );
-  console.log( '\t               matrix sim upgrade -', 'initialize your MatrixOS simulator'.grey )
-  console.log( '\t               matrix sim restore -', 'initialize your MatrixOS simulator'.grey )
-  console.log( '\t                  matrix sim init -', 'initialize your MatrixOS simulator'.grey )
+  console.log( '\t               matrix sim upgrade -', 'upgrade your simulator image'.grey )
+  console.log( '\t               matrix sim restore -', 'reset your simulator'.grey )
+  console.log( '\t                  matrix sim init -', 'initialize your simulator'.grey )
   console.log( '\t                 matrix sim start -', 'start MatrixOS virtual environment'.grey )
   console.log( '\t                  matrix sim save -', 'save MatrixOS state, use after deploy / install'.grey )
   console.log( '\t                 matrix sim clear -', 'remove simulation local data'.grey )
