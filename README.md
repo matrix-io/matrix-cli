@@ -199,12 +199,14 @@ Change the configuration of your apps on the fly, as they are running.
 ### Trigger application events
 
 ```
-matrix trigger foo-event
+matrix trigger foo-event "bar"
 ```
-Responds to
-```
-matrix.on('event')
 
+Sends trigger to
+
+```
+matrix.on('event', function(data){});
+```
 
 
 
