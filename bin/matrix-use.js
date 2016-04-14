@@ -14,9 +14,7 @@ var targetDevice = cmd[0];
 //TODO: store device list locally
 if (!_.isUndefined(targetDevice)) {
 
-  Matrix.api.auth.device({
-    deviceId: targetDevice
-  }, function(state) {
+  Matrix.api.device.register(targetDevice, function(err, state) {
     if (state.status === "OK") {
       var name = Matrix.helpers.lookupDeviceName(targetDevice);
 

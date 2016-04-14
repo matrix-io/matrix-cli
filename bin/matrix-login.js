@@ -41,7 +41,6 @@ prompt.get(schema, function(err, result) {
 
       debug('User Login OK', state);
       Matrix.config.user.token = state.access_token;
-      Matrix.config.client.token = out.access_token;
       Matrix.config.user.id = state.id;
 
       /** token stores, delete extra stuff **/
