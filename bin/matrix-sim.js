@@ -90,8 +90,15 @@ if ( cmd === 'init' ) {
 } else if ( cmd === 'start' ) {
   var option = pkgs[ 1 ];
 
-  if ( Matrix.config.device.indentifier.indexOf('sim-') !== 0 ){
-    return console.log('Device', Matrix.config.device.indentifier, 'is not a virtual MatrixOS. Please `matrix sim init` and `matrix use`.')
+  if ( !Matrix.config.hasOwnProperty('sim') ){
+    return console.log('Matrix sim init first please')
+  }
+  if ( Matrix.config.device.identifier.indexOf('sim-') !== 0 ){
+    return console.log('Device', Matrix.config.device.identifier, 'is not a virtual MatrixOS. Please `matrix sim init` and `matrix use`.')
+  }
+
+  if ( Matrix.config.sim.custom === true){
+
   }
 
   if (option === 'debug'){
@@ -164,9 +171,12 @@ if ( cmd === 'init' ) {
   Matrix.config.sim = null;
   Matrix.helpers.saveConfig();
   console.log('Simulation Cleared'.blue)
+
 } else if ( cmd === 'ssh' ) {
+
   var lastDockerId = p.execSync( 'docker ps -q | head -n1' )
-  p.spawn( 'docker exec -it ' + lastDockerId + ' bash' )
+  p.spawn( 'docker exec -it ' + lastDockerId.toString().trim() + ' bash' )
+
 } else if ( cmd === 'stop') {
   // find processes by Name
   var stopList = p.execSync('docker ps | grep admobilize/matrix-os').toString().substr(0,12);
