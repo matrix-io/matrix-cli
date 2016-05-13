@@ -90,8 +90,8 @@ if ( cmd === 'init' ) {
 } else if ( cmd === 'start' ) {
   var option = pkgs[ 1 ];
 
-  if ( Matrix.config.device.indentifier.indexOf('sim-') !== 0 ){
-    return console.log('Device', Matrix.config.device.indentifier, 'is not a virtual MatrixOS. Please `matrix sim init` and `matrix use`.')
+  if ( Matrix.config.device.identifier.indexOf('sim-') !== 0 ){
+    return console.log('Device', Matrix.config.device.identifier, 'is not a virtual MatrixOS. Please `matrix sim init` and `matrix use`.')
   }
 
   if (option === 'debug'){

@@ -47,7 +47,7 @@ _.each(files, function(f) {
 
 var appFile = fs.readFileSync(pwd + 'app.js').toString();
 var configFile = fs.readFileSync(pwd + detectFile).toString();
-var configObject = JSON.parse(configFile);
+var configObject = {};
 
 // run JSHINT on the application
 JSHINT(appFile);
@@ -147,6 +147,7 @@ function onEnd() {
 
       var deployInfo = data.results;
       deployInfo.name = appName;
+
 
       Matrix.api.app.assign( appName, function (err, resp) {
         if (err) return console.error(err);
