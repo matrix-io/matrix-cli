@@ -29,6 +29,7 @@ if (!_.isUndefined(targetDevice)) {
       Matrix.config.device.identifier = targetDevice;
       Matrix.config.device.token = state.results.device_token;
       Matrix.helpers.saveConfig(process.exit);
+      
     } else {
       debug('Matrix Use Error Object:', state);
       if ( state.error === 'access_token not valid.' ) {
