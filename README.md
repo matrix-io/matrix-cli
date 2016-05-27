@@ -138,7 +138,6 @@ matrix install app <appname>
 matrix start <appName>
 ```
 
-
 ### Read some logs to see datas
 ```
 matrix log

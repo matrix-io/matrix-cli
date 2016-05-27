@@ -21,7 +21,7 @@ if ( _.isUndefined( Matrix.config.user.id ) ) {
   return console.log( 'Please', 'matrix login'.grey, 'before attempting to use the simulator' );
 }
 
-
+// matrix sim init
 if ( cmd === 'init' ) {
 
   if ( _.has( Matrix.config, 'sim.id' ) ) {
@@ -151,6 +151,10 @@ if ( cmd === 'init' ) {
     console.log( data );
   })
 
+  Matrix.config.sim.custom = false;
+  Matrix.helpers.saveConfig();
+
+//matrix sim save
 } else if ( cmd === 'save' ) {
   checkDocker();
 
@@ -161,12 +165,14 @@ if ( cmd === 'init' ) {
   Matrix.helpers.saveConfig();
 
 } else if ( cmd === 'clear' || cmd === 'reset' ) {
-  Matrix.config.sim = null;
+  Matrix.config.sim = {};
   Matrix.helpers.saveConfig();
   console.log('Simulation Cleared'.blue)
 } else if ( cmd === 'ssh' ) {
-  var lastDockerId = p.execSync( 'docker ps -q | head -n1' )
-  p.spawn( 'docker exec -it ' + lastDockerId + ' bash' )
+  var lastDockerId = p.execSync( 'docker ps -q | head -n1 | tr "\n" " "' )
+  var ssh = p.spawn( 'docker exec -it ' + lastDockerId + ' bash' , { shell: true});
+  ssh.stdout.on('data', console.log)
+  ssh.stderr.on('data', console.log)
 } else if ( cmd === 'stop') {
   // find processes by Name
   var stopList = p.execSync('docker ps | grep admobilize/matrix-os').toString().substr(0,12);
