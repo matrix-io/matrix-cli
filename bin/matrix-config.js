@@ -23,6 +23,10 @@ if (_.isUndefined(Matrix.config.device.identifier)) {
   process.exit(0);
 }
 
+if ( _.isEmpty(pkgs) ) {
+  return showHelp();
+}
+
 firebase.init(
   Matrix.config.user.id,
   Matrix.config.device.identifier,
@@ -37,7 +41,7 @@ firebase.init(
       _.omit(pkgs, '-w', '--watch')
     }
 
-    if ( pkgs.match(/(--help|-h)/) ){
+    if ( pkgs.indexOf('--help') > -1 || pkgs.indexOf('-h') > -1 ){
       showHelp();
     } else
     // show matrix config
