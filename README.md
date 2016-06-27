@@ -12,6 +12,8 @@ cd matrix-cli
 npm install
 # makes global `matrix` available
 npm link
+
+```
 ```
 > matrix
 
