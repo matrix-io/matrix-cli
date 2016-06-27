@@ -217,5 +217,5 @@ Use `sudo npm link` after `git clone` to make `matrix` available globally.
 ### Refreshing Tarfile
 ```
 #dont gzip, not supported
-tar vcf baseapp.tar baseapp/
+tar vcf baseapp.tar baseapp
 ```

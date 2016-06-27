@@ -16,7 +16,7 @@ var pkgs = program.args;
 var appName = pkgs[0];
 
 var pwd = process.cwd();
-var detectFile = 'config.json';
+var detectFile = 'config.yaml';
 
 //TODO: make sure package.json is included
 if (_.isUndefined(appName)) {
