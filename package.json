@@ -17,7 +17,6 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/admobilize/admatrix-console#readme",
   "dependencies": {
-    "matrix-node-sdk": "https://github.com/matrix-io/matrix-node-sdk.git",
     "archiver": "^0.15.1",
     "async": "^1.5.0",
     "cli-table": "^0.3.1",
@@ -28,9 +27,12 @@
     "fstream": "^1.0.7",
     "jshint": "^2.8.0",
     "lodash": "^3.10.0",
+    "matrix-node-sdk": "https://github.com/matrix-io/matrix-node-sdk.git",
+    "mocha": "^2.5.3",
     "moment": "^2.10.3",
     "prompt": "^0.2.14",
     "q": "^1.4.1",
+    "should": "^9.0.2",
     "socket.io-client": "^1.4.5",
     "tar": "^2.2.0",
     "yamljs": "^0.2.4"
