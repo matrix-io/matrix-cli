@@ -30,7 +30,7 @@ var tmp = __dirname + '/../' + appName + '.zip';
 
 //TODO: IMPORTANT Make sure config file exists
 if (!fs.existsSync(pwd + detectFile)) {
-  return console.error('No ', detectFile, ' found. Are you sure an AdMatrix app resides in ', pwd, '?');
+  return console.error('No ', detectFile, ' found. Are you sure a MatrixOS app resides in ', pwd, '?');
 }
 
 //See of any files are a directory. #113583355 Add other checks here sometime?

@@ -8,7 +8,7 @@ showTheHelp = ( process.argv.indexOf('--help') > -1 );
 Matrix = {};
 Matrix.version = require( '../package.json' ).version;
 Matrix.config = require( '../config/index' );
-Matrix.api = require( 'admatrix-node-sdk' );
+Matrix.api = require( 'matrix-node-sdk' );
 _ = require( 'lodash' );
 
 Matrix.helpers = require( '../lib/helpers' );

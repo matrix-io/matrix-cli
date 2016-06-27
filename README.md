@@ -5,7 +5,13 @@
 ```
 npm install matrix-cli -g
 ```
-
+OR
+```
+git clone https://github.com/matrix-io/matrix-cli
+cd matrix-cli
+npm install
+# makes global `matrix` available
+npm link
 ```
 > matrix
 
@@ -93,7 +99,7 @@ Initialize a Matrix Simulator. This will register an instance of matrixOS with y
 
 ### install or update docker image
 ```
-docker pull admobilize
+docker pull admobilize/MatrixOSÎ
 or
 matrix sim upgrade
 ```
