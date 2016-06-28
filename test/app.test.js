@@ -3,7 +3,7 @@
     it('`matrix search`')
     // it('`matrix search -s`')
     it('`matrix install`')
-    it('`matrix install sensor`')
+    // it('`matrix install sensor`')
     it('`matrix uninstall`')
     // it('`matrix update`')
     it('`matrix start`')

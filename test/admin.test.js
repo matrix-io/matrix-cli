@@ -15,23 +15,19 @@ var exec = require('child_process').exec;
       it('`matrix login`', function(done){
         this.timeout(15000)
         var loginProc = run('matrix', ['login']);
-        var finished = false;
         loginProc.stdout.on('data', function(out){
           console.log(out.toString())
           if ( out.toString().indexOf('username') > -1 ){
             loginProc.stdin.write('demo.admobilize@gmail.com\n')
           } else if ( out.toString().indexOf('password') > -1){
             loginProc.stdin.write('admobdemo2016\n')
-          } else {
-
-          }
-
-          if (finished === false && out.toString().indexOf('Login Successful') === 0){
+          } else if ( out.toString().indexOf('Login Successful') > -1){
             console.log(readConfig())
-            finished = true;
             done();
             loginProc.kill();
           }
+
+
         })
         // console.log(readConfig())
           // if ( readConfig().user.hasOwnProperty( 'token' )) {

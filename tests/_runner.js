@@ -14,12 +14,9 @@ log=console.log;
 // Matrix = require('../index.js').Matrix;
 
 try {
-  run('which matrix')
+  run('which matrix');
 } catch(e) {
-  console.log('`matrix` command is not installed. Run `npm link`.')
-
-
-
+  console.log('`matrix` command is not installed. Run `npm link`.');
   process.exit(0);
 } finally {
   console.log('========== Running MatrixOS CLI Tests!')
