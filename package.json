@@ -31,6 +31,7 @@
     "matrix-node-sdk": "https://github.com/matrix-io/matrix-node-sdk.git",
     "mocha": "^2.5.3",
     "moment": "^2.10.3",
+    "node-yaml-localize": "^0.1.0",
     "prompt": "^0.2.14",
     "q": "^1.4.1",
     "should": "^9.0.2",

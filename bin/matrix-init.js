@@ -11,7 +11,8 @@ Matrix.config = require( '../config/index' );
 Matrix.api = require( 'matrix-node-sdk' );
 _ = require( 'lodash' );
 
-Matrix.helpers = require( '../lib/helpers' );
+Matrix.helpers = require('../lib/helpers');
+//Matrix.localization = require('../lib/localization');
 
 //sets Matrix.config with local variables
 Matrix.config = Matrix.helpers.getConfig();

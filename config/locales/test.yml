@@ -1,0 +1,4 @@
+en:
+  matrix:
+    use:
+      help:  "'set active device to device id'"

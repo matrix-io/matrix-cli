@@ -1,5 +1,7 @@
 require('./matrix-init');
+var localization = require('../lib/localization');
 var program = require('commander');
+
 program
   .parse(process.argv);
 var cmd = program.args;
@@ -47,6 +49,8 @@ if (!_.isUndefined(targetDevice)) {
 
 function showHelp() {
   console.log('\n> matrix use ¬ \n');
-  console.log('\t                 matrix use <deviceid> -', 'set active device to device id'.grey)
+  //console.log('\t                 matrix use <deviceid> -', 'set active device to device id'.grey)
+  console.log('\t                 matrix use <deviceid> -', localization.get('matrix.use.help').grey)
+  
   console.log('\n')
 }
