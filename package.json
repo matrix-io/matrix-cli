@@ -7,7 +7,7 @@
     "matrix": "./bin/matrix"
   },
   "scripts": {
-    "test": "mocha tests"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
