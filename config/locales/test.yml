@@ -2,3 +2,8 @@ en:
   matrix:
     use:
       help:  "'set active device to device id'"
+      using_device_by_name: "Now using device:"
+      using_device_by_id: "Now using device id:"
+      not_authorized: "Not Authorized"
+      invalid_token: "Your token is invalid." 
+      try: "Try"
