@@ -1,10 +1,9 @@
 require('./matrix-init');
-var localization = require('../lib/localization');
 var program = require('commander');
 var text;
 
-localization.init(__dirname + '/../config/locales', "en", function () {
-  text = localization.get;
+Matrix.localization.init(Matrix.localesFolder, Matrix.locale, function () {
+  text = Matrix.localization.get;
   program
     .parse(process.argv);
   var cmd = program.args;
