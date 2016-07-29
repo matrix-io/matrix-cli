@@ -12,12 +12,17 @@ if (!pkgs.length) {
   showHelp();
 }
 
+var locales = [
+  "en",
+  "es"
+];
+
 var environments = {
-  local : {
+  local: {
     api: 'http://dev-demo.admobilize.com',
     mxss: 'http://localhost:3000'
   },
-  dev : {
+  dev: {
     api: 'http://dev-demo.admobilize.com',
     mxss: 'http://dev-mxss.admobilize.com:80'
   },
@@ -33,7 +38,7 @@ var environments = {
     api: 'http://dev-demo.admobilize.com',
     mxss: 'http://104.196.123.3:80'
   }
-}
+};
 
 if (pkgs.indexOf('env') === 0) {
 
@@ -90,6 +95,21 @@ if (pkgs.indexOf('env') === 0) {
     console.log('[' + options.deviceId + '](' + options.name + ')', options.key, '=', options.value);
     setTimeout(process.exit, 1000);
   });
+
+} else if (pkgs.indexOf('locale') === 0) {
+
+  var locale = pkgs[1];
+
+  var localesRegExp = new RegExp(locales.join('|'));
+  
+  if (locale && locale.match(localesRegExp)) {
+    Matrix.config.locale = _.assign(locale, { "name": locale });
+    Matrix.helpers.saveConfig();
+    console.log('Locale:'.grey, Matrix.config.locale.green);
+  } else {
+    var validLocales = locales.join(', ');
+    console.error('Valid locales = [ ' + validLocales + ' ]')
+  }
 
 } else {
   showHelp();

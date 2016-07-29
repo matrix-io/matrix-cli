@@ -2,7 +2,7 @@ require('./matrix-init');
 var program = require('commander');
 var text;
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.locale, function () {
+Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   text = Matrix.localization.get;
   program
     .parse(process.argv);
@@ -23,9 +23,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.locale, function () {
         var name = Matrix.helpers.lookupDeviceName(targetDevice);
 
         if (!_.isUndefined(name)) {
-          console.log(text('matrix.use.using_device_by_name').grey, name);
+          console.log(text('matrix.use.using_device_by_name').grey + ':', name);
         } else {
-          console.log(text('matrix.use.using_device_by_id').grey, targetDevice);
+          console.log(text('matrix.use.using_device_by_id').grey + ':', targetDevice);
         }
 
         // Save the device token
@@ -37,7 +37,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.locale, function () {
       } else {
         debug('Matrix Use Error Object:', state);
         if ( state.error === 'access_token not valid.' ) {
-          console.log(text('matrix.use.not_authorized').red, '\n', text('matrix.use.invalid_token'), ' ' , text('matrix.use.try').grey, 'matrix login')
+          console.log(text('matrix.use.not_authorized').red, '\n', text('matrix.use.invalid_token'), '. ' , text('matrix.use.try').grey, 'matrix login')
         } else {
           console.error('Error', state.status_code.red, state.error);
         }
@@ -51,7 +51,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.locale, function () {
 
   function showHelp() {
     console.log('\n> matrix use ¬ \n');
-    console.log('\t                 matrix use <deviceid> -', text('matrix.use.help').grey)    
+    console.log('\t                 matrix use <deviceid> -', text('matrix.use.command_help').grey)    
     console.log('\n')
   }
 });
