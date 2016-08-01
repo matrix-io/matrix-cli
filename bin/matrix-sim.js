@@ -158,7 +158,10 @@ if ( cmd === 'init' ) {
     console.log( data );
   })
 
-  Matrix.config.sim.custom = false;
+  if ( Matrix.config.hasOwnProperty('sim')) {
+    Matrix.config.sim.custom = false;
+  }
+
   Matrix.helpers.saveConfig();
 
 //matrix sim save
