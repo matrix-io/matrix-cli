@@ -60,6 +60,7 @@ if ( cmd === 'init' ) {
       deviceId: deviceId,
       deviceName: inputs.name,
       deviceDescription: inputs.description,
+      user: Matrix.config.user.id,
     };
 
     Matrix.api.device.create(deviceObj, function ( err, device ) {
