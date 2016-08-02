@@ -1,14 +1,14 @@
+#!/usr/bin/env node
+
 require('./matrix-init');
 var program = require('commander');
-var text;
+var debug = debugLog('use');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  text = Matrix.localization.get;
+  var i = Matrix.localization.get;
   program
     .parse(process.argv);
   var cmd = program.args;
-
-  var debug = debugLog('use');
 
   if (showTheHelp){
     showHelp();
@@ -23,9 +23,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         var name = Matrix.helpers.lookupDeviceName(targetDevice);
 
         if (!_.isUndefined(name)) {
-          console.log(text('matrix.use.using_device_by_name').grey + ':', name);
+          console.log(i('matrix.use.using_device_by_name').grey + ':', name);
         } else {
-          console.log(text('matrix.use.using_device_by_id').grey + ':', targetDevice);
+          console.log(i('matrix.use.using_device_by_id').grey + ':', targetDevice);
         }
 
         // Save the device token
@@ -37,7 +37,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       } else {
         debug('Matrix Use Error Object:', state);
         if ( state.error === 'access_token not valid.' ) {
-          console.log(text('matrix.use.not_authorized').red, '\n', text('matrix.use.invalid_token'), '. ' , text('matrix.use.try').grey, 'matrix login')
+          console.log(i('matrix.use.not_authorized').red, '\n', i('matrix.use.invalid_token'), '. ' , i('matrix.use.try').grey, 'matrix login')
         } else {
           console.error('Error', state.status_code.red, state.error);
         }
@@ -51,7 +51,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function showHelp() {
     console.log('\n> matrix use ¬ \n');
-    console.log('\t                 matrix use <deviceid> -', text('matrix.use.command_help').grey)    
+    console.log('\t                 matrix use <deviceid> -', i('matrix.use.command_help').grey)    
     console.log('\n')
   }
 });

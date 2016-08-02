@@ -7,3 +7,38 @@ en:
       invalid_token: 'Your token is invalid'
       try: 'Try'
       command_help: 'set active device to device id'
+    list:
+      app_list_error: 'App List Error'
+      no_results: 'No Results Found'
+      help_devices: 'display available devices'
+      help_groups: 'display groups of devices'
+      help_apps: 'display apps on current device'
+      help_all: 'display all devices with installed apps'
+    logout:
+      logout_success: 'Logged Out Successfully'
+    login:
+      user_auth_error: 'User Authentication Error'
+      login_success: 'Login Successful'
+    set:
+      help_device: 'set device environment'
+      help_config: 'configure an application variables'
+      help_locale: 'set current locale for the cli'
+      env:
+        env: 'Env'
+        no_device: 'No Device Selected'
+        select_device: 'Select an Active Device with'
+        valid_environments: 'Valid Environments'
+      config:
+        no_device: 'No Device Set. Use' # `matrix use`
+        use: Use
+        no_app: 'App Name Required'
+        no_key_value: 'Must supply key and value'
+      locale:
+        locale_required: 'Locale Required'
+        locale: 'Locale'
+        valid_locales: 'Valid locales'
+    sim:
+      please: 'Please'
+      before_using: 'before attempting to use the simulator'
+      
+    

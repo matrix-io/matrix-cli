@@ -12,7 +12,7 @@ log=console.log;
 // Instantiate a Mocha instance.
 
 // Matrix = require('../index.js').Matrix;
-
+log('Please ensure MatrixOS and Streaming Server are available.')
 try {
   run('which matrix')
 } catch(e) {

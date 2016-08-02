@@ -13,7 +13,6 @@ _ = require( 'lodash' );
 
 Matrix.helpers = require('../lib/helpers');
 Matrix.localization = require('../lib/localization');
-Matrix.locale = 'en';
 Matrix.localesFolder = __dirname + '/../config/locales';
 
 //sets Matrix.config with local variables

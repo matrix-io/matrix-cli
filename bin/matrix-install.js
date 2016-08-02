@@ -33,6 +33,8 @@ if (pkgs.length === 1) {
         debug('App Assigned to', Matrix.config.device.identifier );
         process.exit();
       });
+
+      //TODO: Pull sensors / integrations. Ask permissions. Write Policy
     });
   } else if ( cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
     Matrix.api.sensor.install(t, Matrix.config.device.identifier, function(err, resp){
