@@ -1,0 +1,13 @@
+es:
+  matrix:
+    SETUP:
+      login: 
+        User_Authentication_Error: 'username o password no valid'
+        login_successfully: 'we'
+      use:
+        using_device_by_name: 'Ahora usando el dispositivo'
+        using_device_by_id: 'Ahora usando el dispositivo con id'
+        not_authorized: 'No autorizado'
+        invalid_token: 'Tu token es invalido'
+        try: 'Intenta'
+        command_help: 'establece como dispositivo activo el dispositivo con id'

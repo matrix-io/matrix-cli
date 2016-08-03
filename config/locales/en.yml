@@ -1,0 +1,97 @@
+en:
+  matrix:
+    #SETUP:
+      login:
+        user_auth_error: 'User Authentication Error'
+        login_success: 'Login Successful'
+      logout:
+        logout_success: 'Logged Out Successfully'
+      use:
+        using_device_by_name: 'Now using device'
+        using_device_by_id: 'Now using device id'
+        not_authorized: 'Not Authorized'
+        invalid_token: 'Your token is invalid'
+        try: 'Try'
+        command_help: 'set active device to device id'
+      set:
+        help_device: 'set device environment'
+        help_config: 'configure an application variables'
+        help_locale: 'set current locale for the cli'
+      env:
+        env: 'Env'
+        no_device: 'No Device Selected'
+        select_device: 'Select an Active Device with'
+        valid_environments: 'Valid Environments'
+      configenv:
+        no_device: 'No Device Set. Use' # `matrix use`
+        use: Use
+        no_app: 'App Name Required'
+        no_key_value: 'Must supply key and value'
+      locale:
+        locale_required: 'Locale Required'
+        locale: 'Locale'
+        valid_locales: 'Valid locales' 
+    #MANAGEMENT:  
+      sim:
+        please: 'Please'
+        before_using: 'before attempting to use the simulator'    
+      list:
+        app_list_error: 'App List Error'
+        no_results: 'No Results Found'
+        help_devices: 'display available devices'
+        help_groups: 'display groups of devices'
+        help_apps: 'display apps on current device'
+        help_all: 'display all devices with installed apps'
+      reboot: 
+        device_not_selected: 'please select device'
+        App_not_selected: 'please select app'
+        app_reboot_successfully: 'rebooting app'
+    #APPS:
+      search:
+        App_not_selected: 'please select app'
+        the_application_does_not_exist: 'select another application'
+        search_successfully: 'search Successfully'
+      install:
+        application_unspecified: 'specify [ app / sensor ] <name>'
+        install_app_successfully: 'installing app Successfully'
+        app_undefined: 'this app doesn`t exist'
+      config:
+        device_doesnt_select: 'use <matrix use> ' 
+        show_config_app: 'app settings '
+        specified_application_does_not_exist: 'app specified doesn`t exist'
+      uninstall: 
+        application_unspecified: 'specify [ app ] <name>'
+        uninstall_app_successfully: 'installing app Successfully'
+        app_undefined: 'this app doesn`t exist'
+      update: 
+        application_unspecified: 'specify [ app(name) ] <version>'
+        app_undefined: 'this app doesn`t exist'
+        app_update_successfully: 'updating app'
+      start: 
+        application_unspecified: 'specify [ app(name) ] '
+        app_undefined: 'this app doesn`t exist'
+        start_app_successfully: 'starting app'
+      stop: 
+        application_unspecified: 'specify [ app(name) ] '
+        app_undefined: 'this app doesn`t exist'
+        stop_app_successfully: 'starting app'
+      restart: 
+        application_unspecified: 'specify [ app(name) ] '
+        app_undefined: 'this app doesn`t exist'
+        restart_app_successfully: 'starting app'
+    #DEVELOPMENT  
+      create:
+        name_undefined: 'Must specify app name'
+        new_scaffolding_create_successfully: 'New Folder created'
+      deploy:
+        application_unspecified: 'specify [ app ]'
+        deploy_app_successfully: 'deploying app Successfully'
+        app_undefined: 'could not do deploy' 
+      trigger: 
+        no_specified_test: 'test undefined'
+        defined_test_doesn`t_exist: 'test doesn`t exist'
+        run_trigger_successfully: 'running test'
+      log: 
+        app_not_select: 'select an app `matrix log app-name` ' 
+        app_undefined: 'app specified doesn´t  exits ' 
+        logs_show: 'logs'
