@@ -1,5 +1,7 @@
 ## Welcome to your MatrixOS Console Line Interface
 
+## NOTICE: This is not yet ready for public use. Check back Sept 2016.
+
 # Installation
 
 ```
