@@ -1,9 +1,11 @@
 es:
   matrix:
-    SETUP:
+    #SETUP:
       login: 
-        User_Authentication_Error: 'username o password no valid'
-        login_successfully: 'we'
+        User_Authentication_Error: 'usuario o contraseña  no valido'
+        login_success: 'sesion iniciada cotrrectamente'
+      logout:
+        logout_success: 'sesion cerrada correctamente'
       use:
         using_device_by_name: 'Ahora usando el dispositivo'
         using_device_by_id: 'Ahora usando el dispositivo con id'
@@ -11,3 +13,93 @@ es:
         invalid_token: 'Tu token es invalido'
         try: 'Intenta'
         command_help: 'establece como dispositivo activo el dispositivo con id'
+      set:
+        help_device: 'configure el ambiente del dispositivo'
+        help_config: 'configure las variables de aplicacion'
+        help_locale: 'establecer la localización actual de la cli'
+      env:
+        env: 'Env'
+        no_device: 'dispositivo no seleccionado'
+        select_device: 'Seleccione un dispositivo activo con'
+        valid_environments: 'ambientes validos'
+       configenv:
+        no_device: 'dispositivo no configurado. Use' # `matrix use`
+        use: Use
+        no_app: 'Nombre de la app necesaria'
+        no_key_value: 'debe ingresar llave y valor'
+      locale:
+        locale_required: 'localización requerida'
+        locale: 'localización'
+        valid_locales: 'localización valida'
+      #MANAGEMENT:  
+      sim:
+        please: 'Por favor'
+        before_using: 'antes de que intente utilizar el simulador'
+      list:
+        app_list_error: 'Error en la lista de apps'
+        no_results: 'resultados no encontrados'
+        help_devices: 'dispositivos de visualizacion disponibles'
+        help_groups: 'grupos de visualización de dispositivos'
+        help_apps: 'aplicaciones de visualización en el dispositivo actual'
+        help_all: 'mostrar todos los dispositivos con aplicaciones instaladas'
+      reboot: 
+        device_not_selected: 'por favor Seleccione un dispositivo'
+        App_not_selected: 'por favor seleccione una aplicacion'
+        app_reboot_successfully: 'reiniciando aplicacion'
+      #APPS:
+      search:
+        App_not_selected: 'por favor seleccione una aplicacion'
+        the_application_does_not_exist: 'seleccione otra aplicacion'
+        search_successfully: 'busqueda satisfactoria'
+      install:
+        application_unspecified: 'especifique  [ aplicacion / sensor ] <Nombre>'
+        install_app_successfully: 'instalando aplicacion satisfactoriamente'
+        app_undefined: 'esta aplicacion no existe'
+      config:
+        device_doesnt_select: 'use <matrix use> ' 
+        show_config_app: 'configuracion de aplicacion '
+        specified_application_does_not_exist: 'la aplicacion especificada no existe'
+      uninstall: 
+        application_unspecified: 'especifique [ aplicacion ] <Nombre>'
+        uninstall_app_successfully: 'instalando aplicacion satisfactoriamente'
+        app_undefined: 'esta aplicacion no esxiste'
+      update: 
+        application_unspecified: 'especifique [ aplicacion(nombre) ] <versión>'
+        app_undefined: 'esta aplicacion no esxiste'
+        app_update_successfully: 'actualizando aplicación'
+      start: 
+        application_unspecified: 'especifique [ aplicacion(nombre) ] '
+        app_undefined: 'esta aplicacion no esxiste'
+        start_app_successfully: 'iniciando aplicacion'
+      stop: 
+        application_unspecified: 'especifique [ aplicacion(nombre) ] '
+        app_undefined: 'esta aplicacion no esxiste'
+        stop_app_successfully: 'deteniendo aplicacion'
+      restart: 
+        application_unspecified: 'especifique [ aplicacion(nombre) ] '
+        app_undefined: 'este dispositivo no existe'
+        restart_app_successfully: 'reiniciando aplicacion'
+      #DEVELOPMENT  
+      create:
+        name_undefined: 'debe especificar el nombre de la aplicacion'
+        new_scaffolding_create_successfully: 'nuevo folder creado'
+      deploy:
+        application_unspecified: 'especifique [ aplicacion ]'
+        deploy_app_successfully: 'despliegue de la aplicacion satisfactoria'
+        app_undefined: 'aplicacion indefinida' 
+      trigger: 
+        no_specified_test: 'prueba indefinida'
+        defined_test_doesn`t_exist: 'la prueba especificada no existe'
+        run_trigger_successfully: 'corriendo prueba'
+      log: 
+        app_not_select: 'seleccione una aplicacion `matrix log app-nombre` ' 
+        app_undefined: 'la aplicacion especificada no existe' 
+        logs_show: 'logs'
+
+
+
+
+
+
+
+

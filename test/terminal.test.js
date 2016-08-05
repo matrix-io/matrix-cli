@@ -4,13 +4,6 @@ var colors = require('colors');
 var should = require('should');
 var sinon = require('sinon');
 
-var matrix = {};
-
-matrix: {
-    Not_logged: {
-        logged_warning: 'use log in'
-    }
-}
 describe('Matrix CLI Commands', function() {
     context('Not logged in', function(done) {
         it('should show a log in warning', function(done) {
@@ -22,7 +15,7 @@ describe('Matrix CLI Commands', function() {
             });
 
             notloggedProc.on('close', function(code) {
-          //      outputs.should.text(matrix.Not_logged.logged_warning);
+                outputs.should.it(matrix.);
                 done();
             });
 

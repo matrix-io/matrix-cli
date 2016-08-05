@@ -74,11 +74,11 @@ en:
       stop: 
         application_unspecified: 'specify [ app(name) ] '
         app_undefined: 'this app doesn`t exist'
-        stop_app_successfully: 'starting app'
+        stop_app_successfully: 'stoping app'
       restart: 
         application_unspecified: 'specify [ app(name) ] '
         app_undefined: 'this app doesn`t exist'
-        restart_app_successfully: 'starting app'
+        restart_app_successfully: 'restarting app'
     #DEVELOPMENT  
       create:
         name_undefined: 'Must specify app name'
