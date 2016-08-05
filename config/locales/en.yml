@@ -1,7 +1,13 @@
 en:
   matrix:
     please_login: No user logged in. Please
-    set_device: No Device Set. Use
+    set_device: No Device Set. Use # `matrix use`
+    #SETUP:
+    login:
+      user_auth_error: 'User Authentication Error'
+      login_success: 'Login Successful'
+    logout:
+      logout_success: 'Logged Out Successfully'
     use:
       using_device_by_name: 'Now using device'
       using_device_by_id: 'Now using device id'
@@ -9,29 +15,14 @@ en:
       invalid_token: 'Your token is invalid'
       try: 'Try'
       command_help: 'set active device to device id'
-    list:
-      app_list_error: 'App List Error'
-      no_results: 'No Results Found'
-      help_devices: 'display available devices'
-      help_groups: 'display groups of devices'
-      help_apps: 'display apps on current device'
-      help_all: 'display all devices with installed apps'
-    logout:
-      logout_success: 'Logged Out Successfully'
-    login:
-      user_auth_error: 'User Authentication Error'
-      login_success: 'Login Successful'
     set:
       help_device: 'set device environment'
-      help_config: 'configure an application variables'
+      help_config: 'configures application variables'
       help_locale: 'set current locale for the cli'
       env:
         env: 'Env'
-        no_device: 'No Device Selected'
-        select_device: 'Select an Active Device with'
         valid_environments: 'Valid Environments'
       config:
-        no_device: 'No Device Set. Use' # `matrix use`
         use: Use
         no_app: 'App Name Required'
         no_key_value: 'Must supply key and value'
@@ -39,6 +30,7 @@ en:
         locale_required: 'Locale Required'
         locale: 'Locale'
         valid_locales: 'Valid locales'
+    #MANAGEMENT:
     sim:
       please: 'Please'
       before_using_sim: 'before attempting to use the simulator'
@@ -86,6 +78,14 @@ en:
       help_start: start MatrixOS virtual environment
       help_save: "save MatrixOS state, use after deploy / install"
       help_clear: remove simulation local data
+    list:
+      app_list_error: 'App List Error'
+      no_results: 'No Results Found'
+      help_devices: 'display available devices'
+      help_groups: 'display groups of devices'
+      help_apps: 'display apps on current device'
+      help_all: 'display all devices with installed apps'
+    #APPS:
     search:
       help: find matrix apps
       small_needle: Your needle is too small to find in our haystack
@@ -100,18 +100,12 @@ en:
       help_app_key: get application configuration key
       help_app_key_value: set application configuration key value
     uninstall: 
-      uninstalled: Uninstalled
+      uninstalled: 'Uninstalled'
     update:      
-      upgrading_to: Upgrading to
-      latest_version: latest version
-      of: of
-      help_update: software on active device
-      help_update_app: update application to latest
-      help_update_app_version: update application to specified version 
-
-
-
-
-
-        
-      
+      upgrading_to: 'Upgrading to'
+      latest_version: 'latest version'
+      of: 'of'
+      help_update: 'software on active device'
+      help_update_app: 'update application to latest'
+      help_update_app_version: 'update application to specified version' 
+    #DEVELOPMENT

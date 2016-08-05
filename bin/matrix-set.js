@@ -58,7 +58,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.log(i('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
       // TODO: set-env [value] sets a environment on the Matrix
       if (_.isUndefined(Matrix.config.device.identifier)) {
-        console.log(i('matrix.set.env.no_device').red, '\n' + i('matrix.set.env.select_device').grey, 'matrix use {deviceid}')
+        console.warn(i('matrix.set.no_device') + ' `matrix use`');
+        
       }
     } else {
       console.error(i('matrix.set.env.valid_environments') + ' = [ sandbox, production ]')
@@ -70,7 +71,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     var key, val;
 
     if (_.isUndefined(Matrix.config.device.identifier)) {
-      console.warn(i('matrix.set.config.no_device') + ' `matrix use`.');
+      console.warn(i('matrix.set.no_device') + ' `matrix use`');
       process.exit(0);
     }
 

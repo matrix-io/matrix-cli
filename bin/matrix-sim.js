@@ -4,7 +4,7 @@ require('./matrix-init');
 var program = require('commander');
 var debug = debugLog('sim');
 var prompt = require('prompt');
-  var p = require('child_process');
+var p = require('child_process');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   var i = Matrix.localization.get;
