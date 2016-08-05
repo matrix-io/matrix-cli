@@ -1,2 +1,4 @@
 tmp/store.json
 node_modules
+.vscode
+*.zip
