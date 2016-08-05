@@ -38,9 +38,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     Matrix.api.auth.client(Matrix.options, function(err, out) {
       if (err) throw err;
       debug('User', Matrix.config.user, out);
-      Matrix.api.auth.user(Matrix.config.user, function(err, state) {
+      Matrix.api.auth.user(Matrix.config.user, function (err, state) {
+        console.log(1);
         if(err) return console.error('Matrix CLI :'.grey, i('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
-
+        console.log(2);
 
         debug('User Login OK', state);
         Matrix.config.user.token = state.access_token;

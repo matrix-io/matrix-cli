@@ -15,11 +15,11 @@ var pkgs = program.args;
 
 
 if ( _.isUndefined(Matrix, 'config.user.token') ){
-  return console.error('No user logged in. Please `matrix login`')
+  return console.error(i('matrix.please_login') + ' `matrix login`'.grey);
 }
 
 if (_.isUndefined(Matrix.config.device.identifier)) {
-  console.warn('No Device Set. Use `matrix use`.')
+  console.warn(i('matrix.set_device') + ' `matrix use`'.grey);
   process.exit(0);
 }
 
@@ -48,7 +48,7 @@ firebase.init(
     if ( pkgs.length === 0 ){
       // get form
 
-      console.log('Config for device', Matrix.config.device.identifier);
+      console.log(i('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
 
       firebase.device.get(handleResponse);
 
@@ -68,7 +68,7 @@ firebase.init(
 
       var key = pkgs[1];
       var target = pkgs[0]+'/'+ key.replace(/\./g,'/');
-      debug('Firebase:'.blue, target)
+      debug('Firebase: '.blue, target)
       firebase.app.get( target, handleResponse )
 
       if(options.watch){
@@ -112,10 +112,10 @@ function handleResponse(err, app){
 function showHelp() {
 
   console.log('\n> matrix config ¬\n');
-  console.log('\t         matrix config -', 'get device configurations'.grey)
-  console.log('\tmatrix config <appName> -', 'get application configurations'.grey)
-  console.log('\tmatrix config <appName> <key> -', 'get application configuration key'.grey)
-  console.log('\tmatrix config <appName> <key> <value> -', 'set application configuration key value'.grey)
+  console.log('\t         matrix config -', i('matrix.config.help').grey)
+  console.log('\tmatrix config <appName> -', i('matrix.config.help_app').grey)
+  console.log('\tmatrix config <appName> <key> -', i('matrix.config.help_app_key').grey)
+  console.log('\tmatrix config <appName> <key> <value> -', i('matrix.config.help_app_key_value').grey)
   console.log('\n')
   process.exit(1);
 }

@@ -1,5 +1,7 @@
 en:
   matrix:
+    please_login: No user logged in. Please
+    set_device: No Device Set. Use
     use:
       using_device_by_name: 'Now using device'
       using_device_by_id: 'Now using device id'
@@ -39,6 +41,77 @@ en:
         valid_locales: 'Valid locales'
     sim:
       please: 'Please'
-      before_using: 'before attempting to use the simulator'
+      before_using_sim: 'before attempting to use the simulator'
+      init: 
+        device_already_initialized: You already have a virtual device initialized
+        target_device: To target this device
+        virtual_device_info: Please enter information for this virtual device
+        device_is_already_used: is already used
+        creating_device: Creating
+        error_creating_device: Create Error
+        invalid_session: Invalid Session
+        please: Please
+        and: and
+        register_error: Register Error
+        success: Success
+        to_target_device: To target this device
+      start:  
+        before_message: first please
+        device: Device
+        not_a_virtual_device: is not a virtual MatrixOS. Please
+        and: and
+        custom_image_detected: Custom Simulator Image detected
+        debug_on: Debug mode on
+        error: ERROR
+        please: Please
+        then: Then
+        if_different_name: "If you have a different machine name, use that"
+        starting_sim: MatrixOS Simulator Starting
+        stop_with: Stop with Ctrl + C or
+      restore:
+        downloading_image: Downloading latest MatrixOS image
+      save:
+        state_saved: Simulator state saved
+      clear:
+        simulation_cleared: Simulation Cleared
+      stop:
+        sim_stopped: Matrix Simulator Stopped
+      docker:
+        docker_not_found: Docker not found
+        install_from: Please install docker from
+        then: Then
+      help_upgrade: upgrade your simulator image
+      help_restore: reset your simulator
+      help_init: initialize your simulator
+      help_start: start MatrixOS virtual environment
+      help_save: "save MatrixOS state, use after deploy / install"
+      help_clear: remove simulation local data
+    search:
+      help: find matrix apps
+      small_needle: Your needle is too small to find in our haystack
+    install:
+      installing: Installing
+      app_installed: Installed app
+      sensor_installed: sensor installed  
+    config:
+      device_config: Config for device
+      help: get device configurations
+      help_app: get application configurations
+      help_app_key: get application configuration key
+      help_app_key_value: set application configuration key value
+    uninstall: 
+      uninstalled: Uninstalled
+    update:      
+      upgrading_to: Upgrading to
+      latest_version: latest version
+      of: of
+      help_update: software on active device
+      help_update_app: update application to latest
+      help_update_app_version: update application to specified version 
+
+
+
+
+
+        
       
-    
