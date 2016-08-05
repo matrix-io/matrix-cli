@@ -85,27 +85,73 @@ en:
       help_groups: 'display groups of devices'
       help_apps: 'display apps on current device'
       help_all: 'display all devices with installed apps'
+    reboot: 
+        device_not_selected: 'please select device' #
+        App_not_selected: 'please select app' #
+        app_reboot_successfully: 'rebooting app' #
     #APPS:
     search:
       help: find matrix apps
       small_needle: Your needle is too small to find in our haystack
+      app_not_selected: 'please select app' #
+      the_application_does_not_exist: 'select another application' #
+      search_successfully: 'search Successfully' #
     install:
       installing: Installing
       app_installed: Installed app
       sensor_installed: sensor installed  
+      application_unspecified: 'specify [ app / sensor ] <name>' #
+      install_app_successfully: 'installing app Successfully' #
+      app_undefined: 'this app doesn`t exist' #
     config:
       device_config: Config for device
       help: get device configurations
       help_app: get application configurations
       help_app_key: get application configuration key
       help_app_key_value: set application configuration key value
+      device_doesnt_select: 'use <matrix use> ' # 
+      show_config_app: 'app settings ' #
+      specified_application_does_not_exist: 'app specified doesn`t exist' #
     uninstall: 
       uninstalled: 'Uninstalled'
+      application_unspecified: 'specify [ app ] <name>' #
+      uninstall_app_successfully: 'installing app Successfully' #
+      app_undefined: 'this app doesn`t exist' #
     update:      
       upgrading_to: 'Upgrading to'
       latest_version: 'latest version'
       of: 'of'
       help_update: 'software on active device'
       help_update_app: 'update application to latest'
-      help_update_app_version: 'update application to specified version' 
-    #DEVELOPMENT
+      help_update_app_version: 'update application to specified version'
+      application_unspecified: 'specify [ app(name) ] <version>' #
+      app_undefined: 'this app doesn`t exist' #
+      app_update_successfully: 'updating app' #
+    start: 
+      application_unspecified: 'specify [ app(name) ] ' #
+      app_undefined: 'this app doesn`t exist' #
+      start_app_successfully: 'starting app' #
+    stop: 
+      application_unspecified: 'specify [ app(name) ] ' #
+      app_undefined: 'this app doesn`t exist' #
+      stop_app_successfully: 'stoping app' #
+    restart: 
+      application_unspecified: 'specify [ app(name) ] ' #
+      app_undefined: 'this app doesn`t exist' #
+      restart_app_successfully: 'restarting app' #
+    #DEVELOPMENT  
+    create:
+      name_undefined: 'Must specify app name' #
+      new_scaffolding_create_successfully: 'New Folder created' #
+    deploy:
+      application_unspecified: 'specify [ app ]' #
+      deploy_app_successfully: 'deploying app Successfully' #
+      app_undefined: 'could not do deploy' #
+    trigger: 
+      no_specified_test: 'test undefined' #
+      defined_test_doesn`t_exist: 'test doesn`t exist' #
+      run_trigger_successfully: 'running test' #
+    log: 
+      app_not_select: 'select an app `matrix log app-name` ' # 
+      app_undefined: 'app specified doesn´t  exits ' #
+      logs_show: 'logs' #
