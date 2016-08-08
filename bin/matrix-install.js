@@ -80,6 +80,8 @@ function checkPolicy(config, cb){
       write[ans.name] = ans.answer;
     }
   }, function (e) {console.error(e)}, function(){
+
+    // TODO: Reformat object from [ 'foo','bar'] to { foo: true, bar: true, baz: false }
     cb(null, write );
   });
 
