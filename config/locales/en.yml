@@ -86,9 +86,8 @@ en:
       help_apps: 'display apps on current device'
       help_all: 'display all devices with installed apps'
     reboot: 
-        device_not_selected: 'please select device' #
-        App_not_selected: 'please select app' #
-        app_reboot_successfully: 'rebooting app' #
+        rebooting: 'Device rebooting'
+        rebooted: 'Device rebooted' #
     #APPS:
     search:
       help: find matrix apps
@@ -130,20 +129,44 @@ en:
     start: 
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
-      start_app_successfully: 'starting app' #
+      starting_app: 'Starting' 
+      start_app_successfully: 'Started' 
+      app_failed_to_start: 'Failed starting app' #
     stop: 
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
-      stop_app_successfully: 'stoping app' #
+      stopping_app: 'Stopping'
+      stop_app_successfully: 'Stopped' 
     restart: 
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
-      restart_app_successfully: 'restarting app' #
+      restarting_app: 'Restarting'
+      restart_app_successfully: 'Restarted' 
     #DEVELOPMENT  
     create:
-      name_undefined: 'Must specify app name' #
+      name_undefined: 'Must specify app name'
       new_scaffolding_create_successfully: 'New Folder created' #
+      new_folder: New Folder
+      error_creating: An error occurred
+      description_app: this is your application logic
+      description_config: 'change variables, indicate sensors, configure dashboard'
+      description_developer: information about developing Matrix apps 
+      description_index: 'app entry point, do not modify'
+      description_package: 'node.js information file, do not modify without knowledge'
     deploy:
+      app_not_found: 'No %{detect_file} found. Are you sure a MatrixOS app resides in %{pwd}?'
+      folders_not_supported: 'Our fault. Directories can not be deployed yet'
+      cancel_deploy: 'Cancel deploy due to errors & warnings'
+      reading: Reading
+      writing: Writing
+      error: An error occurred
+      deploy_error: Deploy Error
+      deply_started: Deploy Started
+      stream_error: Deploy Stream Error
+      deploy_complete: Deploy Complete
+      bad_payload: Bad Deployment Info Payload
+      app_install_failed: App Install Fail
+      app_installed: App Installed
       application_unspecified: 'specify [ app ]' #
       deploy_app_successfully: 'deploying app Successfully' #
       app_undefined: 'could not do deploy' #

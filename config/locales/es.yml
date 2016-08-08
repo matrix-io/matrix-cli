@@ -108,8 +108,8 @@ es:
       help_app: traer las configuraciones de la aplicación
       help_app_key: traer la llave de la configuración de la aplicación
       help_app_key_value: configurar el valor y la llave a la aplicación
-    uninstall: 
-      application_unspecified: 'especifique [ aplicacion ] <Nombre>' #
+    uninstall:
+      application_unspecified: 'especifique [ aplicacion ] <Nombre>' #
       uninstall_app_successfully: 'Se desinstaló'
       app_undefined: 'esta aplicacion no existe' #
     update: 
@@ -124,11 +124,11 @@ es:
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
       app_undefined: 'esta aplicacion no existe' #
       stop_app_successfully: 'deteniendo aplicacion' #
-    restart: 
+    restart:
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
-      app_undefined: 'este dispositivo no existe' #
+      app_undefined: 'este dispositivo no existe' #
       restart_app_successfully: 'reiniciando aplicacion' #
-    #DEVELOPMENT
+      #DEVELOPMENT
     create:
       name_undefined: 'debe especificar el nombre de la aplicacion' #?
       new_scaffolding_create_successfully: 'nuevo folder creado' #?
