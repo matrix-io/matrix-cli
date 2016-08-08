@@ -69,15 +69,41 @@ function checkPolicy(config, cb){
   var Rx = require('rx')
   var defaultTruth;
 
-  var prompts = new Rx.Subject();
   var write = {};
+
+        // replace with config
+        var s = {
+          'sensors': ['camera', 'mic','temperature','humidity'],
+          'integrations': ['nest','hue','august'],
+          'services': ['face','thumb_up'],
+          'events': ['ok-detected']
+        };
+
+        _.each(s, function(items, title){
+          write[title] = {};
+          console.log(title.grey, ':', items.join(' '))
+          _.each(items, function (item) {
+            write[title][item] = false;
+          })
+        })
+        console.log('==== ^^^^ GRANT ACCESS ???? ^^^^ ===='.blue)
+
+
+  // need to inject results of answers into questions for decision trees
+  var prompts = new Rx.Subject();
+
   require('inquirer').prompt(prompts).ui.process.subscribe(function(ans){
     if ( ans.name === 'default' ){
+      //setup default
       defaultTruth = ans.answer;
-      stepConfig();
+      stepThroughConfig();
     }
-    if ( !_.isNull(ans.name.match(/sensors|integrations|events|services/))){
-      write[ans.name] = ans.answer;
+    console.log(ans)
+    if ( !_.isNull(ans.name.match(/sensors|integrations|events|services/)) && _.isArray(ans.answer) ){
+      //namespace object
+      _.each(ans.answer, function(answer){
+        write[ans.name][answer] = true;
+      })
     }
   }, function (e) {console.error(e)}, function(){
 
@@ -86,7 +112,10 @@ function checkPolicy(config, cb){
   });
 
 
-  function stepConfig(){
+  function stepThroughConfig(){
+
+
+
     _.forIn(s, function(v, k){
 
       var baseQ =  {
@@ -109,26 +138,14 @@ function checkPolicy(config, cb){
           checked: defaultTruth
         })
       })
+
+      // add this question to queue
       prompts.onNext( baseQ );
     });
 
     prompts.onCompleted();
   }
 
-
-
-  // replace with config
-  var s = {
-    'sensors': ['camera', 'mic','temperature','humidity'],
-    'integrations': ['nest','hue','august'],
-    'services': ['face','thumb_up'],
-    'events': ['ok-detected']
-  };
-
-  _.each(s, function(items, title){
-    console.log(title.grey, ':', items.join(' '))
-  })
-  console.log('==== ^^^^ GRANT ACCESS ???? ^^^^ ===='.blue)
 
 
 
