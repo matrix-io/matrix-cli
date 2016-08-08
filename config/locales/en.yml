@@ -1,5 +1,25 @@
 en:
   matrix:
+    help_login: Login to the MatrixOS platform
+    help_logout: Log out of the MatrixOS platform
+    help_use: Indicate active device
+    help_set: 'Set environment settings, update application configuration'
+    help_sim: Manage local MatrixOS simulator using docker
+    help_list: 'Information about your devices, applications and installations'
+    help_reboot: Reboots the active MatrixOS device
+    help_search: Search for apps
+    help_install: Install an app or sensor to active MatrixOS device
+    help_install_default: defaults to app
+    help_config: View and modify application configuration
+    help_uninstall: Uninstall the app
+    help_update: Update to a specified version of a MatrixOS application
+    help_start: Starts an app running on the active MatrixOS
+    help_stop: Stops an app running on the active MatrixOS
+    help_restart: Restarts an app running on the MatrixOS
+    help_create: Creates a new scaffolding for a MatrixOS Application
+    help_deploy: Deploys an app to the active MatrixOS
+    help_trigger: Runs a trigger test
+    help_log: Logs output from selected MatrixOS and applications
     please_login: No user logged in. Please
     set_device: No Device Set. Use # `matrix use`
     #SETUP:
