@@ -113,9 +113,12 @@ es:
       uninstall_app_successfully: 'Se desinstaló'
       app_undefined: 'esta aplicacion no existe' #
     update: 
-      application_unspecified: 'especifique [ aplicacion(nombre) ] <versión>' #
-      app_undefined: 'esta aplicacion no existe' #
-      app_update_successfully: 'Actualizando aplicación' #?
+      upgrading_to: 'Actualizando A:'
+      latest_version: 'Ultima version'
+      of: 'A'
+      help_update: 'software activo en el dispositivo'
+      help_update_app: 'Actualizar version a la ultima'
+      help_update_app_version: 'Actualizar Aplicación a una version especificada' 
     start: 
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
       app_undefined: 'esta aplicacion no existe' #

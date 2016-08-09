@@ -1,9 +1,10 @@
 en:
   matrix:
-    please_login: No user logged in. Please
+    please_login: No user logged in,Please login
     set_device: No Device Set. Use # `matrix use`
     #SETUP:
     login:
+      already_login_warning: 'there is already a registered account' #
       user_auth_error: 'User Authentication Error'
       login_success: 'Login Successful'
     logout:
@@ -15,6 +16,7 @@ en:
       invalid_token: 'Your token is invalid'
       try: 'Try'
       command_help: 'set active device to device id'
+      
     set:
       help_device: 'set device environment'
       help_config: 'configures application variables'
@@ -85,27 +87,65 @@ en:
       help_groups: 'display groups of devices'
       help_apps: 'display apps on current device'
       help_all: 'display all devices with installed apps'
+    reboot: 
+      device_not_selected: 'Please select device' #No hay devices
+      App_not_selected: 'Please select apliccation' #
+      app_reboot_successfully: 'Rebooting apliccation' #
     #APPS:
     search:
-      help: find matrix apps
-      small_needle: Your needle is too small to find in our haystack
+      App_not_selected: 'Please select on apliccation' #
+      the_application_does_not_exist: 'select other apliccation' #
+      search_successfully: 'search successfully' #
+      small_needle: 'Your needle is too small to search our haystack'
     install:
-      installing: Installing
-      app_installed: Installed app
-      sensor_installed: sensor installed  
+      application_unspecified: 'specify  [ apliccation / sensor ] <Name>' #
+      install_app_successfully: 'Application instaled successfully' #app_installed
+      sensor_installed: 'sensor installed'
+      app_undefined: 'this apliccation doesnt exist' # 
     config:
       device_config: Config for device
+      show_config_app: 'configuration the apliccation' #
+      specified_application_does_not_exist: 'the apliccation specified doesnt exist' #
       help: get device configurations
       help_app: get application configurations
       help_app_key: get application configuration key
       help_app_key_value: set application configuration key value
     uninstall: 
-      uninstalled: 'Uninstalled'
+      uninstalled: 'Uninstalled successfully'
+      application_unspecified: 'specified [ apliccation ] <Name>' #
+      app_undefined: 'this apliccation doesnt exist' #
     update:      
       upgrading_to: 'Upgrading to'
       latest_version: 'latest version'
       of: 'of'
       help_update: 'software on active device'
       help_update_app: 'update application to latest'
-      help_update_app_version: 'update application to specified version' 
+      help_update_app_version: 'update application to specified version'
+    start: 
+      application_unspecified: 'especify [ apliccation(name) ] ' #
+      app_undefined: 'this apliccation doesnt exist' #
+      start_app_successfully: 'starting apliccation' #
+    stop: 
+      application_unspecified: 'specify [ apliccation(name) ] ' #
+      app_undefined: 'this apliccation doesnt exist' #
+      stop_app_successfully: 'stoping apliccation' #
+    restart: 
+      application_unspecified: 'specify [ apliccation(name) ] ' #
+      app_undefined: 'this device doesnt exist' #
+      restart_app_successfully: 'restarting apliccation' # 
     #DEVELOPMENT
+    create:
+      name_undefined: 'you must specify the name of the application' #?
+      new_scaffolding_create_successfully: 'new folder create' #?
+    deploy:
+      application_unspecified: 'especify  [ application ]' #?
+      deploy_app_successfully: 'deploy app Successfully' #?
+      app_undefined: 'application undefined' #?
+    trigger: 
+      no_specified_test: 'trigger undefined' #?
+      defined_test_doesn`t_exist: 'the test specified doesnt exist' #?
+      run_trigger_successfully: 'running test' #?
+    log: 
+      app_not_select: 'select on application `matrix log app-name` ' #? 
+      app_undefined: 'the application especified doesnt exist' #?
+      logs_show: 'logs' #?
