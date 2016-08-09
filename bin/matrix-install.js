@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-require('./matrix-validate');
 var program = require('commander');
 var debug = debugLog('install');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   var i = Matrix.localization.get;
+  require('./matrix-validate');
   program
     .parse(process.argv);
 

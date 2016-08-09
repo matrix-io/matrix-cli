@@ -1,7 +1,30 @@
 es:
   matrix:
+    help_login: Login to the MatrixOS platform
+    help_logout: Log out of the MatrixOS platform
+    help_use: Indicate active device
+    help_set: 'Set environment settings, update application configuration'
+    help_sim: Manage local MatrixOS simulator using docker
+    help_list: 'Information about your devices, applications and installations'
+    help_reboot: Reboots the active MatrixOS device
+    help_search: Search for apps
+    help_install: Install an app or sensor to active MatrixOS device
+    help_install_default: defaults to app
+    help_config: View and modify application configuration
+    help_uninstall: Uninstall the app
+    help_update: Update to a specified version of a MatrixOS application
+    help_start: Starts an app running on the active MatrixOS
+    help_stop: Stops an app running on the active MatrixOS
+    help_restart: Restarts an app running on the MatrixOS
+    help_create: Creates a new scaffolding for a MatrixOS Application
+    help_deploy: Deploys an app to the active MatrixOS
+    help_trigger: Runs a trigger test
+    help_log: Logs output from selected MatrixOS and applications
     please_login: 'No user logged in. Please'
     set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
+    validate:
+      no_device: No se ha selecionado un dispositivo 
+      select_device_id: selecciona el id de un dispositivo'
     #SETUP:
     login: 
       user_auth_error: 'Error en la autenticación'
@@ -12,6 +35,7 @@ es:
       using_device_by_name: 'Ahora usando el dispositivo'
       using_device_by_id: 'Ahora usando el dispositivo con id'
       not_authorized: 'No autorizado'
+      device_not_found: El dispositivo no existe'
       invalid_token: 'Tu token es invalido'
       try: 'Intenta'
       command_help: 'establece como dispositivo activo el dispositivo con id'
@@ -86,53 +110,87 @@ es:
       help_apps: 'mostrar aplicaciones en el dispositivo actual'
       help_all: 'mostrar todos los dispositivos con aplicaciones instaladas'
     reboot: 
-      device_not_selected: 'Por favor seleccione un dispositivo' #No hay devices
-      App_not_selected: 'Por favor seleccione una aplicacion' #
-      app_reboot_successfully: 'Reiniciando aplicacion' #
+      rebooting: 'Reinciando dispositivo'
+      app_reboot_successfully: 'Dispositivo reiniciado' #
     #APPS:
     search:
-      App_not_selected: 'por favor seleccione una aplicacion' #
-      the_application_does_not_exist: 'seleccione otra aplicacion' #
-      search_successfully: 'busqueda satisfactoria' #
+      help: busca aplicaciones de MATRIX
       small_needle: Tu aguja es muy pequeña para buscarla en nuestro pajar
+      search_successfully: Resultados de búsqueda #
+      no_results: No se encontraron coincidencias #
     install:
-      application_unspecified: 'especifique  [ aplicacion / sensor ] <Nombre>' #
-      install_app_successfully: 'Aplicación instalada satisfactoriamente' #app_installed
-      sensor_installed: 'sensor instalado'
-      app_undefined: 'esta aplicacion no existe' #
+      installing: Instalando
+      app_installed: Se instaló la aplicación
+      sensor_installed: sensor instalado
+      command_help: instala # [ app / sensor ] <name> #
+      app_install_error: La instalación de la aplicación falló #
+      sensor_install_error: La instalación del sensor falló #
+      app_not_found: La aplicación no existe #
+      sensor_not_found: El sensor no existe #
     config:
       device_config: 'Configuración para el dispositivo'
-      show_config_app: 'configuracion de aplicacion ' #
-      specified_application_does_not_exist: 'la aplicacion especificada no existe' #
       help: traer las configuraciones del dispositivo
       help_app: traer las configuraciones de la aplicación
       help_app_key: traer la llave de la configuración de la aplicación
       help_app_key_value: configurar el valor y la llave a la aplicación
+      show_config_app: 'configuracion de aplicacion ' #
+      specified_application_does_not_exist: 'la aplicacion especificada no existe' #
     uninstall:
+      uninstalled: 'Se desinstaló'
       application_unspecified: 'especifique [ aplicacion ] <Nombre>' #
-      uninstall_app_successfully: 'Se desinstaló'
       app_undefined: 'esta aplicacion no existe' #
     update: 
-      application_unspecified: 'especifique [ aplicacion(nombre) ] <versión>' #
-      app_undefined: 'esta aplicacion no existe' #
-      app_update_successfully: 'Actualizando aplicación' #?
+      upgrading_to: 'Actualizando a'
+      latest_version: 'versión mas reciente'
+      of: 'de'
+      help_update: 'actualizar el software en el dispositivo activo'
+      help_update_app: 'actualizar una aplicación a la versión mas reciente'
+      help_update_app_version: 'actualizar una aplicación a una versión específica'
+      app_undefined: 'La aplicación no existe' #
+      app_update_successfully: 'Aplicación actualizada a la versión mas reciente' #
+      version_undefined: 'Versión de aplicación no soportada' #
+      version_update_successfully: 'Aplicación actualizada con éxito a' #
+      error_updating: Error actualizando #
     start: 
-      application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
-      app_undefined: 'esta aplicacion no existe' #
-      start_app_successfully: 'iniciando aplicacion' #
+      application_unspecified: 'especifique [ app(name) ] ' #
+      app_undefined: 'esta aplicación no existe' #
+      starting_app: 'Iniciando'
+      start_app_successfully: 'Iniciada'
+      app_failed_to_start: 'Fallo al iniciar la aplicación' #
     stop: 
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
       app_undefined: 'esta aplicacion no existe' #
-      stop_app_successfully: 'deteniendo aplicacion' #
+      stopping_app: 'Deteniendo'
+      stop_app_successfully: 'Detenida'
     restart:
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
       app_undefined: 'este dispositivo no existe' #
-      restart_app_successfully: 'reiniciando aplicacion' #
+      restarting_app: 'Reiniciando'
+      restart_app_successfully: 'Reiniciada'
       #DEVELOPMENT
     create:
-      name_undefined: 'debe especificar el nombre de la aplicacion' #?
-      new_scaffolding_create_successfully: 'nuevo folder creado' #?
+      name_undefined: 'Debe especificar un nombre de aplicación'
+      new_folder: Nueva carpeta
+      error_creating: Ha ocurrido un error
+      description_app: esta es la logica de tu aplicación
+      description_config: 'cambia variables, indica sensores, configura el dashboard'
+      description_developer: información acerca de desarrollar aplicaciones MATRIX 
+      description_index: 'punto de entrada de la aplicación, no modificar'
+      description_package: 'archivo de información de node.js, no modificarlo sin conocimiento'
     deploy:
+      app_not_found: 'No se encontró el archivo %{detect_file}. Estás seguro que una aplicación MatrixOS reside en %{pwd}?'
+      folders_not_supported: 'Culpa nuestra. Añun no se puede hacer despliegue de directorios'
+      cancel_deploy: 'SE cancela el despliegue debido a errores y advertencias'
+      reading: Leyendo
+      writing: Escribiendo
+      error: Ha ocurrido un error
+      deploy_error: Error de despliegue
+      deply_started: Se inició el despliegue
+      stream_error: Error en el flujo de despliegue
+      deploy_complete: Despliegué finalizado
+      bad_payload: Información corrupta en el contenido del despliegue
+      app_install_failed: Fallo en la instalación de la aplicación
+      app_installed: Aplicación instalada
       application_unspecified: 'especifique [ aplicacion ]' #?
       deploy_app_successfully: 'despliegue de la aplicacion satisfactoria' #?
       app_undefined: 'aplicacion indefinida' #?
@@ -144,11 +202,3 @@ es:
       app_not_select: 'seleccione una aplicacion `matrix log app-nombre` ' #? 
       app_undefined: 'la aplicacion especificada no existe' #?
       logs_show: 'logs' #?
-
-
-
-
-
-
-
-

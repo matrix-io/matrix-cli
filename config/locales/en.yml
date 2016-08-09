@@ -22,6 +22,9 @@ en:
     help_log: Logs output from selected MatrixOS and applications
     please_login: No user logged in. Please
     set_device: No Device Set. Use # `matrix use`
+    validate:
+      no_device: No Device Indicated
+      select_device_id: select a device id'
     #SETUP:
     login:
       user_auth_error: 'User Authentication Error'
@@ -32,6 +35,7 @@ en:
       using_device_by_name: 'Now using device'
       using_device_by_id: 'Now using device id'
       not_authorized: 'Not Authorized'
+      device_not_found: Device doesn't exist' #
       invalid_token: 'Your token is invalid'
       try: 'Try'
       command_help: 'set active device to device id'
@@ -110,31 +114,30 @@ en:
         rebooted: 'Device rebooted' #
     #APPS:
     search:
-      help: find matrix apps
+      help: find MATRIX apps
       small_needle: Your needle is too small to find in our haystack
-      app_not_selected: 'please select app' #
-      the_application_does_not_exist: 'select another application' #
-      search_successfully: 'search Successfully' #
+      search_successfully: Search results #
+      no_results: No results found #
     install:
       installing: Installing
       app_installed: Installed app
-      sensor_installed: sensor installed  
-      application_unspecified: 'specify [ app / sensor ] <name>' #
-      install_app_successfully: 'installing app Successfully' #
-      app_undefined: 'this app doesn`t exist' #
+      sensor_installed: sensor installed
+      command_help: install # [ app / sensor ] <name> #
+      app_install_error: Application installation failed #
+      sensor_install_error: Sensor installation failed #
+      app_not_found: Application doesn't exists #
+      sensor_not_found: Sensor doesn't exists #
     config:
       device_config: Config for device
       help: get device configurations
       help_app: get application configurations
       help_app_key: get application configuration key
       help_app_key_value: set application configuration key value
-      device_doesnt_select: 'use <matrix use> ' # 
       show_config_app: 'app settings ' #
       specified_application_does_not_exist: 'app specified doesn`t exist' #
     uninstall: 
       uninstalled: 'Uninstalled'
       application_unspecified: 'specify [ app ] <name>' #
-      uninstall_app_successfully: 'installing app Successfully' #
       app_undefined: 'this app doesn`t exist' #
     update:      
       upgrading_to: 'Upgrading to'
@@ -143,9 +146,11 @@ en:
       help_update: 'software on active device'
       help_update_app: 'update application to latest'
       help_update_app_version: 'update application to specified version'
-      application_unspecified: 'specify [ app(name) ] <version>' #
-      app_undefined: 'this app doesn`t exist' #
-      app_update_successfully: 'updating app' #
+      app_undefined: 'Application doesn`t exist' #
+      app_update_successfully: 'Application updated successfully to latest' #
+      version_undefined: 'Unsupported app version' #
+      version_update_successfully: 'Application updated successfully to' #
+      error_updating: Error updating #
     start: 
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
@@ -165,12 +170,11 @@ en:
     #DEVELOPMENT  
     create:
       name_undefined: 'Must specify app name'
-      new_scaffolding_create_successfully: 'New Folder created' #
       new_folder: New Folder
       error_creating: An error occurred
       description_app: this is your application logic
       description_config: 'change variables, indicate sensors, configure dashboard'
-      description_developer: information about developing Matrix apps 
+      description_developer: information about developing MATRIX apps 
       description_index: 'app entry point, do not modify'
       description_package: 'node.js information file, do not modify without knowledge'
     deploy:
