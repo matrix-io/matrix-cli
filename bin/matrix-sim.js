@@ -159,8 +159,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.log(data);
     })
 
+  if ( Matrix.config.hasOwnProperty('sim')) {
     Matrix.config.sim.custom = false;
-    Matrix.helpers.saveConfig();
+  }
+
+  Matrix.helpers.saveConfig();
 
     //matrix sim save
   } else if (cmd === 'save') {
