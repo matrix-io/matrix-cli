@@ -1,7 +1,30 @@
 en:
   matrix:
-    please_login: No user logged in,Please login
+    help_login: Login to the MatrixOS platform
+    help_logout: Log out of the MatrixOS platform
+    help_use: Indicate active device
+    help_set: 'Set environment settings, update application configuration'
+    help_sim: Manage local MatrixOS simulator using docker
+    help_list: 'Information about your devices, applications and installations'
+    help_reboot: Reboots the active MatrixOS device
+    help_search: Search for apps
+    help_install: Install an app or sensor to active MatrixOS device
+    help_install_default: defaults to app
+    help_config: View and modify application configuration
+    help_uninstall: Uninstall the app
+    help_update: Update to a specified version of a MatrixOS application
+    help_start: Starts an app running on the active MatrixOS
+    help_stop: Stops an app running on the active MatrixOS
+    help_restart: Restarts an app running on the MatrixOS
+    help_create: Creates a new scaffolding for a MatrixOS Application
+    help_deploy: Deploys an app to the active MatrixOS
+    help_trigger: Runs a trigger test
+    help_log: Logs output from selected MatrixOS and applications
+    please_login: No user logged in. Please
     set_device: No Device Set. Use # `matrix use`
+    validate:
+      no_device: No Device Indicated
+      select_device_id: select a device id'
     #SETUP:
     login:
       already_login_warning: 'there is already a registered account' #
@@ -13,6 +36,7 @@ en:
       using_device_by_name: 'Now using device'
       using_device_by_id: 'Now using device id'
       not_authorized: 'Not Authorized'
+      device_not_found: Device doesn`t exist #
       invalid_token: 'Your token is invalid'
       try: 'Try'
       command_help: 'set active device to device id'
@@ -34,9 +58,11 @@ en:
         valid_locales: 'Valid locales'
     #MANAGEMENT:
     sim:
+      command_help_sim: matrix sim #
       please: 'Please'
       before_using_sim: 'before attempting to use the simulator'
       init: 
+        specify_data_for_init: Please enter information for this virtual device #
         device_already_initialized: You already have a virtual device initialized
         target_device: To target this device
         virtual_device_info: Please enter information for this virtual device
@@ -88,32 +114,36 @@ en:
       help_apps: 'display apps on current device'
       help_all: 'display all devices with installed apps'
     reboot: 
-      device_not_selected: 'Please select device' #No hay devices
-      App_not_selected: 'Please select apliccation' #
-      app_reboot_successfully: 'Rebooting apliccation' #
+        rebooting: 'Device rebooting'
+        rebooted: 'Device rebooted' #
     #APPS:
     search:
-      App_not_selected: 'Please select on apliccation' #
-      the_application_does_not_exist: 'select other apliccation' #
-      search_successfully: 'search successfully' #
-      small_needle: 'Your needle is too small to search our haystack'
+      help: find MATRIX apps
+      small_needle: Your needle is too small to find in our haystack
+      search_successfully: Search results #
+      no_results: No results found #
     install:
-      application_unspecified: 'specify  [ apliccation / sensor ] <Name>' #
-      install_app_successfully: 'Application instaled successfully' #app_installed
-      sensor_installed: 'sensor installed'
-      app_undefined: 'this apliccation doesnt exist' # 
+      installing: Installing
+      app_installed: Installed app
+      sensor_installed: sensor installed
+      command_help: install # [ app / sensor ] <name> #
+      app_install_error: Application installation failed #
+      sensor_install_error: Sensor installation failed #
+      app_not_found: Application doesn't exists #
+      sensor_not_found: Sensor doesn't exists #
     config:
       device_config: Config for device
-      show_config_app: 'configuration the apliccation' #
-      specified_application_does_not_exist: 'the apliccation specified doesnt exist' #
+      show_config_app1: 'configuration the apliccation' #
       help: get device configurations
       help_app: get application configurations
-      help_app_key: get application configuration key
+      help_app_key: 'get application configuration key'
       help_app_key_value: set application configuration key value
+      show_config_app: 'app settings ' #
+      specified_application_does_not_exist: 'app specified doesn`t exist' #
     uninstall: 
-      uninstalled: 'Uninstalled successfully'
-      application_unspecified: 'specified [ apliccation ] <Name>' #
-      app_undefined: 'this apliccation doesnt exist' #
+      uninstalled: 'Uninstalled'
+      application_unspecified: 'specify [ app ] <name>' #
+      app_undefined: 'this app doesn`t exist' #
     update:      
       upgrading_to: 'Upgrading to'
       latest_version: 'latest version'
@@ -121,31 +151,59 @@ en:
       help_update: 'software on active device'
       help_update_app: 'update application to latest'
       help_update_app_version: 'update application to specified version'
+      app_undefined: 'Application doesn`t exist' #
+      app_update_successfully: 'Application updated successfully to latest' #
+      version_undefined: 'Unsupported app version' #
+      version_update_successfully: 'Application updated successfully to' #
+      error_updating: Error updating #
     start: 
-      application_unspecified: 'especify [ apliccation(name) ] ' #
-      app_undefined: 'this apliccation doesnt exist' #
-      start_app_successfully: 'starting apliccation' #
+      application_unspecified: 'specify [ app(name) ] ' #
+      app_undefined: 'this app doesn`t exist' #
+      starting_app: 'Starting' 
+      start_app_successfully: 'Started' 
+      app_failed_to_start: 'Failed starting app' #
     stop: 
-      application_unspecified: 'specify [ apliccation(name) ] ' #
-      app_undefined: 'this apliccation doesnt exist' #
-      stop_app_successfully: 'stoping apliccation' #
+      application_unspecified: 'specify [ app(name) ] ' #
+      app_undefined: 'this app doesn`t exist' #
+      stopping_app: 'Stopping'
+      stop_app_successfully: 'Stopped' 
     restart: 
-      application_unspecified: 'specify [ apliccation(name) ] ' #
-      app_undefined: 'this device doesnt exist' #
-      restart_app_successfully: 'restarting apliccation' # 
-    #DEVELOPMENT
+      application_unspecified: 'specify [ app(name) ] ' #
+      app_undefined: 'this app doesn`t exist' #
+      restarting_app: 'Restarting'
+      restart_app_successfully: 'Restarted' 
+    #DEVELOPMENT  
     create:
-      name_undefined: 'you must specify the name of the application' #?
-      new_scaffolding_create_successfully: 'new folder create' #?
+      name_undefined: 'Must specify app name'
+      new_folder: New Folder
+      error_creating: An error occurred
+      description_app: this is your application logic
+      description_config: 'change variables, indicate sensors, configure dashboard'
+      description_developer: information about developing MATRIX apps 
+      description_index: 'app entry point, do not modify'
+      description_package: 'node.js information file, do not modify without knowledge'
     deploy:
-      application_unspecified: 'especify  [ application ]' #?
-      deploy_app_successfully: 'deploy app Successfully' #?
-      app_undefined: 'application undefined' #?
+      app_not_found: 'No %{detect_file} found. Are you sure a MatrixOS app resides in %{pwd}?'
+      folders_not_supported: 'Our fault. Directories can not be deployed yet'
+      cancel_deploy: 'Cancel deploy due to errors & warnings'
+      reading: Reading
+      writing: Writing
+      error: An error occurred
+      deploy_error: Deploy Error
+      deply_started: Deploy Started
+      stream_error: Deploy Stream Error
+      deploy_complete: Deploy Complete
+      bad_payload: Bad Deployment Info Payload
+      app_install_failed: App Install Fail
+      app_installed: App Installed
+      application_unspecified: 'specify [ app ]' #
+      deploy_app_successfully: 'deploying app Successfully' #
+      app_undefined: 'could not do deploy' #
     trigger: 
-      no_specified_test: 'trigger undefined' #?
-      defined_test_doesn`t_exist: 'the test specified doesnt exist' #?
-      run_trigger_successfully: 'running test' #?
+      no_specified_test: 'test undefined' #
+      defined_test_doesn`t_exist: 'test doesn`t exist' #
+      run_trigger_successfully: 'running test' #
     log: 
-      app_not_select: 'select on application `matrix log app-name` ' #? 
-      app_undefined: 'the application especified doesnt exist' #?
-      logs_show: 'logs' #?
+      app_not_select: 'select an app `matrix log app-name` ' # 
+      app_undefined: 'app specified doesn´t  exits ' #
+      logs_show: 'logs' #

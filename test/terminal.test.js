@@ -473,7 +473,7 @@ describe('Matrix CLI Commands', function() {
                     context('Parameters specified', function() {
 
                         context('Specified device doesn\'t exist', function() {
-                            it('should show an "invalid device" warning', function(done) {
+                            it.skip('should show an "invalid device" warning', function(done) {
                                 var useDProc = run('matrix', ['use', 'xx']);
                                 var outputs = new Array();
                                 useDProc.stdout.on('data', function(out) {
@@ -484,21 +484,25 @@ describe('Matrix CLI Commands', function() {
                                     console.log('stderr', out.toString());
                                 })
                                 useDProc.on('close', function(code) {
-                                    outputs.should.matchAny(new RegExp(i('matrix.use.command_help')), 'stdout Fail, expecting "' + i('matrix.use.command_help') + '"')
+                                    outputs.should.matchAny(new RegExp(i('matrix.use.device_not_found')), 'stdout Fail, expecting "' + i('matrix.use.device_not_found') + '"')
                                     done();
                                 });
                             });
 
-                        });
+                        }); //Finish use
                         context('Current user doesn\'t have permission to use specified device', function() {
                             it.skip('should show an "invalid device" warning', function(done) {
                                 var useProc = run('matrix', ['use', 'xxx']);
                                 var outputs = new Array();
                                 useProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
                                     outputs.push(out.toString());
                                 });
+                                useProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString());
+                                })
                                 useProc.on('close', function(code) {
-                                    outputs.should.matchAny(strings.use.doesnt_permission);
+                                    outputs.should.matchAny(new RegExp(i('matrix.use.not_authorized')), 'stdout Fail, expecting "' + i('matrix.use.not_authorized') + '"')
                                     done();
                                 });
                             });
@@ -508,10 +512,14 @@ describe('Matrix CLI Commands', function() {
                                 var useProc = run('matrix', ['use', 'matrixSimulator']);
                                 var outputs = new Array();
                                 useProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
                                     outputs.push(out.toString());
                                 });
+                                useProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString());
+                                })
                                 useProc.on('close', function(code) {
-                                    outputs.should.matchAny(new RegExp(strings.use.conect_device_successfully));
+                                    outputs.should.matchAny(new RegExp(i('matrix.use.using_device_by_name')), 'stdout Fail, expecting "' + i('matrix.use.using_device_by_name') + '"')
                                     done();
                                 });
 
@@ -519,7 +527,7 @@ describe('Matrix CLI Commands', function() {
 
                         });
                     });
-                }); // finish use
+                }); // Finish use
 
                 context('sim', function() {
 
@@ -528,11 +536,17 @@ describe('Matrix CLI Commands', function() {
                             var simProc = run('matrix', ['sim', '']);
                             var outputs = new Array();
                             simProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString());
                                 outputs.push(out.toString());
                             });
+                            simProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString());
+
+                            })
 
                             simProc.on('close', function(code) {
-                                outputs.should.matchAny(new RegExp(strings.sim.sim_usage_command));
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(i('matrix.sim.command_help_sim')), 'stdout Fail, expecting "' + i('matrix.sim.command_help_sim') + '"')
                                 done();
                             });
                         });
@@ -540,11 +554,21 @@ describe('Matrix CLI Commands', function() {
                     context('Parameters specified init ', function() {
 
                         context('init', function() { //pending  capture of data 
-                            it.skip('should request simulator settings', function(done) {
+                            it('should request simulator settings', function(done) {
                                 var simProc = run('matrix', ['sim', 'init']);
                                 var outputs = new Array();
                                 simProc.stdout.on('data', function(out) {
-                                    out.should.matchAny(new RegExp(strings.sim.sim_init_request_credencials));
+                                    console.log('stdout', out.toString());
+                                    simProc.stdin.write('Examsssple\n');
+                                    outputs.push(out.toString());
+                                });
+                                simProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString());
+                                })
+
+                                simProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + i('') + '"')
                                     done();
                                 });
 
