@@ -58,11 +58,13 @@ en:
         valid_locales: 'Valid locales'
     #MANAGEMENT:
     sim:
+      unknowm_parameter: parameter doesn´t exist  
       command_help_sim: matrix sim #
       please: 'Please'
       before_using_sim: 'before attempting to use the simulator'
       init: 
         specify_data_for_init: Please enter information for this virtual device #
+        warning_sim_init: please use ´matrix sim init´ #
         device_already_initialized: You already have a virtual device initialized
         target_device: To target this device
         virtual_device_info: Please enter information for this virtual device

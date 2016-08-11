@@ -367,29 +367,34 @@ describe('Matrix CLI Commands', function() {
         }); //Finish log
 
         context('Logged in {', function() {
-            before(function(done) {
-                this.timeout(15000);
-                var loginProc = run('matrix', ['login']);
-                loginProc.stdout.on('data', function(out) {
-                    if (out.toString().indexOf('username') > -1) {
-                        loginProc.stdin.write('demo.admobilize@gmail.com\n')
-                    } else if (out.toString().indexOf('password') > -1) {
-                        loginProc.stdin.write('admobdemo2016\n')
-                    } else if (out.toString().indexOf('Login Successful') > -1) {
-                        // console.log(out.toString().red);
-                        if (readConfig().user.hasOwnProperty('token')) {
-                            console.log(out.toString().red);
-                            // done();
-                        }
-                    }
+            before(function(done) {  
+                 this.timeout(15000);
+                 var loginProc = run('matrix', ['login']);
+                 loginProc.stdout.on('data', function(out) {
+                     if (out.toString().indexOf('username') > -1) {
+                         console.log('stdout',out.toString());
+                         loginProc.stdin.write('demo.admobilize@gmail.com\n')
+                     } else if (out.toString().indexOf('password') > -1) {
+                         console.log('stdout',out.toString());
+                         loginProc.stdin.write('admobdemo2016\n')
+                     } else if (out.toString().indexOf('Login Successful') > -1) {
+                         console.log('stdout',out.toString());
+                         if (readConfig().user.hasOwnProperty('token')) {
+                             console.log('stdout',out.toString());
+                             console.log(out.toString().red);
+                         }
+                     }
 
-                });
-                loginProc.on('close', function(code) {
-                    console.log('Inicia sesion'.magenta);
-                    done();
-                });
+                 });
+                 loginProc.stderr.on('data',function(out){
+                     console.log('stderr',out.toString())
+                 })
+                 loginProc.on('close', function(code) {
+                     console.log('Inicia sesion'.magenta);
+                     done();
+                 });
 
-            })
+             })
 
             //NO DEVICE REQUIRED
 
@@ -554,7 +559,7 @@ describe('Matrix CLI Commands', function() {
                     context('Parameters specified init ', function() {
 
                         context('init', function() { //pending  capture of data 
-                            it('should request simulator settings', function(done) {
+                            it.skip('should request simulator settings', function(done) {
                                 var simProc = run('matrix', ['sim', 'init']);
                                 var outputs = new Array();
                                 simProc.stdout.on('data', function(out) {
@@ -568,7 +573,7 @@ describe('Matrix CLI Commands', function() {
 
                                 simProc.on('close', function(code) {
                                     console.log('close', outputs)
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + i('') + '"')
+                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.specify_data_for_init') + '"')
                                     done();
                                 });
 
@@ -586,8 +591,11 @@ describe('Matrix CLI Commands', function() {
                                     simProc.stdout.on('data', function(out) {
                                         outputs.push(out.toString());
                                     });
+                                    simProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString())
+                                    })
                                     simProc.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_restore_warning));
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
                                         done();
                                     });
                                 });
@@ -600,9 +608,11 @@ describe('Matrix CLI Commands', function() {
                                     simProc.stdout.on('data', function(out) {
                                         outputs.push(out.toString());
                                     });
-
+                                    simProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString())
+                                    })
                                     simProc.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_not_init_warning));
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
                                         done();
                                     });
 
@@ -616,8 +626,11 @@ describe('Matrix CLI Commands', function() {
                                     simProc.stdout.on('data', function(out) {
                                         outputs.push(out.toString());
                                     });
+                                    simProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString())
+                                    })
                                     simProc.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_not_init_warning));
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
                                         done();
                                     });
                                 });
@@ -628,11 +641,14 @@ describe('Matrix CLI Commands', function() {
                                     var simProc = run('matrix', ['sim', 'save']);
                                     var outputs = new Array();
 
-                                    simProc.stderr.on('data', function(out) {
+                                    simProc.stdout.on('data', function(out) {
                                         outputs.push(out.toString());
                                     });
+                                    simProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString())
+                                    })
                                     simProc.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_not_init_warning))
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
                                         done();
                                     });
 
@@ -646,7 +662,12 @@ describe('Matrix CLI Commands', function() {
 
                                     simProc.stdout.on('data', function(out) {
                                         outputs.push(out.toString());
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_not_init_warning));
+                                    });
+                                    simProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString())
+                                    })
+                                    simProc.on('close', function(code) {
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
                                         done();
                                     });
                                 });
@@ -656,7 +677,17 @@ describe('Matrix CLI Commands', function() {
                                     var simProc = run('matrix', ['sim', 'init']);
                                     var outputs = new Array();
                                     simProc.stdout.on('data', function(out) {
-                                        out.should.matchAny(new RegExp(strings.sim.sim_init_request_credencials));
+                                        console.log('stdout', out.toString());
+                                        simProc.stdin.write('Examsssple\n');
+                                        outputs.push(out.toString());
+                                    });
+                                    simProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString());
+                                    })
+
+                                    simProc.on('close', function(code) {
+                                        console.log('close', outputs)
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.specify_data_for_init') + '"')
                                         done();
                                     });
                                 });
@@ -664,34 +695,43 @@ describe('Matrix CLI Commands', function() {
 
                         });
 
-                        context.skip('Simulator initialized', function() {
+                        context('Simulator initialized', function() {
 
-                            before(function(done) {
+                           /* before(function(done) {
                                 this.timeout(15000);
                                 var simProc = run('matrix', ['sim', 'init']);
                                 var outputs = new Array();
                                 simProc.stdout.on('data', function(out) {
-                                    simProc.stdin.write('Example\n');
-                                    simProc.stdin.write('Example\n');
+                                    console.log('stdout',out.toString())
+                                    simProc.stdin.write('vvvv\n');
+                                    simProc.stdin.write('vvv\n');
                                     outputs.push(out.toString());
-                                    //done();
+                                    console.log(outputs,'outputs')
+
                                 });
-                                simProc.stdout.on('close', function(code) {
+                                simProc.stderr.on('data',function(out){
+                                    console.log('stderr', out.toString())
+                                })
+                                simProc.on('close', function(code) {
+                                    console.log('Simulator initialized'.magenta,outputs);
                                     done();
                                 });
 
-                            });
+                            });*/
 
                             context('restore', function() {
                                 it.skip('should reset the simulator', function(done) {
                                     var simProc = run('matrix', ['sim', 'restore']);
                                     var outputs = new Array();
                                     simProc.stdout.on('data', function(out) {
+                                        console.log('stdout',out.toString());
                                         outputs.push(out.toString());
                                     });
-
+                                    simProc.stderr.on('data', function(out){
+                                        console.log('stderr', out.toString())
+                                    })
                                     simProc.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_restore_successfully));
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.restore.downloading_image')), 'stdout Fail, expecting "' + i('matrix.sim.restore.downloading_image') + '"')
                                         done();
                                     });
                                 });
@@ -701,23 +741,36 @@ describe('Matrix CLI Commands', function() {
                                 it.skip('should start MatrixOS virtual environment', function(done) {
                                     var startProc = run('matrix', ['sim', 'start']);
                                     var outputs = new Array();
+                                    startProc.stdout.on('data', function(out){
+                                        console.log('stdout',out.toString());
+                                    })
                                     startProc.stderr.on('data', function(out) {
+                                        console.log('stderr',out.toString());
                                         outputs.push(out.toString());
                                     })
-                                    startProc.stdout.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_start_sucessfully));
+                                    startProc.on('close', function(code) {
+                                        console.log('close', outputs)
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.start.starting_sim')), 'stdout Fail, expecting "' + i('matrix.sim.start.starting_sim') + '"')
+                                        done();
                                     })
                                 });
                             });
+
                             context('stop', function() {
                                 it.skip('should stop MatrixOS virtual environment', function(done) {
                                     var stopProc = run('matrix', ['sim', 'stop']);
                                     var outputs = new Array();
-                                    stopProc.stderr.on('data', function(out) {
+                                    stopProc.stdout.on('data', function(out){
+                                        console.log('stdout',out.toString())
                                         outputs.push(out.toString());
                                     })
-                                    stopProc.stdout.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_stop_sucessfully));
+                                    stopProc.stderr.on('data', function(out) {
+                                        console.log('stderr',out.toString())
+                                        outputs.push(out.toString());
+                                    })
+                                    stopProc.on('close', function(code) {
+                                        console,log('close',outputs)
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.stop.sim_stopped')), 'stdout Fail, expecting "' + i('matrix.sim.stop.sim_stopped') + '"')
                                         done();
                                     })
                                 });
@@ -727,13 +780,16 @@ describe('Matrix CLI Commands', function() {
                                 it.skip('should save MatrixOS state, use after deploy / install', function(done) {
                                     var saveProc = run('matrix', ['sim', 'save']);
                                     var outputs = new Array();
-                                    saveProc.stderr.on('data', function(out) {
-                                        outputs.push(out.toString());
-                                        //console.log('brayan1', out.toString(),'<<<<<<<');
+                                    saveProc.stdout.on('data',function(out){
+                                        console.log('stdout', out.toString())
                                     })
-                                    saveProc.stdout.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_save_sucessfully));
+                                    saveProc.stderr.on('data', function(out) {
+                                        console.log('stderr',out.toString())
+                                        outputs.push(out.toString());
+                                    })
+                                    saveProc.on('close', function(code) {
                                         console.log('closeeee', outputs);
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.save.state_saved')), 'stdout Fail, expecting "' + i('matrix.sim.save.state_saved') + '"')
                                         done();
                                     })
                                 });
@@ -744,10 +800,16 @@ describe('Matrix CLI Commands', function() {
                                     var clearProc = run('matrix', ['sim', 'clear']);
                                     var outputs = new Array();
                                     clearProc.stdout.on('data', function(out) {
+                                        console.log('stdout',out.toString())
                                         outputs.push(out.toString());
                                     })
-                                    clearProc.stdout.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(strings.sim.sim_clear_sucessfully));
+                                    clearProc.stderr.on('data',function(out){
+                                        console.log('stderr',out.toString())
+                                        outputs.push(out.toString());
+                                    })
+                                    clearProc.on('close', function(code) {
+                                        console.log('close', outputs)
+                                        outputs.should.matchAny(new RegExp(i('matrix.sim.clear.simulation_cleared')), 'stdout Fail, expecting "' + i('matrix.sim.clear.simulation_cleared') + '"')
                                         done();
                                     })
                                 });
@@ -762,15 +824,15 @@ describe('Matrix CLI Commands', function() {
                                 unkProc.stdout.on('data', function(out) {
                                     outputs.push(out.toString());
                                 })
-                                unkProc.stdout.on('close', function(code) {
+                                unkProc.on('close', function(code) {
                                     console.log('brayan', outputs);
-                                    outputs.should.matchAny(new RegExp(strings.sim.sim_unknown_parameter_warning));
+                                    outputs.should.matchAny(new RegExp(i('matrix.sim.unknowm_parameter')), 'stdout Fail, expecting "' + i('matrix.sim.unknowm_parameter') + '"')
                                     done();
                                 })
                             });
                         });
                     });
-                }); //finish sim
+                }); //Finish sim
 
                 context('list', function() {
 
@@ -779,32 +841,36 @@ describe('Matrix CLI Commands', function() {
                             var listProc = run('matrix', ['list', '']);
                             var outputs = new Array();
                             listProc.stdout.on('data', function(out) {
-                                console.log('brayan', out.toString());
+                                console.log('stdout', out.toString());
                                 outputs.push(out.toString());
+                            })
+                            listProc.stderr.on('data',function(out){
+                                console.log('stderr',out.toString());
                             })
                             listProc.stdout.on('close', function(code) {
                                 console.log('brayanClose', outputs);
-                                outputs.should.matchAny(new RegExp(strings.list.list_usage_command));
+                                outputs.should.matchAny(new RegExp(i('matrix.list.help_devices')), 'stdout Fail, expecting "' + i('matrix.list.help_devices') + '"')
                                 done();
                             })
                         });
                     });
 
-                    context('Parameters specified', function() { //pending
+                    context('Parameters specified', function() { 
                         context('devices', function() {
-                            it.skip('display available devices', function(done) {
+                            it.skip('display available devices', function(done) {//No se puede recibir la tabla de devices 
                                 this.timeout(15000);
                                 var listProc = run('matrix', ['list', 'devices']);
                                 var outputs = new Array();
                                 listProc.stdout.on('data', function(out) {
-                                    console.log('>>>>>    ', out.toString());
-                                    //console.log('BRAYAN', JSON.stringify(out));
-
+                                    console.log('stdout', out.toString());
+                                    outputs.push(out.toString());
                                 });
-
+                                listProc.stderr.on('data', function(out){
+                                    console.log('stderr',out.toString())
+                                    outputs.push(out.toString());
+                                })
                                 listProc.on('close', function(code) {
-                                    // outputs.should.matchAny(strings.list.list_devices)
-                                    console.log('>dsfds>>>', code.toString());
+                                    console.log('close',outputs);
                                     done();
                                 });
                             });
@@ -814,11 +880,42 @@ describe('Matrix CLI Commands', function() {
 
 
                         context('groups', function() {
-                            it.skip('display groups of devices', function(done) {});
+                            it.skip('display groups of devices', function(done) {
+                                var groupsProc = run('matrix', ['list', 'groups'])
+                                var outputs = new Array();
+                                groupsProc.stdout.on('data',function(out){
+                                    console.log('stdout',out.toString());
+                                    outputs.push(out.toString())
+                                })
+                                groupsProc.stderr.on('data', function(out){
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString())
+                                })
+                                groupsProc.on('close',function(code){
+                                    console.log('close', outputs)
+
+                                    done()
+                                })
+                            });
                         });
 
                         context('apps', function() {
-                            it.skip('display apps on current device', function(done) {});
+                            it('display apps on current device', function(done) {
+                                var appsProc = run('matrix', ['list', 'apps'])
+                                var outputs = new Array();
+                                appsProc.stdout.on('data',function(out){
+                                    console.log('stdout',out.toString());
+                                    outputs.push(out.toString())
+                                })
+                                appsProc.stderr.on('data', function(out){
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString())
+                                })
+                                appsProc.on('close',function(code){
+                                    console.log('close', outputs)
+                                    done()
+                                })
+                            });
                         });
 
                         context('all', function() {
