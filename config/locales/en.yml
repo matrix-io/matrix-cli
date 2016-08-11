@@ -1,10 +1,15 @@
 en:
   matrix:
+    api_title: API
+    streaming_title: Streaming 
+    user_title: User
+    device_title: Device
+    locale_title: Locale
     help_login: Login to the MatrixOS platform
     help_logout: Log out of the MatrixOS platform
     help_use: Indicate active device
-    help_set: 'Set environment settings, update application configuration'
-    help_sim: Manage local MatrixOS simulator using docker
+    help_set: 'Set environment settings, update application configuration, change cli locale'
+    help_sim: Manage local MatrixOS simulator using Docker
     help_list: 'Information about your devices, applications and installations'
     help_reboot: Reboots the active MatrixOS device
     help_search: Search for apps
@@ -42,6 +47,7 @@ en:
       command_help: 'set active device to device id'
       
     set:
+      warning_device_required: no device Indicated # 
       help_device: 'set device environment'
       help_config: 'configures application variables'
       help_locale: 'set current locale for the cli'
@@ -109,6 +115,10 @@ en:
       help_save: "save MatrixOS state, use after deploy / install"
       help_clear: remove simulation local data
     list:
+      list_devices: devices list # 
+      list_groups: groups list # 
+      list_apps: apps list # 
+      list_all: all of all #  
       app_list_error: 'App List Error'
       no_results: 'No Results Found'
       help_devices: 'display available devices'
@@ -209,3 +219,30 @@ en:
       app_not_select: 'select an app `matrix log app-name` ' # 
       app_undefined: 'app specified doesn´t  exits ' #
       logs_show: 'logs' #
+    helpers:
+      adding: Adding
+      config_error: Config error
+      config_save_error: Config save error
+      apps:
+        name: Name
+        description: Description
+        version: v
+        shortname: Shortname
+      devices:
+        device_id: Device ID
+        name: Name
+        ok: ok
+        last_online: Last Online 
+      groups:
+        name: Name
+        devices: "# Devices"
+        group_id: Group ID
+      search:
+        installs: +1s
+        name: Name
+        description: Description
+        latest: Latest
+      device_apps:
+        device: Device
+        app_name: App Name
+        description: Description

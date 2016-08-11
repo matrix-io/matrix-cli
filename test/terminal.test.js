@@ -367,34 +367,34 @@ describe('Matrix CLI Commands', function() {
         }); //Finish log
 
         context('Logged in {', function() {
-            before(function(done) {  
-                 this.timeout(15000);
-                 var loginProc = run('matrix', ['login']);
-                 loginProc.stdout.on('data', function(out) {
-                     if (out.toString().indexOf('username') > -1) {
-                         console.log('stdout',out.toString());
-                         loginProc.stdin.write('demo.admobilize@gmail.com\n')
-                     } else if (out.toString().indexOf('password') > -1) {
-                         console.log('stdout',out.toString());
-                         loginProc.stdin.write('admobdemo2016\n')
-                     } else if (out.toString().indexOf('Login Successful') > -1) {
-                         console.log('stdout',out.toString());
-                         if (readConfig().user.hasOwnProperty('token')) {
-                             console.log('stdout',out.toString());
-                             console.log(out.toString().red);
-                         }
-                     }
+            before(function(done) {
+                this.timeout(15000);
+                var loginProc = run('matrix', ['login']);
+                loginProc.stdout.on('data', function(out) {
+                    if (out.toString().indexOf('username') > -1) {
+                        console.log('stdout', out.toString());
+                        loginProc.stdin.write('demo.admobilize@gmail.com\n')
+                    } else if (out.toString().indexOf('password') > -1) {
+                        console.log('stdout', out.toString());
+                        loginProc.stdin.write('admobdemo2016\n')
+                    } else if (out.toString().indexOf('Login Successful') > -1) {
+                        console.log('stdout', out.toString());
+                        if (readConfig().user.hasOwnProperty('token')) {
+                            console.log('stdout', out.toString());
+                            console.log(out.toString().red);
+                        }
+                    }
 
-                 });
-                 loginProc.stderr.on('data',function(out){
-                     console.log('stderr',out.toString())
-                 })
-                 loginProc.on('close', function(code) {
-                     console.log('Inicia sesion'.magenta);
-                     done();
-                 });
+                });
+                loginProc.stderr.on('data', function(out) {
+                    console.log('stderr', out.toString())
+                })
+                loginProc.on('close', function(code) {
+                    console.log('Inicia sesion'.magenta);
+                    done();
+                });
 
-             })
+            })
 
             //NO DEVICE REQUIRED
 
@@ -697,37 +697,37 @@ describe('Matrix CLI Commands', function() {
 
                         context('Simulator initialized', function() {
 
-                           /* before(function(done) {
-                                this.timeout(15000);
-                                var simProc = run('matrix', ['sim', 'init']);
-                                var outputs = new Array();
-                                simProc.stdout.on('data', function(out) {
-                                    console.log('stdout',out.toString())
-                                    simProc.stdin.write('vvvv\n');
-                                    simProc.stdin.write('vvv\n');
-                                    outputs.push(out.toString());
-                                    console.log(outputs,'outputs')
+                            /* before(function(done) {
+                                 this.timeout(15000);
+                                 var simProc = run('matrix', ['sim', 'init']);
+                                 var outputs = new Array();
+                                 simProc.stdout.on('data', function(out) {
+                                     console.log('stdout',out.toString())
+                                     simProc.stdin.write('vvvv\n');
+                                     simProc.stdin.write('vvv\n');
+                                     outputs.push(out.toString());
+                                     console.log(outputs,'outputs')
 
-                                });
-                                simProc.stderr.on('data',function(out){
-                                    console.log('stderr', out.toString())
-                                })
-                                simProc.on('close', function(code) {
-                                    console.log('Simulator initialized'.magenta,outputs);
-                                    done();
-                                });
+                                 });
+                                 simProc.stderr.on('data',function(out){
+                                     console.log('stderr', out.toString())
+                                 })
+                                 simProc.on('close', function(code) {
+                                     console.log('Simulator initialized'.magenta,outputs);
+                                     done();
+                                 });
 
-                            });*/
+                             });*/
 
                             context('restore', function() {
                                 it.skip('should reset the simulator', function(done) {
                                     var simProc = run('matrix', ['sim', 'restore']);
                                     var outputs = new Array();
                                     simProc.stdout.on('data', function(out) {
-                                        console.log('stdout',out.toString());
+                                        console.log('stdout', out.toString());
                                         outputs.push(out.toString());
                                     });
-                                    simProc.stderr.on('data', function(out){
+                                    simProc.stderr.on('data', function(out) {
                                         console.log('stderr', out.toString())
                                     })
                                     simProc.on('close', function(code) {
@@ -741,11 +741,11 @@ describe('Matrix CLI Commands', function() {
                                 it.skip('should start MatrixOS virtual environment', function(done) {
                                     var startProc = run('matrix', ['sim', 'start']);
                                     var outputs = new Array();
-                                    startProc.stdout.on('data', function(out){
-                                        console.log('stdout',out.toString());
+                                    startProc.stdout.on('data', function(out) {
+                                        console.log('stdout', out.toString());
                                     })
                                     startProc.stderr.on('data', function(out) {
-                                        console.log('stderr',out.toString());
+                                        console.log('stderr', out.toString());
                                         outputs.push(out.toString());
                                     })
                                     startProc.on('close', function(code) {
@@ -760,16 +760,17 @@ describe('Matrix CLI Commands', function() {
                                 it.skip('should stop MatrixOS virtual environment', function(done) {
                                     var stopProc = run('matrix', ['sim', 'stop']);
                                     var outputs = new Array();
-                                    stopProc.stdout.on('data', function(out){
-                                        console.log('stdout',out.toString())
+                                    stopProc.stdout.on('data', function(out) {
+                                        console.log('stdout', out.toString())
                                         outputs.push(out.toString());
                                     })
                                     stopProc.stderr.on('data', function(out) {
-                                        console.log('stderr',out.toString())
+                                        console.log('stderr', out.toString())
                                         outputs.push(out.toString());
                                     })
                                     stopProc.on('close', function(code) {
-                                        console,log('close',outputs)
+                                        console,
+                                        log('close', outputs)
                                         outputs.should.matchAny(new RegExp(i('matrix.sim.stop.sim_stopped')), 'stdout Fail, expecting "' + i('matrix.sim.stop.sim_stopped') + '"')
                                         done();
                                     })
@@ -780,11 +781,11 @@ describe('Matrix CLI Commands', function() {
                                 it.skip('should save MatrixOS state, use after deploy / install', function(done) {
                                     var saveProc = run('matrix', ['sim', 'save']);
                                     var outputs = new Array();
-                                    saveProc.stdout.on('data',function(out){
+                                    saveProc.stdout.on('data', function(out) {
                                         console.log('stdout', out.toString())
                                     })
                                     saveProc.stderr.on('data', function(out) {
-                                        console.log('stderr',out.toString())
+                                        console.log('stderr', out.toString())
                                         outputs.push(out.toString());
                                     })
                                     saveProc.on('close', function(code) {
@@ -800,11 +801,11 @@ describe('Matrix CLI Commands', function() {
                                     var clearProc = run('matrix', ['sim', 'clear']);
                                     var outputs = new Array();
                                     clearProc.stdout.on('data', function(out) {
-                                        console.log('stdout',out.toString())
+                                        console.log('stdout', out.toString())
                                         outputs.push(out.toString());
                                     })
-                                    clearProc.stderr.on('data',function(out){
-                                        console.log('stderr',out.toString())
+                                    clearProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString())
                                         outputs.push(out.toString());
                                     })
                                     clearProc.on('close', function(code) {
@@ -844,8 +845,8 @@ describe('Matrix CLI Commands', function() {
                                 console.log('stdout', out.toString());
                                 outputs.push(out.toString());
                             })
-                            listProc.stderr.on('data',function(out){
-                                console.log('stderr',out.toString());
+                            listProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString());
                             })
                             listProc.stdout.on('close', function(code) {
                                 console.log('brayanClose', outputs);
@@ -855,9 +856,9 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
 
-                    context('Parameters specified', function() { 
+                    context('Parameters specified', function() {
                         context('devices', function() {
-                            it.skip('display available devices', function(done) {//No se puede recibir la tabla de devices 
+                            it.skip('display available devices', function(done) { //No se puede recibir la tabla de devices 
                                 this.timeout(15000);
                                 var listProc = run('matrix', ['list', 'devices']);
                                 var outputs = new Array();
@@ -865,12 +866,13 @@ describe('Matrix CLI Commands', function() {
                                     console.log('stdout', out.toString());
                                     outputs.push(out.toString());
                                 });
-                                listProc.stderr.on('data', function(out){
-                                    console.log('stderr',out.toString())
+                                listProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
                                     outputs.push(out.toString());
                                 })
                                 listProc.on('close', function(code) {
-                                    console.log('close',outputs);
+                                    console.log('close', outputs);
+                                    outputs.should.matchAny(new RegExp(i('matrix.list.list_devices')), 'stdout Fail, expecting "' + i('matrix.list.list_devices') + '"')
                                     done();
                                 });
                             });
@@ -883,47 +885,81 @@ describe('Matrix CLI Commands', function() {
                             it.skip('display groups of devices', function(done) {
                                 var groupsProc = run('matrix', ['list', 'groups'])
                                 var outputs = new Array();
-                                groupsProc.stdout.on('data',function(out){
-                                    console.log('stdout',out.toString());
+                                groupsProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString());
                                     outputs.push(out.toString())
                                 })
-                                groupsProc.stderr.on('data', function(out){
+                                groupsProc.stderr.on('data', function(out) {
                                     console.log('stderr', out.toString())
                                     outputs.push(out.toString())
                                 })
-                                groupsProc.on('close',function(code){
+                                groupsProc.on('close', function(code) {
                                     console.log('close', outputs)
-
+                                    outputs.should.matchAny(new RegExp(i('matrix.list.list_groups')), 'stdout Fail, expecting "' + i('matrix.list.list_groups') + '"')
                                     done()
                                 })
                             });
                         });
 
                         context('apps', function() {
-                            it('display apps on current device', function(done) {
+                            it.skip('display apps on current device', function(done) {
                                 var appsProc = run('matrix', ['list', 'apps'])
                                 var outputs = new Array();
-                                appsProc.stdout.on('data',function(out){
-                                    console.log('stdout',out.toString());
+                                appsProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString());
                                     outputs.push(out.toString())
                                 })
-                                appsProc.stderr.on('data', function(out){
+                                appsProc.stderr.on('data', function(out) {
                                     console.log('stderr', out.toString())
                                     outputs.push(out.toString())
                                 })
-                                appsProc.on('close',function(code){
+                                appsProc.on('close', function(code) {
                                     console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(i('matrix.list.list_apps')), 'stdout Fail, expecting "' + i('matrix.list.list_apps') + '"')
                                     done()
                                 })
                             });
                         });
 
                         context('all', function() {
-                            it.skip('display all devices with installed apps', function(done) {});
+                            it.skip('display all devices with installed apps', function(done) {
+                                var allProc = run('matrix', ['list', 'all'])
+                                var outputs = new Array();
+                                appsProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString());
+                                    outputs.push(out.toString())
+                                })
+                                appsProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString())
+                                })
+                                appsProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(i('matrix.list.list_all')), 'stdout Fail, expecting "' + i('matrix.list.list_all') + '"')
+                                    done()
+                                })
+                            });
                         });
 
                         context('Unknown parameter specified', function() {
-                            it.skip('should display an "unknown parameter warning"', function(done) {});
+                            it.skip('should display an "unknown parameter warning"', function(done) {
+
+                                var unknownProc = run('matrix', ['list', 'XXXXX'])
+                                var outputs = new Array();
+                                unknownProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString());
+                                    outputs.push(out.toString())
+                                })
+                                unknownProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString())
+                                })
+                                unknownProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(i('matrix.list.no_results')), 'stdout Fail, expecting "' + i('matrix.list.no_results') + '"')
+                                    done()
+                                })
+                            });
                         });
                     });
                 }); //list
@@ -938,14 +974,16 @@ describe('Matrix CLI Commands', function() {
                             console.log('>>>>', out.toString());
                             outputs.push(out.toString());
                         });
-
+                        setProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                        })
                         setProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
+                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
                             console.log('close', outputs)
                             done();
                         });
                     });
-                }); //finish set
+                }); //Finish set
 
 
                 context('reboot', function() {
@@ -953,219 +991,274 @@ describe('Matrix CLI Commands', function() {
                         var rebootProc = run('matrix', ['reboot', '']);
                         var outputs = new Array();
                         rebootProc.stdout.on('data', function(out) {
+                            console.log('close', out.toString())
+                            outputs.push(out.toString());
+                        })
+                        rebootProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
                             outputs.push(out.toString());
                         })
                         rebootProc.on('close', function(code) {
-                            console.log('CLOSE>>>>>>>>>>', outputs);
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
-
+                            console.log('close', outputs);
+                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
                             done();
                         })
                     });
-                }); // finish reboot
+                }); // Finish reboot
 
                 context('search', function() {
                     it.skip('should show a "Select a Device" warning', function(done) {
                         var searchProc = run('matrix', ['search']);
                         var outputs = new Array();
                         searchProc.stdout.on('data', function(out) {
-                            console.log('>>>>', out.toString());
+                            console.log('stdout', out.toString());
                             outputs.push(out.toString());
                         });
-
+                        searchProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString());
+                        })
                         searchProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
+                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
                             console.log('close', outputs)
-                            console.log(done);
                             done();
                         });
                     });
-                }); // finish search
+                }); // Finish search
 
                 context('install', function() {
                     it.skip('should show a "Select a Device" warning', function(done) {
                         var installProc = run('matrix', ['install']);
                         var outputs = new Array();
+                        installProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString());
+                            outputs.push(out.toString())
+                        })
                         installProc.stderr.on('data', function(out) {
                             outputs.push(out.toString());
+                            console.log('stderr', out.toString())
                         });
-
                         installProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
-                }); // finish install
+                }); // Finish install
 
                 context('config', function() {
                     it.skip('should show a "Select a Device" warning', function(done) {
                         var configProc = run('matrix', ['config']);
                         var outputs = new Array();
+                        configProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString());
+                            outputs.push(out.toString())
+                        })
                         configProc.stderr.on('data', function(out) {
                             outputs.push(out.toString());
+                            console.log('stderr', out.toString())
                         });
-
                         configProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
-                }); // finish config
+                }); // Finish config
 
                 context('uninstall', function() {
                     it.skip('should show a "Select a Device" warning', function(done) {
                         var uninstallProc = run('matrix', ['uninstall']);
                         var outputs = new Array();
+                        uninstallProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString());
+                            outputs.push(out.toString())
+                        })
                         uninstallProc.stderr.on('data', function(out) {
                             outputs.push(out.toString());
+                            console.log('stderr', out.toString())
                         });
-
                         uninstallProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
-                }); // finish uninstall
+                }); // Finish uninstall
 
                 context('update', function() {
                     it.skip('should show a "Select a Device" warning', function(done) {
                         var updateProc = run('matrix', ['update']);
                         var outputs = new Array();
                         updateProc.stdout.on('data', function(out) {
-                            outputs.push(out.toString());
-                        });
-
-                        updateProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
-                            done();
-                        });
-                    });
-                }); // finish update
-
-
-                context('start', function() {
-                    it.skip('should show a "Select a Device" warning', function(done) {
-                        var startProc = run('matrix', ['start']);
-                        var outputs = new Array();
-                        startProc.stdout.on('data', function(out) {
-                            console.log('Brayan', out.toString());
-                            outputs.push(out.toString());
-                            console.log(outputs, 'BrayanCLOSE')
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
-                            done();
-                        });
-                    });
-                }); // finish start
-
-                context('stop', function() {
-                    it.skip('should show a "Select a Device" warning', function(done) {
-                        var stopProc = run('matrix', ['stop']);
-                        var outputs = new Array();
-                        stopProc.stdout.on('data', function(out) {
-                            console.log('brayan', out.toString());
-                            outputs.push(out.toString());
-                            console.log('daniloo', outputs);
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
-                            done();
+                            console.log('stdout', out.toString());
+                            outputs.push(out.toString())
                         })
-                    });
-                }); //finish stop
-
-                context('restart', function() {
-                    it.skip('should show a "Select a Device" warning', function(done) {
-                        var restartProc = run('matrix', ['restart']);
-                        var outputs = new Array();
-
-                        restartProc.stderr.on('data', function(out) {
-                            console.log('>>>>', out.toString());
+                        updateProc.stderr.on('data', function(out) {
                             outputs.push(out.toString());
+                            console.log('stderr', out.toString())
                         });
-
-                        restartProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
+                        updateProc.on('close', function(code) {
                             console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
                             done();
                         });
-                    });
-                }); // finish restart
+                    }); // Finish update
 
 
-                context('create', function() {
-                    it.skip('should show a "Select a Device" warning', function(done) {
-                        var createProc = run('matrix', ['create']);
-                        var outputs = new Array();
-
-                        createProc.stderr.on('data', function(out) {
-                            console.log('>>>>', out.toString());
-                            outputs.push(out.toString());
+                    context('start', function() {
+                        it.skip('should show a "Select a Device" warning', function(done) {
+                            var startProc = run('matrix', ['start']);
+                            var outputs = new Array();
+                            startProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString());
+                                outputs.push(out.toString())
+                            })
+                            startProc.stderr.on('data', function(out) {
+                                outputs.push(out.toString());
+                                console.log('stderr', out.toString())
+                            });
+                            startProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                                done();
+                            });
                         });
+                    }); // Finish start
 
-                        createProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
-                            console.log('close', outputs)
-                            done();
+                    context('stop', function() {
+                        it.skip('should show a "Select a Device" warning', function(done) {
+                            var stopProc = run('matrix', ['stop']);
+                            var outputs = new Array();
+                            stopProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString());
+                                outputs.push(out.toString())
+                            })
+                            stopProc.stderr.on('data', function(out) {
+                                outputs.push(out.toString());
+                                console.log('stderr', out.toString())
+                            });
+                            stopProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                                done();
+                            });
                         });
-                    });
-                }); // finish create
+                    }); //Finish stop
 
-                context('deploy', function() {
-                    it.skip('should show a "Select a Device" warning', function(done) {
-                        var deployProc = run('matrix', ['deploy']);
-                        var outputs = new Array();
+                    context('restart', function() {
+                        it.skip('should show a "Select a Device" warning', function(done) {
+                            var restartProc = run('matrix', ['restart']);
+                            var outputs = new Array();
 
-                        deployProc.stderr.on('data', function(out) {
-                            console.log('>>>>', out.toString());
-                            outputs.push(out.toString());
+                            restartProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString());
+                                outputs.push(out.toString())
+                            })
+                            restartProc.stderr.on('data', function(out) {
+                                outputs.push(out.toString());
+                                console.log('stderr', out.toString())
+                            });
+                            restartProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                                done();
+                            });
                         });
+                    }); // Finish restart
 
-                        deployProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
-                            console.log('close', outputs)
-                            done();
+
+                    context('create', function() {
+                        it.skip('should show a "Select a Device" warning', function(done) {
+                            var createProc = run('matrix', ['create']);
+                            var outputs = new Array();
+
+                            createProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString());
+                                outputs.push(out.toString())
+                            })
+                            createProc.stderr.on('data', function(out) {
+                                outputs.push(out.toString());
+                                console.log('stderr', out.toString())
+                            });
+                            createProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                                done();
+                            });
                         });
-                    });
-                }); // finish deploy
+                    }); // Finish create
 
-                context('trigger', function() {
-                    it.skip('should show a "Select a Device" warning', function(done) {
-                        var triggerProc = run('matrix', ['trigger']);
-                        var outputs = new Array();
+                    context('deploy', function() {
+                        it.skip('should show a "Select a Device" warning', function(done) {
+                            var deployProc = run('matrix', ['deploy']);
+                            var outputs = new Array();
 
-                        triggerProc.stderr.on('data', function(out) {
-                            console.log('>>>>', out.toString());
-                            outputs.push(out.toString());
+                            deployProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString());
+                                outputs.push(out.toString())
+                            })
+                            deployProc.stderr.on('data', function(out) {
+                                outputs.push(out.toString());
+                                console.log('stderr', out.toString())
+                            });
+                            deployProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                                done();
+                            });
                         });
+                    }); // Finish deploy
 
-                        triggerProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
-                            console.log('close', outputs)
-                            done();
+                    context('trigger', function() {
+                        it.skip('should show a "Select a Device" warning', function(done) {
+                            var triggerProc = run('matrix', ['trigger']);
+                            var outputs = new Array();
+                            triggerProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString());
+                                outputs.push(out.toString())
+                            })
+                            triggerProc.stderr.on('data', function(out) {
+                                outputs.push(out.toString());
+                                console.log('stderr', out.toString())
+                            });
+                            triggerProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                                done();
+                            });
                         });
-                    });
-                }); // finish trigger
+                    }); // Finish trigger
 
-                context('log', function() {
-                    it.skip('should show a "Select a Device" warning', function(done) {
-                        var logProc = run('matrix', ['log']);
-                        var outputs = new Array();
+                    context('log', function() {
+                        it.skip('should show a "Select a Device" warning', function(done) {
+                            var logProc = run('matrix', ['log']);
+                            var outputs = new Array();
 
-                        logProc.stdout.on('data', function(out) {
-                            console.log('>>>>', out.toString());
-                            outputs.push(out.toString());
-                            console.log('brayan', outputs);
-                            outputs.should.matchAny(new RegExp(strings.deviceRequired.no_device_select_warning));
-                            done();
+                            logProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString());
+                                outputs.push(out.toString())
+                            })
+                            logProc.stderr.on('data', function(out) {
+                                outputs.push(out.toString());
+                                console.log('stderr', out.toString())
+                            });
+                            logProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                                done();
+                            });
+
                         });
+                    }); // Finish log
 
-                    });
-                }); // finish log
+                });
 
-            });
+            })
 
         })
 
     })
-
 })
 
 function readConfig() {
