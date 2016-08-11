@@ -1,0 +1,236 @@
+es:
+  matrix:
+    api_title: API
+    streaming_title: Streaming 
+    user_title: Usuario
+    device_title: Dispositivo
+    locale_title: Localización
+    help_login: Iniciar sesión en la plataforma del MatrixOS
+    help_logout: Cerrar la sesión en la plataforma MatrixOS
+    help_use: Indica el dispositivo activo
+    help_set: 'Establece la configuración de ambiente, actualiza la configuración de una aplicación, cambia la localización del cli'
+    help_sim: Maneja el simulador de MatrixOS local usando Docker
+    help_list: 'Información acerca de los dispositivos, aplicaciónes e instalaciones'
+    help_reboot: Reinicia el dispositivo actual MatrixOS
+    help_search: Busca aplicaciones
+    help_install: Instala una aplicación o sensor en el dispositivo MatrixOS activo
+    help_install_default: app por defecto
+    help_config: Ve y modifica la configuración de una aplicación
+    help_uninstall: Desisntala una aplicación
+    help_update: Actualiza a una versión específica de una aplicación de MatrixOS
+    help_start: Inicia una aplicación en el dispositivo MatrixOS
+    help_stop: Detiene una aplicación corriendo en el MatrixOS activo
+    help_restart: Reinicia una aplicación corriendo en el MatrixOS
+    help_create: Crea un nuevo andamiaje para una aplicación de MatrixOS
+    help_deploy: Despliega una aplicación al dispositivo MatrixOS activo
+    help_trigger: Ejecuta una prueba de disparador
+    help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
+    please_login: 'No se ha iniciado sesión con un usuario, Por favor'
+    set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
+    validate:
+      no_device: No se ha selecionado un dispositivo 
+      select_device_id: selecciona el id de un dispositivo'
+    #SETUP:
+    login: 
+      user_auth_error: 'Error en la autenticación'
+      login_success: 'Sesión iniciada correctamente'
+    logout:
+      logout_success: 'Sesión cerrada correctamente'
+    use:
+      using_device_by_name: 'Ahora usando el dispositivo'
+      using_device_by_id: 'Ahora usando el dispositivo con id'
+      not_authorized: 'No autorizado'
+      device_not_found: El dispositivo no existe'
+      invalid_token: 'Tu token es invalido'
+      try: 'Intenta'
+      command_help: 'establece como dispositivo activo el dispositivo con id'
+    set:
+      help_device: 'configurar el ambiente del dispositivo'
+      help_config: 'configurar las variables de aplicacion'
+      help_locale: 'establecer la localización actual de cli'
+      env:
+        env: 'Ambiente'
+        valid_environments: 'Ambientes válidos'
+      config:
+        use: Usa
+        no_app: 'Nombre de la app requerido'
+        no_key_value: 'Debe ingresar llave y valor'
+      locale:
+        locale_required: 'Localización requerida'
+        locale: 'Localización'
+        valid_locales: 'Localizaciónes válidas'
+    #MANAGEMENT:  
+    sim:
+      please: 'Por favor'
+      before_using: 'antes de que intente utilizar el simulador'
+      init: 
+        device_already_initialized: You already have a virtual device initialized
+        target_device: To target this device
+        virtual_device_info: Please enter information for this virtual device
+        device_is_already_used: is already used
+        creating_device: Creating
+        error_creating_device: Create Error
+        invalid_session: Invalid Session
+        please: Please
+        and: and
+        register_error: Register Error
+        success: Success
+        to_target_device: To target this device
+      start:  
+        before_message: first please
+        device: Device
+        not_a_virtual_device: is not a virtual MatrixOS. Please
+        and: and
+        custom_image_detected: Custom Simulator Image detected
+        debug_on: Debug mode on
+        error: ERROR
+        please: Please
+        then: Then
+        if_different_name: "If you have a different machine name, use that"
+        starting_sim: MatrixOS Simulator Starting
+        stop_with: Stop with Ctrl + C or
+      restore:
+        downloading_image: Downloading latest MatrixOS image
+      save:
+        state_saved: Simulator state saved
+      clear:
+        simulation_cleared: Simulation Cleared
+      stop:
+        sim_stopped: Matrix Simulator Stopped
+      docker:
+        docker_not_found: Docker not found
+        install_from: Please install docker from
+        then: Then
+      help_upgrade: upgrade your simulator image
+      help_restore: reset your simulator
+      help_init: initialize your simulator
+      help_start: start MatrixOS virtual environment
+      help_save: "save MatrixOS state, use after deploy / install"
+      help_clear: remove simulation local data
+    list:
+      app_list_error: 'Error en la lista de apps'
+      no_results: 'No se encontraron resultados'
+      help_devices: 'mostrar dispositivos disponibles'
+      help_groups: 'mostrar grupos de dispositivos'
+      help_apps: 'mostrar aplicaciones en el dispositivo actual'
+      help_all: 'mostrar todos los dispositivos con aplicaciones instaladas'
+    reboot: 
+      rebooting: 'Reinciando dispositivo'
+      app_reboot_successfully: 'Dispositivo reiniciado' #
+    #APPS:
+    search:
+      help: busca aplicaciones de MATRIX
+      small_needle: Tu aguja es muy pequeña para buscarla en nuestro pajar
+      search_successfully: Resultados de búsqueda #
+      no_results: No se encontraron coincidencias #
+    install:
+      installing: Instalando
+      app_installed: Se instaló la aplicación
+      sensor_installed: sensor instalado
+      command_help: instala # [ app / sensor ] <name> #
+      app_install_error: La instalación de la aplicación falló #
+      sensor_install_error: La instalación del sensor falló #
+      app_not_found: La aplicación no existe #
+      sensor_not_found: El sensor no existe #
+    config:
+      device_config: 'Configuración para el dispositivo'
+      help: traer las configuraciones del dispositivo
+      help_app: traer las configuraciones de la aplicación
+      help_app_key: traer la llave de la configuración de la aplicación
+      help_app_key_value: configurar el valor y la llave a la aplicación
+      show_config_app: 'configuracion de aplicacion ' #
+      specified_application_does_not_exist: 'la aplicacion especificada no existe' #
+    uninstall:
+      uninstalled: 'Se desinstaló'
+      application_unspecified: 'especifique [ aplicacion ] <Nombre>' #
+      app_undefined: 'esta aplicacion no existe' #
+    update: 
+      upgrading_to: 'Actualizando a'
+      latest_version: 'versión mas reciente'
+      of: 'de'
+      help_update: 'actualizar el software en el dispositivo activo'
+      help_update_app: 'actualizar una aplicación a la versión mas reciente'
+      help_update_app_version: 'actualizar una aplicación a una versión específica'
+      app_undefined: 'La aplicación no existe' #
+      app_update_successfully: 'Aplicación actualizada a la versión mas reciente' #
+      version_undefined: 'Versión de aplicación no soportada' #
+      version_update_successfully: 'Aplicación actualizada con éxito a' #
+      error_updating: Error actualizando #
+    start: 
+      application_unspecified: 'especifique [ app(name) ] ' #
+      app_undefined: 'esta aplicación no existe' #
+      starting_app: 'Iniciando'
+      start_app_successfully: 'Iniciada'
+      app_failed_to_start: 'Fallo al iniciar la aplicación' #
+    stop: 
+      application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
+      app_undefined: 'esta aplicacion no existe' #
+      stopping_app: 'Deteniendo'
+      stop_app_successfully: 'Detenida'
+    restart:
+      application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
+      app_undefined: 'este dispositivo no existe' #
+      restarting_app: 'Reiniciando'
+      restart_app_successfully: 'Reiniciada'
+      #DEVELOPMENT
+    create:
+      name_undefined: 'Debe especificar un nombre de aplicación'
+      new_folder: Nueva carpeta
+      error_creating: Ha ocurrido un error
+      description_app: esta es la logica de tu aplicación
+      description_config: 'cambia variables, indica sensores, configura el dashboard'
+      description_developer: información acerca de desarrollar aplicaciones MATRIX 
+      description_index: 'punto de entrada de la aplicación, no modificar'
+      description_package: 'archivo de información de node.js, no modificarlo sin conocimiento'
+    deploy:
+      app_not_found: 'No se encontró el archivo %{detect_file}. Estás seguro que una aplicación MatrixOS reside en %{pwd}?'
+      folders_not_supported: 'Culpa nuestra. Añun no se puede hacer despliegue de directorios'
+      cancel_deploy: 'SE cancela el despliegue debido a errores y advertencias'
+      reading: Leyendo
+      writing: Escribiendo
+      error: Ha ocurrido un error
+      deploy_error: Error de despliegue
+      deply_started: Se inició el despliegue
+      stream_error: Error en el flujo de despliegue
+      deploy_complete: Despliegué finalizado
+      bad_payload: Información corrupta en el contenido del despliegue
+      app_install_failed: Fallo en la instalación de la aplicación
+      app_installed: Aplicación instalada
+      application_unspecified: 'especifique [ aplicacion ]' #?
+      deploy_app_successfully: 'despliegue de la aplicacion satisfactoria' #?
+      app_undefined: 'aplicacion indefinida' #?
+    trigger: 
+      no_specified_test: 'prueba indefinida' #?
+      defined_test_doesn`t_exist: 'la prueba especificada no existe' #?
+      run_trigger_successfully: 'corriendo prueba' #?
+    log: 
+      app_not_select: 'seleccione una aplicacion `matrix log app-nombre` ' #? 
+      app_undefined: 'la aplicacion especificada no existe' #?
+      logs_show: 'logs' #?
+    helpers:
+      adding: Agregando
+      config_error: Error de configuración
+      config_save_error: Error guardando la configuración
+      apps:
+        name: Nombre
+        description: Descripción
+        version: v
+        shortname: Nombre corto
+      devices:
+        device_id: ID de dispositivo
+        name: Nombre
+        ok: ok
+        last_online: Última sesión 
+      groups:
+        name: Nombre
+        devices: "# Dispositivos"
+        group_id: ID de grupo
+      search:
+        installs: +1s
+        name: Nombre
+        description: Descriptción
+        latest: Mas reciente
+      device_apps:
+        device: Dispositivo
+        app_name: Nombre de aplicación
+        description: Descripción

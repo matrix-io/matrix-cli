@@ -32,6 +32,7 @@
     "matrix-node-sdk": "https://github.com/matrix-io/matrix-node-sdk/tarball/master",
     "mocha": "^2.5.3",
     "moment": "^2.10.3",
+    "node-yaml-localize": "https://github.com/diegoribero/node-yaml-localize/tarball/master",
     "prompt": "^0.2.14",
     "q": "^1.4.1",
     "rx": "^4.1.0",
