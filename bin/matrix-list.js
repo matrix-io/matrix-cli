@@ -26,6 +26,8 @@ if (target.match(/all/)){
 } else if (target.match(/app/)) {
 
   Matrix.api.app.list(function(apps){
+
+    
     console.log(Matrix.helpers.displayApps(apps));
     process.exit();
   });
