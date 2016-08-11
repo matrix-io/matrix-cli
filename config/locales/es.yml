@@ -1,26 +1,31 @@
 es:
   matrix:
-    help_login: Login to the MatrixOS platform
-    help_logout: Log out of the MatrixOS platform
-    help_use: Indicate active device
-    help_set: 'Set environment settings, update application configuration'
-    help_sim: Manage local MatrixOS simulator using docker
-    help_list: 'Information about your devices, applications and installations'
-    help_reboot: Reboots the active MatrixOS device
-    help_search: Search for apps
-    help_install: Install an app or sensor to active MatrixOS device
-    help_install_default: defaults to app
-    help_config: View and modify application configuration
-    help_uninstall: Uninstall the app
-    help_update: Update to a specified version of a MatrixOS application
-    help_start: Starts an app running on the active MatrixOS
-    help_stop: Stops an app running on the active MatrixOS
-    help_restart: Restarts an app running on the MatrixOS
-    help_create: Creates a new scaffolding for a MatrixOS Application
-    help_deploy: Deploys an app to the active MatrixOS
-    help_trigger: Runs a trigger test
-    help_log: Logs output from selected MatrixOS and applications
-    please_login: 'No user logged in. Please'
+    api_title: API
+    streaming_title: Streaming 
+    user_title: Usuario
+    device_title: Dispositivo
+    locale_title: Localización
+    help_login: Iniciar sesión en la plataforma del MatrixOS
+    help_logout: Cerrar la sesión en la plataforma MatrixOS
+    help_use: Indica el dispositivo activo
+    help_set: 'Establece la configuración de ambiente, actualiza la configuración de una aplicación, cambia la localización del cli'
+    help_sim: Maneja el simulador de MatrixOS local usando Docker
+    help_list: 'Información acerca de los dispositivos, aplicaciónes e instalaciones'
+    help_reboot: Reinicia el dispositivo actual MatrixOS
+    help_search: Busca aplicaciones
+    help_install: Instala una aplicación o sensor en el dispositivo MatrixOS activo
+    help_install_default: app por defecto
+    help_config: Ve y modifica la configuración de una aplicación
+    help_uninstall: Desisntala una aplicación
+    help_update: Actualiza a una versión específica de una aplicación de MatrixOS
+    help_start: Inicia una aplicación en el dispositivo MatrixOS
+    help_stop: Detiene una aplicación corriendo en el MatrixOS activo
+    help_restart: Reinicia una aplicación corriendo en el MatrixOS
+    help_create: Crea un nuevo andamiaje para una aplicación de MatrixOS
+    help_deploy: Despliega una aplicación al dispositivo MatrixOS activo
+    help_trigger: Ejecuta una prueba de disparador
+    help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
+    please_login: 'No se ha iniciado sesión con un usuario, Por favor'
     set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
     validate:
       no_device: No se ha selecionado un dispositivo 
@@ -202,3 +207,30 @@ es:
       app_not_select: 'seleccione una aplicacion `matrix log app-nombre` ' #? 
       app_undefined: 'la aplicacion especificada no existe' #?
       logs_show: 'logs' #?
+    helpers:
+      adding: Agregando
+      config_error: Error de configuración
+      config_save_error: Error guardando la configuración
+      apps:
+        name: Nombre
+        description: Descripción
+        version: v
+        shortname: Nombre corto
+      devices:
+        device_id: ID de dispositivo
+        name: Nombre
+        ok: ok
+        last_online: Última sesión 
+      groups:
+        name: Nombre
+        devices: "# Dispositivos"
+        group_id: ID de grupo
+      search:
+        installs: +1s
+        name: Nombre
+        description: Descriptción
+        latest: Mas reciente
+      device_apps:
+        device: Dispositivo
+        app_name: Nombre de aplicación
+        description: Descripción
