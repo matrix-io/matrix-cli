@@ -6,7 +6,7 @@ var firebase = require('matrix-firebase');
 var debug = debugLog('config');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   program
     .parse(process.argv);
 
@@ -23,10 +23,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     process.exit(0);
   }
 
-  if (_.isEmpty(pkgs)) {
-    return showHelp();
-  }
-
   firebase.init(
     Matrix.config.user.id,
     Matrix.config.device.identifier,
@@ -36,10 +32,16 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       var options = {};
 
-      if (pkgs.indexOf('-w') > -1 || pkgs.indexOf('--watch') > -1) {
-        options.watch = true;
-        _.omit(pkgs, '-w', '--watch')
-      }
+      console.log('Config for device', Matrix.config.device.identifier);
+
+      firebase.device.getConfig(handleResponse);
+
+      // matrix config base
+    } else if ( pkgs.length === 1 ){
+
+      var target = pkgs[0]
+      firebase.app.get( target, handleResponse);
+      // matrix config base services.vehicle.engine
 
       if (pkgs.indexOf('--help') > -1 || pkgs.indexOf('-h') > -1) {
         showHelp();
@@ -101,12 +103,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         }
     });
 
-  function handleResponse(err, app) {
-    if (err) return console.error(err);
 
-    console.log(require('util').inspect(app, { depth: 3, colors: true }));
-
-  }
+function handleResponse(err, app){
+  if (err) return console.error(err);
+  if (_.isNull(app)){ console.log(t())}
+  console.log(require('util').inspect(app, {depth: 3, colors:true}));
+  process.exit();
+}
 
 
   function showHelp() {
