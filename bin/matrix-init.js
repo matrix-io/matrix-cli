@@ -12,7 +12,11 @@ Matrix.api = require( 'matrix-node-sdk' );
 _ = require( 'lodash' );
 
 Matrix.localization = require('../lib/localization');
+
 Matrix.localesFolder = __dirname + '/../config/locales';
+// international translator
+t = Matrix.localization.get;
+
 Matrix.helpers = require('../lib/helpers');
 //sets Matrix.config with local variables
 Matrix.config = Matrix.helpers.getConfig();

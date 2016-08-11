@@ -8,7 +8,7 @@ var fstream = require('fstream');
 var JSHINT = require('jshint').JSHINT;
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  var i = Matrix.localization.get;
+  
   program
     .parse(process.argv);
 
@@ -31,7 +31,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   //TODO: IMPORTANT Make sure config file exists
   if (!fs.existsSync(pwd + detectFile)) {
-    return console.error(i('matrix.deploy.app_not_found', {detect_file: detectFile, pwd: pwd}));
+    return console.error(t('matrix.deploy.app_not_found', {detect_file: detectFile, pwd: pwd}));
   }
 
   //See of any files are a directory. #113583355 Add other checks here sometime?
@@ -39,7 +39,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   _.each(files, function (f) {
     var s = fs.statSync(pwd + f);
     if (s.isDirectory()) {
-      return console.error(f, ' <-- ' + i('matrix.deploy.folders_not_supported'));
+      return console.error(f, ' <-- ' + t('matrix.deploy.folders_not_supported'));
     } else {
       debug('zipping up %s!', f);
     }
@@ -54,7 +54,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   JSHINT(appFile);
 
   if (JSHINT.errors.length > 0) {
-    console.log(i('matrix.deploy.cancel_deploy').red)
+    console.log(t('matrix.deploy.cancel_deploy').red)
     _.each(JSHINT.errors, function (e) {
       if (_.isNull(e)) {
         return;
@@ -70,8 +70,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     return;
   }
 
-  console.log(i('matrix.deploy.reading') + ' ', pwd);
-  console.log(i('matrix.deploy.writing') + ' ', tmp);
+  console.log(t('matrix.deploy.reading') + ' ', pwd);
+  console.log(t('matrix.deploy.writing') + ' ', tmp);
 
   var destinationZip = fs.createWriteStream(tmp);
 
@@ -115,7 +115,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   zip.pipe(destinationZip);
 
   function onError(err) {
-    console.error(i('matrix.deploy.error') + ':', err)
+    console.error(t('matrix.deploy.error') + ':', err)
   }
 
   function onEnd() {
@@ -125,25 +125,25 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       file: tmp,
       name: appName
     }, function (err, resp) {
-      if (err) return console.error(i('matrix.deploy.deploy_error') + ':'.red, err);
-      console.log(i('matrix.deploy.deply_started').yellow);
+      if (err) return console.error(t('matrix.deploy.deploy_error') + ':'.red, err);
+      console.log(t('matrix.deploy.deply_started').yellow);
       resp.setEncoding();
 
       var data = '';
       resp.on('error', function (e) {
-        console.error(i('matrix.deploy.stream_error').red, e)
+        console.error(t('matrix.deploy.stream_error').red, e)
       })
       resp.on('data', function (d) {
         data += d;
       });
       resp.on('end', function () {
-        console.log(i('matrix.deploy.deploy_complete').green);
+        console.log(t('matrix.deploy.deploy_complete').green);
         debug(data);
 
         try {
           data = JSON.parse(data);
         } catch (e) {
-          console.error(i('matrix.deploy.bad_payload'), e);
+          console.error(t('matrix.deploy.bad_payload'), e);
         }
 
         var deployInfo = data.results;
@@ -158,13 +158,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         // Tell device to download app
         Matrix.api.app.install(deployInfo, Matrix.config.device.identifier, function (err, resp) {
           if (err) {
-            return console.error(i('matrix.deploy.app_install_failed').red, err);
+            return console.error(t('matrix.deploy.app_install_failed').red, err);
           }
 
           // remove zip file
           fs.unlinkSync(tmp);
 
-          console.log(i('matrix.deploy.app_installed').green, appName, '--->', Matrix.config.device.identifier);
+          console.log(t('matrix.deploy.app_installed').green, appName, '--->', Matrix.config.device.identifier);
           endIt();
         })
       })
