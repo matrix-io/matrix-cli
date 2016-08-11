@@ -5,7 +5,7 @@ var program = require('commander');
 var debug = debugLog('sdk');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   program
     .parse(process.argv);
   var pkgs = program.args;
@@ -24,6 +24,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       debug('Device List>', resp);
       console.log(Matrix.helpers.displayDeviceApps(resp));
     });
+
 
   } else if (target.match(/app/)) {
 
