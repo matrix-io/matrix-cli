@@ -68,13 +68,16 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         // get deep
 
         var key = pkgs[1];
-        var target = pkgs[0] + '/' + key.replace(/\./g, '/');
+        key = '/' + key.replace(/\./g, '/');
+        var target = pkgs[0];
         debug('Firebase: '.blue, target)
-        firebase.app.get(target, handleResponse)
+        firebase.app.getIDForName( target, function(err, appId){
+          if (err) return console.error(err);
+          debug('appId>', appId);
+          firebase.app.getConfigKey(appId, key, handleResponse);
 
-        if (options.watch) {
-          firebase.app.onChange(target, handleResponse)
-        }
+        })
+
         // matrix config base keywords=test,keyword
       } else if (pkgs.length >= 3) {
         var key = pkgs[1];
