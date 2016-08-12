@@ -5,7 +5,7 @@ var program = require('commander');
 var debug = debugLog('use');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  var i = Matrix.localization.get;
+  
   program
     .parse(process.argv);
   var cmd = program.args;
@@ -23,9 +23,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         var name = Matrix.helpers.lookupDeviceName(targetDevice);
 
         if (!_.isUndefined(name)) {
-          console.log(i('matrix.use.using_device_by_name').grey + ':', name);
+          console.log(t('matrix.use.using_device_by_name').grey + ':', name);
         } else {
-          console.log(i('matrix.use.using_device_by_id').grey + ':', targetDevice);
+          console.log(t('matrix.use.using_device_by_id').grey + ':', targetDevice);
         }
 
         // Save the device token
@@ -33,11 +33,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         Matrix.config.device.identifier = targetDevice;
         Matrix.config.device.token = state.results.device_token;
         Matrix.helpers.saveConfig(process.exit);
-        
+
       } else {
         debug('Matrix Use Error Object:', state);
         if ( state.error === 'access_token not valid.' ) {
-          console.log(i('matrix.use.not_authorized').red, '\n', i('matrix.use.invalid_token'), '. ' , i('matrix.use.try').grey, 'matrix login')
+          console.log(t('matrix.use.not_authorized').red, '\n', t('matrix.use.invalid_token'), '. ' , t('matrix.use.try').grey, 'matrix login')
         } else {
           console.error('Error', state.status_code.red, state.error);
         }
@@ -51,7 +51,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function showHelp() {
     console.log('\n> matrix use ¬ \n');
-    console.log('\t                 matrix use <deviceid> -', i('matrix.use.command_help').grey)    
+    console.log('\t                 matrix use <deviceid> -', t('matrix.use.command_help').grey)
     console.log('\n')
   }
 });

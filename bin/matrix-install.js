@@ -5,7 +5,7 @@ var program = require('commander');
 var debug = debugLog('install');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  var i = Matrix.localization.get;
+  
   require('./matrix-validate');
   program
     .parse(process.argv);
@@ -23,7 +23,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   if (cmd.match(/a|ap|app|-a|--app/)) {
-    console.log('____ | ' + i('matrix.install.installing') + ' ', t, ' ==> '.yellow, Matrix.config.device.identifier)
+    console.log('____ | ' + t('matrix.install.installing') + ' ', t, ' ==> '.yellow, Matrix.config.device.identifier)
   
 
     checkPolicy({}, function (err, policy) {
@@ -34,7 +34,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       return;
       Matrix.api.app.install(t, Matrix.config.device.identifier, function (err, resp) {
         if (err) return console.error(err);
-        console.log(i('matrix.install.app_installed').yellow, t);
+        console.log(t('matrix.install.app_installed').yellow, t);
         debug(resp);
 
         //manage api records
@@ -53,7 +53,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     Matrix.api.sensor.install(t, Matrix.config.device.identifier, function (err, resp) {
       if (err) return console.error(err);
       debug(resp);
-      console.log(t, ' ' + i('matrix.install.sensor_installed') + '.')
+      console.log(t, ' ' + t('matrix.install.sensor_installed') + '.')
       process.exit();
     })
   }

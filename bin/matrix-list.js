@@ -5,7 +5,7 @@ var program = require('commander');
 var debug = debugLog('sdk');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  var i = Matrix.localization.get;
+  
   program
     .parse(process.argv);
   var pkgs = program.args;
@@ -19,8 +19,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   if (target.match(/all/)) {
     Matrix.api.device.getAppList(Matrix.config.device.identifier, function (err, resp) {
-      if (err) return console.error(i('matrix.list.app_list_error') + ':', err);
-      if (_.isEmpty(resp)) return console.error(i('matrix.list.no_results'));
+      if (err) return console.error(t('matrix.list.app_list_error') + ':', err);
+      if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
       debug('Device List>', resp);
       console.log(Matrix.helpers.displayDeviceApps(resp));
     });
@@ -75,10 +75,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function displayHelp() {
     console.log('\n> matrix list ¬\n');
-    console.log('\t    matrix list devices -', i('matrix.list.help_devices').grey)
-    console.log('\t     matrix list groups -', i('matrix.list.help_groups').grey)
-    console.log('\t       matrix list apps -', i('matrix.list.help_apps').grey)
-    console.log('\t        matrix list all -', i('matrix.list.help_all').grey)
+    console.log('\t    matrix list devices -', t('matrix.list.help_devices').grey)
+    console.log('\t     matrix list groups -', t('matrix.list.help_groups').grey)
+    console.log('\t       matrix list apps -', t('matrix.list.help_apps').grey)
+    console.log('\t        matrix list all -', t('matrix.list.help_all').grey)
     console.log('\n')
     process.exit(1);
   }

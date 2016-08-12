@@ -6,7 +6,7 @@ var firebase = require('matrix-firebase');
 var debug = debugLog('config');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  var i = Matrix.localization.get;
+  
   program
     .parse(process.argv);
 
@@ -15,11 +15,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
 
   if (_.isUndefined(Matrix, 'config.user.token')) {
-    return console.error(i('matrix.please_login') + ' `matrix login`'.grey);
+    return console.error(t('matrix.please_login') + ' `matrix login`'.grey);
   }
 
   if (_.isUndefined(Matrix.config.device.identifier)) {
-    console.warn(i('matrix.set_device') + ' `matrix use`'.grey);
+    console.warn(t('matrix.set_device') + ' `matrix use`'.grey);
     process.exit(0);
   }
 
@@ -48,7 +48,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         if (pkgs.length === 0) {
           // get form
 
-          console.log(i('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
+          console.log(t('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
 
           firebase.device.get(handleResponse);
 
@@ -112,10 +112,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   function showHelp() {
 
     console.log('\n> matrix config ¬\n');
-    console.log('\t         matrix config -', i('matrix.config.help').grey)
-    console.log('\tmatrix config <appName> -', i('matrix.config.help_app').grey)
-    console.log('\tmatrix config <appName> <key> -', i('matrix.config.help_app_key').grey)
-    console.log('\tmatrix config <appName> <key> <value> -', i('matrix.config.help_app_key_value').grey)
+    console.log('\t         matrix config -', t('matrix.config.help').grey)
+    console.log('\tmatrix config <appName> -', t('matrix.config.help_app').grey)
+    console.log('\tmatrix config <appName> <key> -', t('matrix.config.help_app_key').grey)
+    console.log('\tmatrix config <appName> <key> <value> -', t('matrix.config.help_app_key_value').grey)
     console.log('\n')
     process.exit(1);
   }

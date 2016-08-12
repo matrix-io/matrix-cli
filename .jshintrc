@@ -29,6 +29,7 @@
     "debugLog": true,
     "app" : true,
     "$": true,
-    "_": true
+    "_": true,
+    "t": true
   }
 }

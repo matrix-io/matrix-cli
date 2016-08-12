@@ -5,7 +5,7 @@ var prompt = require('prompt');
 var debug = debugLog('login');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  var i = Matrix.localization.get;
+
 
   var schema = {
     properties: {
@@ -39,9 +39,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       if (err) throw err;
       debug('User', Matrix.config.user, out);
       Matrix.api.auth.user(Matrix.config.user, function (err, state) {
-        console.log(1);
-        if(err) return console.error('Matrix CLI :'.grey, i('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
-        console.log(2);
+        console.log();
+        if(err) return console.error('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red );
+        console.log();
 
         debug('User Login OK', state);
         Matrix.config.user.token = state.access_token;
@@ -51,7 +51,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         // delete Matrix.config.user.username;
         delete Matrix.config.user.password;
         Matrix.helpers.saveConfig(function() {
-          console.log(i('matrix.login.login_success').green, ':'.grey, result.username);
+          console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
           process.exit();
         });
 
