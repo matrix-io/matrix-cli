@@ -41,28 +41,57 @@ firebase.init(
         process.exit();
       });
 
-     } else if (target.match(/group/)) {
+    } else if (target.match(/device/)) {
 
-    /** do nothing if not device **/
-    Matrix.api.group.list(function (body) {
-      //print group
-      console.log(Matrix.helpers.displayGroups(body));
-      process.exit();
-    });
-  } else {
-    displayHelp();
-  }
+      var group = pkgs[1];
+      /** do nothing if not device **/
+      if (group !== undefined) {
+        // Matrix.api.user.setToken(Matrix.config.user.token);
+        var options = {
+          group: group
+        };
+        Matrix.api.device.list(options, function(body) {
+          //print device
+          console.log(Matrix.helpers.displayDevices(body));
+          process.exit();
+        });
+      } else {
+        Matrix.api.device.list({}, function(body) {
+          //print device
+          console.log(Matrix.helpers.displayDevices(body));
+          // save device map to config
+          Matrix.config.deviceMap = _.map(JSON.parse(body).results, function(d){
+            return { name: d.name, id: d.deviceId }
+          });
+          Matrix.helpers.saveConfig(function(){
+            process.exit();
+          });
+
+        });
+      }
+
+    } else if (target.match(/group/)) {
+
+   /** do nothing if not device **/
+   Matrix.api.group.list(function (body) {
+     //print group
+     console.log(Matrix.helpers.displayGroups(body));
+     process.exit();
+   });
+ } else {
+   displayHelp();
+ }
 });
 
-  function displayHelp() {
-    console.log('\n> matrix list ¬\n');
-    console.log('\t    matrix list devices -', t('matrix.list.help_devices').grey)
-    console.log('\t     matrix list groups -', t('matrix.list.help_groups').grey)
-    console.log('\t       matrix list apps -', t('matrix.list.help_apps').grey)
-    console.log('\t        matrix list all -', t('matrix.list.help_all').grey)
-    console.log('\n')
-    process.exit(1);
-  }
+ function displayHelp() {
+   console.log('\n> matrix list ¬\n');
+   console.log('\t    matrix list devices -', t('matrix.list.help_devices').grey)
+   console.log('\t     matrix list groups -', t('matrix.list.help_groups').grey)
+   console.log('\t       matrix list apps -', t('matrix.list.help_apps').grey)
+   console.log('\t        matrix list all -', t('matrix.list.help_all').grey)
+   console.log('\n')
+   process.exit(1);
+ }
 
-  // TODO: support config <app>
+ // TODO: support config <app>
 });
