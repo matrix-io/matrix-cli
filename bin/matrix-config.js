@@ -59,7 +59,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         var target = pkgs[0]
         firebase.app.getIDForName( target, function(err, appId){
           if (err) return console.error(err);
-          firebase.app.get(appId, handleResponse);
+          debug('appId>', appId);
+          firebase.app.getConfig(appId, handleResponse);
 
         })
 
