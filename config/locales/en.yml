@@ -57,6 +57,7 @@ en:
       config:
         use: Use
         no_app: 'App Name Required'
+        invalid_key_value: key and value invalid # 
         no_key_value: 'Must supply key and value'
       locale:
         locale_required: 'Locale Required'
@@ -126,6 +127,7 @@ en:
       help_apps: 'display apps on current device'
       help_all: 'display all devices with installed apps'
     reboot: 
+        device_offline: device is not online # 
         rebooting: 'Device rebooting'
         rebooted: 'Device rebooted' #
     #APPS:
@@ -136,7 +138,7 @@ en:
       no_results: No results found #
     install:
       installing: Installing
-      app_installed: Installed app
+      app_installed:  Installed app
       sensor_installed: sensor installed
       command_help: install # [ app / sensor ] <name> #
       app_install_error: Application installation failed #
@@ -144,6 +146,7 @@ en:
       app_not_found: Application doesn't exists #
       sensor_not_found: Sensor doesn't exists #
     config:
+      config_usage_command: 'warnings' # 
       device_config: Config for device
       show_config_app1: 'configuration the apliccation' #
       help: get device configurations
@@ -152,6 +155,8 @@ en:
       help_app_key_value: set application configuration key value
       show_config_app: 'app settings ' #
       specified_application_does_not_exist: 'app specified doesn`t exist' #
+      specify_key: specify a key # 
+      key_doesnt_exist: this key specified doesn´t exist # 
     uninstall: 
       uninstalled: 'Uninstalled'
       application_unspecified: 'specify [ app ] <name>' #
