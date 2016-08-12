@@ -39,6 +39,28 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       var options = {};
 
+      var target = pkgs[0];
+      var key = pkgs[1];
+      // normalize a.b.c for firebase a/b/c
+
+      if ( !_.isUndefined(key)){
+        key = key.replace(/\./g, '/');
+      }
+      var value = pkgs[2];
+
+      // split on = if exists
+      if ( !_.isUndefined(key) && key.indexOf('=') > -1 ){
+        value = key.split('=')[1];
+        key = key.split('=')[0];
+      }
+
+      //split up commas
+      if (!_.isUndefined(value) && value.indexOf(',') > -1 ) {
+        // is an array
+        value = value.split(',');
+      }
+
+      console.log('App Path:'.blue, _.compact([ target, key, value ]).join('/').grey)
 
       if (pkgs.indexOf('--watch') > -1 || pkgs.indexOf('-w') > -1) {
         options.watch = true;
@@ -46,7 +68,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       if (pkgs.indexOf('--help') > -1 || pkgs.indexOf('-h') > -1) {
         showHelp();
-      } else if (pkgs.length === 0) {
+      } else if (_.isUndefined(target)) {
         // get form
 
         console.log(t('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
@@ -54,54 +76,39 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         firebase.device.getConfig(handleResponse);
 
         // matrix config base
-      } else if (pkgs.length === 1) {
+      } else if (_.isUndefined(key)) {
 
-        var target = pkgs[0]
         firebase.app.getIDForName( target, function(err, appId){
           if (err) return console.error(err);
           debug('appId>', appId);
           firebase.app.getConfig(appId, handleResponse);
-
         })
 
-      } else if (pkgs.length === 2) {
+      } else if (_.isUndefined(value)){
         // get deep
-
-        var key = pkgs[1];
+        //
         key = '/' + key.replace(/\./g, '/');
-        var target = pkgs[0];
         debug('Firebase: '.blue, target)
         firebase.app.getIDForName( target, function(err, appId){
           if (err) return console.error(err);
           debug('appId>', appId);
           firebase.app.getConfigKey(appId, key, handleResponse);
-
         })
 
         // matrix config base keywords=test,keyword
-      } else if (pkgs.length >= 3) {
-        var key = pkgs[1];
-        var value = pkgs[2];
-
-        //typing
-        if (pkgs.length > 4) {
-          //string
-          value = _.drop(pkgs, 2).join(' ');
-        } else {
-          // is array?
-          if (value.indexOf(',') > -1) {
-            value = value.split(',');
-          }
-        }
-
-        var target = pkgs[0] + '/' + key.replace(/\./g, '/');
-
-        debug(target, value);
-
-        firebase.app.set(target, value);
-
       } else {
-        showHelp();
+
+        debug('>>>',target, value);
+
+        firebase.app.getIDForName( target, function(err, appId){
+          if (err) return console.error(err);
+          debug('appId>', appId);
+          console.log('Application', target, '\nconfig value:', key, '\nupdate:', value)
+          firebase.app.setConfigKey(appId, key, value, function(){
+            process.exit(0);
+          });
+        })
+
       }
     });
 
