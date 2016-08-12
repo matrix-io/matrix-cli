@@ -28,7 +28,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     Matrix.config.device.identifier,
     Matrix.config.user.token,
     function (err) {
-      if (err) return console.error(err);
+      if (err) {
+        if (err.code === "EXPIRED_TOKEN"){
+           console.error(t('matrix.expired'))
+        } else {
+          console.error(err);
+        }
+         process.exit();
+      }
 
       var options = {};
 
@@ -50,12 +57,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       } else if (pkgs.length === 1) {
 
         var target = pkgs[0]
-        firebase.app.get(target, handleResponse);
-        // matrix config base services.vehicle.engine
+        firebase.app.getIDForName( target, function(err, appId){
+          if (err) return console.error(err);
+          firebase.app.get(appId, handleResponse);
 
-        if (options.watch) {
-          firebase.app.onChange(target, handleResponse)
-        }
+        })
 
       } else if (pkgs.length === 2) {
         // get deep
