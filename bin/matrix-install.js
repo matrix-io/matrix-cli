@@ -14,16 +14,16 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   var cmd = pkgs[0];
   //target
-  var t = pkgs[1];
+  var target = pkgs[1];
 
   //Defaults to app
   if (pkgs.length === 1) {
-    t = cmd;
+    target = cmd;
     cmd = 'app';
   }
 
   if (cmd.match(/a|ap|app|-a|--app/)) {
-    console.log('____ | ' + t('matrix.install.installing') + ' ', t, ' ==> '.yellow, Matrix.config.device.identifier)
+    console.log('____ | ' + t('matrix.install.installing') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier)
   
 
     checkPolicy({}, function (err, policy) {
@@ -32,13 +32,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.warn('Policy>', policy, 'rest of flow unfinished')
       //TODO: make the rest of this work
       return;
-      Matrix.api.app.install(t, Matrix.config.device.identifier, function (err, resp) {
+      Matrix.api.app.install(target, Matrix.config.device.identifier, function (err, resp) {
         if (err) return console.error(err);
-        console.log(t('matrix.install.app_installed').yellow, t);
+        console.log(t('matrix.install.app_installed').yellow, target);
         debug(resp);
 
         //manage api records
-        Matrix.api.app.assign(t, function (err, resp) {
+        Matrix.api.app.assign(target, function (err, resp) {
           if (err) return console.error(err);
           debug('App Assigned to', Matrix.config.device.identifier);
           process.exit();
@@ -50,10 +50,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
 
   } else if (cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
-    Matrix.api.sensor.install(t, Matrix.config.device.identifier, function (err, resp) {
+    Matrix.api.sensor.install(target, Matrix.config.device.identifier, function (err, resp) {
       if (err) return console.error(err);
       debug(resp);
-      console.log(t, ' ' + t('matrix.install.sensor_installed') + '.')
+      console.log(target, ' ' + t('matrix.install.sensor_installed') + '.')
       process.exit();
     })
   }
@@ -155,7 +155,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       {
         type: 'confirm',
         name: 'quick',
-        message: 'OK to allow '.white + t.yellow + ' access to the above? Y/n'.white,
+        message: 'OK to allow '.white + target.yellow + ' access to the above? '.white,
         default: true
       }
     );

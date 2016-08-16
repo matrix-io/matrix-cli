@@ -4,13 +4,11 @@ var exec = require('child_process').exec;
 var colors = require('colors');
 var should = require('should');
 var sinon = require('sinon');
-var i;
+var Table = require('cli-table');
 
 describe('Matrix CLI Commands', function() {
     before(function(done) {
-        Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
-            i = Matrix.localization.get;
-        })
+        Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {})
         done();
     })
 
@@ -32,7 +30,7 @@ describe('Matrix CLI Commands', function() {
                         //console.log('stderr', out.toString());
                     })
                     notloggedProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
 
@@ -63,7 +61,7 @@ describe('Matrix CLI Commands', function() {
                 });
 
                 loginProc.on('close', function(code) {
-                    outputs.should.matchAny(new RegExp(i('matrix.login.login_success')), 'stdout Fail, expecting "' + i('matrix.login.login_success') + '"')
+                    outputs.should.matchAny(new RegExp(t('matrix.login.login_success')), 'stdout Fail, expecting "' + t('matrix.login.login_success') + '"')
                     done();
                 });
 
@@ -81,7 +79,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     })
                     logoutProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.logout.logout_success')), 'stdout Fail, expecting "' + i('matrix.logout.logout_success') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.logout.logout_success')), 'stdout Fail, expecting "' + t('matrix.logout.logout_success') + '"')
                         done();
                     })
                 });
@@ -100,7 +98,7 @@ describe('Matrix CLI Commands', function() {
                     });
 
                     useProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -120,7 +118,7 @@ describe('Matrix CLI Commands', function() {
                     });
 
                     simProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -137,7 +135,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     listProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -154,7 +152,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     setProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -170,7 +168,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     rebootProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -186,7 +184,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     installProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
 
@@ -204,7 +202,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     configProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -221,7 +219,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     uninstallProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
 
@@ -238,7 +236,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     updateProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -254,7 +252,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     startProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -270,7 +268,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     stopProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
 
@@ -289,7 +287,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     restartProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
 
@@ -308,7 +306,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     createProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -324,7 +322,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     deployProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
 
@@ -342,7 +340,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     triggerProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
 
@@ -360,7 +358,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     });
                     logProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.please_login')), 'stdout Fail, expecting "' + i('matrix.please_login') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
                         done();
                     });
                 });
@@ -432,7 +430,7 @@ describe('Matrix CLI Commands', function() {
                         console.log('stderr', out.toString());
                     })
                     loginProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.login.already_login_warning')), 'stdout Fail, expecting "' + i('matrix.login.already_login_warning') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.login.already_login_warning')), 'stdout Fail, expecting "' + t('matrix.login.already_login_warning') + '"')
                         done();
                     });
                 });
@@ -450,7 +448,7 @@ describe('Matrix CLI Commands', function() {
                         console.log('stderr', out.toString());
                     })
                     logoutProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.logout.logout_success')), 'stdout Fail, expecting "' + i('matrix.logout.logout_success') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.logout.logout_success')), 'stdout Fail, expecting "' + t('matrix.logout.logout_success') + '"')
                         done();
                     });
                 });
@@ -469,7 +467,7 @@ describe('Matrix CLI Commands', function() {
                             console.log('stderr', out.toString());
                         })
                         useProc.on('close', function(code) {
-                            outputs.should.matchAny(new RegExp(i('matrix.use.command_help')), 'stdout Fail, expecting "' + i('matrix.use.command_help') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.use.command_help')), 'stdout Fail, expecting "' + t('matrix.use.command_help') + '"')
                             done();
                         });
                     });
@@ -490,7 +488,7 @@ describe('Matrix CLI Commands', function() {
                                 console.log('stderr', out.toString());
                             })
                             useDProc.on('close', function(code) {
-                                outputs.should.matchAny(new RegExp(i('matrix.use.device_not_found')), 'stdout Fail, expecting "' + i('matrix.use.device_not_found') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.use.device_not_found')), 'stdout Fail, expecting "' + t('matrix.use.device_not_found') + '"')
                                 done();
                             });
                         });
@@ -508,7 +506,7 @@ describe('Matrix CLI Commands', function() {
                                 console.log('stderr', out.toString());
                             })
                             useProc.on('close', function(code) {
-                                outputs.should.matchAny(new RegExp(i('matrix.use.not_authorized')), 'stdout Fail, expecting "' + i('matrix.use.not_authorized') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.use.not_authorized')), 'stdout Fail, expecting "' + t('matrix.use.not_authorized') + '"')
                                 done();
                             });
                         });
@@ -525,7 +523,7 @@ describe('Matrix CLI Commands', function() {
                                 console.log('stderr', out.toString());
                             })
                             useProc.on('close', function(code) {
-                                outputs.should.matchAny(new RegExp(i('matrix.use.using_device_by_name')), 'stdout Fail, expecting "' + i('matrix.use.using_device_by_name') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.use.using_device_by_name')), 'stdout Fail, expecting "' + t('matrix.use.using_device_by_name') + '"')
                                 done();
                             });
 
@@ -552,7 +550,7 @@ describe('Matrix CLI Commands', function() {
 
                         simProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.sim.command_help_sim')), 'stdout Fail, expecting "' + i('matrix.sim.command_help_sim') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.sim.command_help_sim')), 'stdout Fail, expecting "' + t('matrix.sim.command_help_sim') + '"')
                             done();
                         });
                     });
@@ -574,7 +572,7 @@ describe('Matrix CLI Commands', function() {
 
                             simProc.on('close', function(code) {
                                 console.log('close', outputs)
-                                outputs.should.matchAny(new RegExp(i('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.specify_data_for_init') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.specify_data_for_init') + '"')
                                 done();
                             });
 
@@ -596,7 +594,7 @@ describe('Matrix CLI Commands', function() {
                                     console.log('stderr', out.toString())
                                 })
                                 simProc.on('close', function(code) {
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
                                     done();
                                 });
                             });
@@ -613,7 +611,7 @@ describe('Matrix CLI Commands', function() {
                                     console.log('stderr', out.toString())
                                 })
                                 simProc.on('close', function(code) {
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
                                     done();
                                 });
 
@@ -631,7 +629,7 @@ describe('Matrix CLI Commands', function() {
                                     console.log('stderr', out.toString())
                                 })
                                 simProc.on('close', function(code) {
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
                                     done();
                                 });
                             });
@@ -649,7 +647,7 @@ describe('Matrix CLI Commands', function() {
                                     console.log('stderr', out.toString())
                                 })
                                 simProc.on('close', function(code) {
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
                                     done();
                                 });
 
@@ -668,7 +666,7 @@ describe('Matrix CLI Commands', function() {
                                     console.log('stderr', out.toString())
                                 })
                                 simProc.on('close', function(code) {
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.warning_sim_init') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
                                     done();
                                 });
                             });
@@ -688,7 +686,7 @@ describe('Matrix CLI Commands', function() {
 
                                 simProc.on('close', function(code) {
                                     console.log('close', outputs)
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + i('matrix.sim.init.specify_data_for_init') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.specify_data_for_init') + '"')
                                     done();
                                 });
                             });
@@ -732,7 +730,7 @@ describe('Matrix CLI Commands', function() {
                                     console.log('stderr', out.toString())
                                 })
                                 simProc.on('close', function(code) {
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.restore.downloading_image')), 'stdout Fail, expecting "' + i('matrix.sim.restore.downloading_image') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.restore.downloading_image')), 'stdout Fail, expecting "' + t('matrix.sim.restore.downloading_image') + '"')
                                     done();
                                 });
                             });
@@ -751,7 +749,7 @@ describe('Matrix CLI Commands', function() {
                                 })
                                 startProc.on('close', function(code) {
                                     console.log('close', outputs)
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.start.starting_sim')), 'stdout Fail, expecting "' + i('matrix.sim.start.starting_sim') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.start.starting_sim')), 'stdout Fail, expecting "' + t('matrix.sim.start.starting_sim') + '"')
                                     done();
                                 })
                             });
@@ -772,7 +770,7 @@ describe('Matrix CLI Commands', function() {
                                 stopProc.on('close', function(code) {
                                     console,
                                     log('close', outputs)
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.stop.sim_stopped')), 'stdout Fail, expecting "' + i('matrix.sim.stop.sim_stopped') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.stop.sim_stopped')), 'stdout Fail, expecting "' + t('matrix.sim.stop.sim_stopped') + '"')
                                     done();
                                 })
                             });
@@ -791,7 +789,7 @@ describe('Matrix CLI Commands', function() {
                                 })
                                 saveProc.on('close', function(code) {
                                     console.log('closeeee', outputs);
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.save.state_saved')), 'stdout Fail, expecting "' + i('matrix.sim.save.state_saved') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.save.state_saved')), 'stdout Fail, expecting "' + t('matrix.sim.save.state_saved') + '"')
                                     done();
                                 })
                             });
@@ -811,7 +809,7 @@ describe('Matrix CLI Commands', function() {
                                 })
                                 clearProc.on('close', function(code) {
                                     console.log('close', outputs)
-                                    outputs.should.matchAny(new RegExp(i('matrix.sim.clear.simulation_cleared')), 'stdout Fail, expecting "' + i('matrix.sim.clear.simulation_cleared') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.sim.clear.simulation_cleared')), 'stdout Fail, expecting "' + t('matrix.sim.clear.simulation_cleared') + '"')
                                     done();
                                 })
                             });
@@ -828,7 +826,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             unkProc.on('close', function(code) {
                                 console.log('brayan', outputs);
-                                outputs.should.matchAny(new RegExp(i('matrix.sim.unknowm_parameter')), 'stdout Fail, expecting "' + i('matrix.sim.unknowm_parameter') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.sim.unknowm_parameter')), 'stdout Fail, expecting "' + t('matrix.sim.unknowm_parameter') + '"')
                                 done();
                             })
                         });
@@ -851,7 +849,7 @@ describe('Matrix CLI Commands', function() {
                         })
                         listProc.stdout.on('close', function(code) {
                             console.log('brayanClose', outputs);
-                            outputs.should.matchAny(new RegExp(i('matrix.list.help_devices')), 'stdout Fail, expecting "' + i('matrix.list.help_devices') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.list.help_devices')), 'stdout Fail, expecting "' + t('matrix.list.help_devices') + '"')
                             done();
                         })
                     });
@@ -873,7 +871,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             listProc.on('close', function(code) {
                                 console.log('close', outputs);
-                                outputs.should.matchAny(new RegExp(i('matrix.list.list_devices')), 'stdout Fail, expecting "' + i('matrix.list.list_devices') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.list.list_devices')), 'stdout Fail, expecting "' + t('matrix.list.list_devices') + '"')
                                 done();
                             });
                         });
@@ -896,7 +894,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             groupsProc.on('close', function(code) {
                                 console.log('close', outputs)
-                                outputs.should.matchAny(new RegExp(i('matrix.list.list_groups')), 'stdout Fail, expecting "' + i('matrix.list.list_groups') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.list.list_groups')), 'stdout Fail, expecting "' + t('matrix.list.list_groups') + '"')
                                 done()
                             })
                         });
@@ -916,7 +914,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             appsProc.on('close', function(code) {
                                 console.log('close', outputs)
-                                outputs.should.matchAny(new RegExp(i('matrix.list.list_apps')), 'stdout Fail, expecting "' + i('matrix.list.list_apps') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.list.list_apps')), 'stdout Fail, expecting "' + t('matrix.list.list_apps') + '"')
                                 done()
                             })
                         });
@@ -936,7 +934,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             appsProc.on('close', function(code) {
                                 console.log('close', outputs)
-                                outputs.should.matchAny(new RegExp(i('matrix.list.list_all')), 'stdout Fail, expecting "' + i('matrix.list.list_all') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.list.list_all')), 'stdout Fail, expecting "' + t('matrix.list.list_all') + '"')
                                 done()
                             })
                         });
@@ -957,7 +955,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             unknownProc.on('close', function(code) {
                                 console.log('close', outputs)
-                                outputs.should.matchAny(new RegExp(i('matrix.list.no_results')), 'stdout Fail, expecting "' + i('matrix.list.no_results') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.list.no_results')), 'stdout Fail, expecting "' + t('matrix.list.no_results') + '"')
                                 done()
                             })
                         });
@@ -979,7 +977,7 @@ describe('Matrix CLI Commands', function() {
                         console.log('stderr', out.toString())
                     })
                     setProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                         console.log('close', outputs)
                         done();
                     });
@@ -1001,7 +999,7 @@ describe('Matrix CLI Commands', function() {
                     })
                     rebootProc.on('close', function(code) {
                         console.log('close', outputs);
-                        outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                         done();
                     })
                 });
@@ -1020,7 +1018,7 @@ describe('Matrix CLI Commands', function() {
                         outputs.push(out.toString());
                     })
                     searchProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                         console.log('close', outputs)
                         done();
                     });
@@ -1041,7 +1039,7 @@ describe('Matrix CLI Commands', function() {
                     });
                     installProc.on('close', function(code) {
                         console.log('close', outputs)
-                        outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                         done();
                     });
                 });
@@ -1061,7 +1059,7 @@ describe('Matrix CLI Commands', function() {
                     });
                     configProc.on('close', function(code) {
                         console.log('close', outputs)
-                        outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                         done();
                     });
                 });
@@ -1081,7 +1079,7 @@ describe('Matrix CLI Commands', function() {
                     });
                     uninstallProc.on('close', function(code) {
                         console.log('close', outputs)
-                        outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                         done();
                     });
                 });
@@ -1101,7 +1099,7 @@ describe('Matrix CLI Commands', function() {
                     });
                     updateProc.on('close', function(code) {
                         console.log('close', outputs)
-                        outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                        outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                         done();
                     });
                 }); // Finish update
@@ -1121,7 +1119,7 @@ describe('Matrix CLI Commands', function() {
                         });
                         startProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
@@ -1141,7 +1139,7 @@ describe('Matrix CLI Commands', function() {
                         });
                         stopProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
@@ -1162,7 +1160,7 @@ describe('Matrix CLI Commands', function() {
                         });
                         restartProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
@@ -1184,7 +1182,7 @@ describe('Matrix CLI Commands', function() {
                         });
                         createProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
@@ -1205,7 +1203,7 @@ describe('Matrix CLI Commands', function() {
                         });
                         deployProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
@@ -1225,7 +1223,7 @@ describe('Matrix CLI Commands', function() {
                         });
                         triggerProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                             done();
                         });
                     });
@@ -1246,7 +1244,7 @@ describe('Matrix CLI Commands', function() {
                         });
                         logProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + i('matrix.set.warning_device_required') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
                             done();
                         });
 
@@ -1282,7 +1280,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             setProc.on('close', function(code) {
                                 console.log('close', outputs)
-                                outputs.should.matchAny(new RegExp(i('matrix.set.help_device')), 'stdout Fail, expecting "' + i('matrix.set.help_device') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.set.help_device')), 'stdout Fail, expecting "' + t('matrix.set.help_device') + '"')
                                 done();
                             });
                         });
@@ -1306,7 +1304,7 @@ describe('Matrix CLI Commands', function() {
 
                                     setProc.on('close', function(code) {
                                         console.log('close', outputs)
-                                        outputs.should.matchAny(new RegExp(i('matrix.set.env.valid_environments')), 'stdout Fail, expecting "' + i('matrix.set.env.valid_environments') + '"')
+                                        outputs.should.matchAny(new RegExp(t('matrix.set.env.valid_environments')), 'stdout Fail, expecting "' + t('matrix.set.env.valid_environments') + '"')
                                         done();
                                     });
 
@@ -1328,7 +1326,7 @@ describe('Matrix CLI Commands', function() {
 
                                         setProc.on('close', function(code) {
                                             console.log('close', outputs)
-                                            outputs.should.matchAny(new RegExp(i('matrix.set.env.env')), 'stdout Fail, expecting "' + i('matrix.set.env.env') + '"')
+                                            outputs.should.matchAny(new RegExp(t('matrix.set.env.env')), 'stdout Fail, expecting "' + t('matrix.set.env.env') + '"')
                                             done();
                                         });
 
@@ -1348,7 +1346,7 @@ describe('Matrix CLI Commands', function() {
 
                                         setProc.on('close', function(code) {
                                             console.log('close', outputs)
-                                            outputs.should.matchAny(new RegExp(i('matrix.set.env.env')), 'stdout Fail, expecting "' + i('matrix.set.env.env') + '"')
+                                            outputs.should.matchAny(new RegExp(t('matrix.set.env.env')), 'stdout Fail, expecting "' + t('matrix.set.env.env') + '"')
                                             done();
                                         });
                                     });
@@ -1370,7 +1368,7 @@ describe('Matrix CLI Commands', function() {
                                     });
 
                                     setProc.on('close', function(code) {
-                                        outputs.should.matchAny(new RegExp(i('matrix.set.config.no_app')), 'stdout Fail, expecting "' + i('matrix.set.config.no_app') + '"')
+                                        outputs.should.matchAny(new RegExp(t('matrix.set.config.no_app')), 'stdout Fail, expecting "' + t('matrix.set.config.no_app') + '"')
                                         console.log('close', outputs)
                                         done();
                                     });
@@ -1391,7 +1389,7 @@ describe('Matrix CLI Commands', function() {
                                         });
                                         setProc.on('close', function(code) {
                                             console.log('close', outputs)
-                                            outputs.should.matchAny(new RegExp(i('matrix.set.config.invalid_key_value')), 'stdout Fail, expecting "' + i('matrix.set.config.invalid_key_value') + '"')
+                                            outputs.should.matchAny(new RegExp(t('matrix.set.config.invalid_key_value')), 'stdout Fail, expecting "' + t('matrix.set.config.invalid_key_value') + '"')
                                             done();
                                         });
                                     });
@@ -1411,7 +1409,7 @@ describe('Matrix CLI Commands', function() {
                                             });
                                             setProc.on('close', function(code) {
                                                 console.log('close', outputs)
-                                                outputs.should.matchAny(new RegExp(i('matrix.set.config.no_key_value')), 'stdout Fail, expecting "' + i('matrix.set.config.no_key_value') + '"')
+                                                outputs.should.matchAny(new RegExp(t('matrix.set.config.no_key_value')), 'stdout Fail, expecting "' + t('matrix.set.config.no_key_value') + '"')
                                                 done()
                                             })
                                         });
@@ -1431,7 +1429,7 @@ describe('Matrix CLI Commands', function() {
                                             });
                                             setProc.stdout.on('close', function(code) {
                                                 console.log('close', outputs)
-                                                outputs.should.matchAny(new RegExp(i('matrix.set.config.use')), 'stdout Fail, expecting "' + i('matrix.set.config.use') + '"')
+                                                outputs.should.matchAny(new RegExp(t('matrix.set.config.use')), 'stdout Fail, expecting "' + t('matrix.set.config.use') + '"')
                                                 done();
                                             })
                                         });
@@ -1460,7 +1458,7 @@ describe('Matrix CLI Commands', function() {
 
                         rebootProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.reboot.device_offline')), 'stdout Fail, expecting "' + i('matrix.reboot.device_offline') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.reboot.device_offline')), 'stdout Fail, expecting "' + t('matrix.reboot.device_offline') + '"')
                             done();
                         });
                     });
@@ -1481,7 +1479,7 @@ describe('Matrix CLI Commands', function() {
 
                         rebootProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('matrix.reboot.rebooted')), 'stdout Fail, expecting "' + i('matrix.reboot.rebooted') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.reboot.rebooted')), 'stdout Fail, expecting "' + t('matrix.reboot.rebooted') + '"')
                             done();
                         });
                     });
@@ -1504,7 +1502,7 @@ describe('Matrix CLI Commands', function() {
                         })
                         searchProc.on('close', function(code) {
                             console.log('close', outputs);
-                            outputs.should.matchAny(new RegExp(i('matrix.search.help')), 'stdout Fail, expecting "' + i('matrix.search.help') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.search.help')), 'stdout Fail, expecting "' + t('matrix.search.help') + '"')
                             done();
                         })
                     });
@@ -1525,7 +1523,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             searchProc.on('close', function(code) {
                                 console.log('close', outputs);
-                                outputs.should.matchAny(new RegExp(i('matrix.search.small_needle')), 'stdout Fail, expecting "' + i('matrix.search.small_needle') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.search.small_needle')), 'stdout Fail, expecting "' + t('matrix.search.small_needle') + '"')
                                 done();
                             })
 
@@ -1534,19 +1532,27 @@ describe('Matrix CLI Commands', function() {
 
                     context('search term has more than 2 characters', function() {
                         it.skip('should list the results of an app search', function(done) {
-                            var searchProc = run('matrix', ['search', 'xxx']);
+                            var searchProc = run('matrix', ['search', 'xxxx']);
                             var outputs = new Array();
                             searchProc.stdout.on('data', function(out) {
+                                console.log('BRAYAN>>>>', out.toString());
+                                console.log("Instance: ", out instanceof Array);
+                                console.log("OUT Type: ", typeof out);
                                 console.log('stdout', out.toString());
                                 outputs.push(out.toString());
                             })
                             searchProc.stderr.on('data', function(out) {
+                                console.log('BRAYAN>>>>', out);
+                                var arr = Object.keys(out).map(function(key) { console.log("RES: ", out[key]) });
+                                console.log("ARR: ", arr.toString());
+                                console.log("Instance: ", out instanceof Array);
+                                console.log("ERR Type: ", typeof out);
                                 console.log('stderr', out.toString())
                                 outputs.push(out.toString());
                             })
                             searchProc.on('close', function(code) {
                                 console.log('close', outputs);
-                                outputs.should.matchAny(new RegExp(i('matrix.search.search_successfully')), 'stdout Fail, expecting "' + i('matrix.search.search_successfully') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.search.search_successfully')), 'stdout Fail, expecting "' + t('matrix.search.search_successfully') + '"')
                                 done();
                             })
                         });
@@ -1570,7 +1576,7 @@ describe('Matrix CLI Commands', function() {
                         })
                         installProc.on('close', function(code) {
                             console.log('close', outputs);
-                            outputs.should.matchAny(new RegExp(i('matrix.install.command_help')), 'stdout Fail, expecting "' + i('matrix.install.command_help') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.install.command_help')), 'stdout Fail, expecting "' + t('matrix.install.command_help') + '"')
                             done();
                         })
 
@@ -1592,7 +1598,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             installProc.on('close', function(code) {
                                 console.log('close', outputs);
-                                outputs.should.matchAny(new RegExp(i('matrix.install.app_not_found')), 'stdout Fail, expecting "' + i('matrix.install.app_not_found') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.install.app_not_found')), 'stdout Fail, expecting "' + t('matrix.install.app_not_found') + '"')
                                 done();
                             })
                         });
@@ -1613,7 +1619,7 @@ describe('Matrix CLI Commands', function() {
                                 })
                                 installProc.on('close', function(code) {
                                     console.log('close', outputs);
-                                    outputs.should.matchAny(new RegExp(i('matrix.install.app_installed')), 'stdout Fail, expecting "' + i('matrix.install.app_installed') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.install.app_installed')), 'stdout Fail, expecting "' + t('matrix.install.app_installed') + '"')
                                     done();
                                 })
                             });
@@ -1633,7 +1639,7 @@ describe('Matrix CLI Commands', function() {
                                 })
                                 installProc.on('close', function(code) {
                                     console.log('close', outputs)
-                                    outputs.should.matchAny(new RegExp(i('matrix.install.installing')), 'stdout Fail, expecting "' + i('matrix.install.installing') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.install.installing')), 'stdout Fail, expecting "' + t('matrix.install.installing') + '"')
                                     done();
                                 })
 
@@ -1661,7 +1667,7 @@ describe('Matrix CLI Commands', function() {
                         })
                         configProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(i('')), 'stdout Fail, expecting "' + i('') + '"')
+                            outputs.should.matchAny(new RegExp(t('')), 'stdout Fail, expecting "' + t('') + '"')
                             done();
                         })
                     });
@@ -1684,7 +1690,7 @@ describe('Matrix CLI Commands', function() {
                             })
                             configProc.on('close', function(code) {
                                 console.log('close', outputs)
-                                outputs.should.matchAny(new RegExp(i('matrix.config.specified_application_does_not_exist')), 'stdout Fail, expecting "' + i('matrix.config.specified_application_does_not_exist') + '"')
+                                outputs.should.matchAny(new RegExp(t('matrix.config.specified_application_does_not_exist')), 'stdout Fail, expecting "' + t('matrix.config.specified_application_does_not_exist') + '"')
                                 done();
                             })
 
@@ -1694,7 +1700,7 @@ describe('Matrix CLI Commands', function() {
                         context('app', function() {
                             it.skip('should show application configurations', function(done) {
 
-                                var configProc = run('matrix', ['config', 'vehicle', '']);
+                                var configProc = run('matrix', ['config', 'clock', '']);
                                 var outputs = new Array();
                                 configProc.stdout.on('data', function(out) {
                                     console.log('stdout', out.toString())
@@ -1706,7 +1712,7 @@ describe('Matrix CLI Commands', function() {
                                 })
                                 configProc.on('close', function(code) {
                                     console.log('close', outputs)
-                                    outputs.should.matchAny(new RegExp(i('matrix.config.specify_key')), 'stdout Fail, expecting "' + i('matrix.config.specify_key') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.config.specify_key')), 'stdout Fail, expecting "' + t('matrix.config.specify_key') + '"')
                                     done();
                                 })
                             });
@@ -1714,8 +1720,8 @@ describe('Matrix CLI Commands', function() {
 
                         context('app key', function() {
                             context('specified key doesn\'t exist', function() {
-                                it('should show a "specified key doesn\'t exist" warning', function(done) {
-                                    var configProc = run('matrix', ['config', 'vehicle', 'XXXXX']);
+                                it.skip('should show a "specified key doesn\'t exist" warning', function(done) {
+                                    var configProc = run('matrix', ['config', 'clock', 'XXXXX']);
                                     var outputs = new Array();
                                     configProc.stdout.on('data', function(out) {
                                         console.log('stdout', out.toString())
@@ -1727,7 +1733,7 @@ describe('Matrix CLI Commands', function() {
                                     })
                                     configProc.on('close', function(code) {
                                         console.log('close', outputs)
-                                        outputs.should.matchAny(new RegExp(i('matrix.config.key_doesnt_exist')), 'stdout Fail, expecting "' + i('matrix.config.key_doesnt_exist') + '"')
+                                        outputs.should.matchAny(new RegExp(t('matrix.config.key_doesnt_exist')), 'stdout Fail, expecting "' + t('matrix.config.key_doesnt_exist') + '"')
                                         done();
                                     })
                                 });
@@ -1735,7 +1741,7 @@ describe('Matrix CLI Commands', function() {
 
                             context('specified key exists', function() {
                                 it.skip('should show application configuration key', function(done) {
-                                    var configProc = run('matrix', ['config', 'vehicle', 'name=brayan']);
+                                    var configProc = run('matrix', ['config', 'clock', 'name']);
                                     var outputs = new Array();
 
                                     configProc.stdout.on('data', function(out) {
@@ -1748,7 +1754,7 @@ describe('Matrix CLI Commands', function() {
                                     })
                                     configProc.on('close', function(code) {
                                         console.log('close', outputs)
-                                        outputs.should.matchAny(new RegExp(i('matrix.config.')), 'stdout Fail, expecting "' + i('matrix.config.') + '"')
+                                        outputs.should.matchAny(new RegExp(t('matrix.config.help_app_key')), 'stdout Fail, expecting "' + t('matrix.config.help_app_key') + '"')
                                         done();
                                     })
                                 });
@@ -1756,11 +1762,117 @@ describe('Matrix CLI Commands', function() {
                         });
 
                         context('app key value', function() {
-                            it.skip('should set application configuration key value', function(done) {});
+                            it.skip('should set application configuration key value', function(done) {
+                                var configProc = run('matrix', ['config', 'clock', 'name=brayan']);
+                                var outputs = new Array();
+
+                                configProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                configProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                configProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(t('matrix.config.key_value')), 'stdout Fail, expecting "' + t('matrix.config.key_value') + '"')
+                                    done();
+                                })
+                            });
                         });
                     });
                 });
             }); //finish config   with errors
+
+
+            context('uninstall', function() {
+                context('No parameters specified', function() {
+                    it.skip('should show command "uninstall" usage', function(done) {
+                        var uninstallProc = run('matrix', ['uninstall']);
+                        var outputs = new Array();
+                        uninstallProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString());
+                        })
+                        uninstallProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString());
+                        })
+                        uninstallProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.uninstall.application_unspecified')), 'stdout Fail, expecting "' + t('matrix.uninstall.application_unspecified') + '"')
+                            done();
+                        })
+
+                    });
+                });
+
+                context('Parameters specified', function() {
+                    context('specified app doesn\'t exist', function() {
+                        it.skip('should show a "specified app doesn\'t exist" warning', function(done) {
+                            var uninstallProc = run('matrix', ['uninstall', 'XXXX']);
+                            var outputs = new Array();
+                            uninstallProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString());
+                            })
+                            uninstallProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString());
+                            })
+                            uninstallProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.uninstall.app_undefined')), 'stdout Fail, expecting "' + t('matrix.uninstall.app_undefined') + '"')
+                                done();
+                            })
+                        });
+                    });
+
+                    context('specified app exists', function() {
+
+                        context('device is offline', function() {
+                            it.skip('should show a "device is offline" warning', function(done) {
+                                var uninstallProc = run('matrix', ['uninstall', 'myhealthapp']);
+                                var outputs = new Array();
+                                uninstallProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                uninstallProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                uninstallProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(t('matrix.uninstall.device_offline')), 'stdout Fail, expecting "' + t('matrix.uninstall.device_offline') + '"')
+                                    done();
+                                })
+                            });
+                        });
+
+                        context('device is online', function() {
+                            it('should uninstall the specified app', function(done) {
+                                var uninstallProc = run('matrix', ['uninstall', 'MyHealthApp']);
+                                var outputs = new Array();
+                                uninstallProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                uninstallProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                uninstallProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(t('matrix.uninstall.uninstalled')), 'stdout Fail, expecting "' + t('matrix.uninstall.uninstalled') + '"')
+                                    done();
+                                })
+                            });
+                        });
+                    });
+                });
+            }); //finish  (error authenticate and acces token )uninstall 
 
         })
 

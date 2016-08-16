@@ -157,10 +157,12 @@ en:
       specified_application_does_not_exist: 'app specified doesn`t exist' #
       specify_key: specify a key # 
       key_doesnt_exist: this key specified doesn´t exist # 
+      key_value: 'value:'
     uninstall: 
       uninstalled: 'Uninstalled'
       application_unspecified: 'specify [ app ] <name>' #
       app_undefined: 'this app doesn`t exist' #
+      device_offline: Device offline, reconect the device please #
     update:      
       upgrading_to: 'Upgrading to'
       latest_version: 'latest version'
