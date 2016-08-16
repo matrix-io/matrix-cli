@@ -173,6 +173,7 @@ en:
       app_undefined: 'Application doesn`t exist' #
       app_update_successfully: 'Application updated successfully to latest' #
       version_undefined: 'Unsupported app version' #
+      version_doesnt_exist: this version doesn´t exist # 
       version_update_successfully: 'Application updated successfully to' #
       error_updating: Error updating #
     start: 

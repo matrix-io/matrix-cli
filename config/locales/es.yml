@@ -184,6 +184,7 @@ es:
       description_index: 'punto de entrada de la aplicación, no modificar'
       description_package: 'archivo de información de node.js, no modificarlo sin conocimiento'
     deploy:
+      # command_usage: deploy use #
       app_not_found: 'No se encontró el archivo %{detect_file}. Estás seguro que una aplicación MatrixOS reside en %{pwd}?'
       folders_not_supported: 'Culpa nuestra. Añun no se puede hacer despliegue de directorios'
       cancel_deploy: 'SE cancela el despliegue debido a errores y advertencias'

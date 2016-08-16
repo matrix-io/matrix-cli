@@ -1852,7 +1852,7 @@ describe('Matrix CLI Commands', function() {
                         });
 
                         context('device is online', function() {
-                            it('should uninstall the specified app', function(done) {
+                            it.skip('should uninstall the specified app', function(done) {
                                 var uninstallProc = run('matrix', ['uninstall', 'MyHealthApp']);
                                 var outputs = new Array();
                                 uninstallProc.stdout.on('data', function(out) {
@@ -1873,6 +1873,594 @@ describe('Matrix CLI Commands', function() {
                     });
                 });
             }); //finish  (error authenticate and acces token )uninstall 
+
+            context('update', function() {
+
+                context('No parameters specified', function() {
+                    it.skip('should show command "update" usage', function(done) {
+                        var updateProc = run('matrix', ['update']);
+                        var outputs = new Array();
+                        updateProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString());
+                        })
+                        updateProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString());
+                        })
+                        updateProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.update.help_update')), 'stdout Fail, expecting "' + t('matrix.update.help_update') + '"')
+                            done();
+                        })
+                    });
+                });
+
+                context('Parameters specified', function() {
+                    context('app', function() {
+                        context('device doesn\'t have the app installed', function() {
+                            it.skip('should show a "device doesn\'t have the app installed"', function(done) {
+                                var updateProc = run('matrix', ['update', 'vehicle'])
+                                var outputs = new Array();
+
+                                updateProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                updateProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                updateProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(t('matrix.update.app_undefined')), 'stdout Fail, expecting "' + t('matrix.update.app_undefined') + '"')
+                                    done();
+                                })
+                            });
+                        });
+
+                        context('device has the app installed', function() {
+                            it.skip('should update the application to its latest version', function(done) {
+                                var updateProc = run('matrix', ['update', 'vehicle'])
+                                var outputs = new Array();
+                                updateProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                updateProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                updateProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(t('matrix.update.app_update_successfully')), 'stdout Fail, expecting "' + t('matrix.update.app_update_successfully') + '"')
+                                    done();
+                                })
+                            });
+                        });
+
+                        context('app version', function() {
+                            context('version doesn\'t exist', function() {
+                                it.skip('should show a version doesn\'t exist warning', function(done) {
+                                    var updateProc = run('matrix', ['update', 'vehicle', 'versionFake']);
+                                    var outputs = new Array();
+                                    updateProc.stdout.on('data', function(out) {
+                                        console.log('stdout', out.toString())
+                                        outputs.push(out.toString());
+                                    })
+                                    updateProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString())
+                                        outputs.push(out.toString());
+                                    })
+                                    updateProc.on('close', function(code) {
+                                        console.log('close', outputs)
+                                        outputs.should.matchAny(new RegExp(t('matrix.update.version_undefined')), 'stdout Fail, expecting "' + t('matrix.update.version_undefined') + '"')
+                                        done();
+                                    })
+                                });
+                            });
+
+                            context('version exists', function() {
+                                it.skip('should update to that version', function(done) {
+                                    var updateProc = run('matrix', ['update', 'veryfirstapp', '0.7'])
+                                    var outputs = new Array();
+
+                                    updateProc.stdout.on('data', function(out) {
+                                        console.log('stdout', out.toString())
+                                        outputs.push(out.toString());
+                                    })
+                                    updateProc.stderr.on('data', function(out) {
+                                        console.log('stderr', out.toString())
+                                        outputs.push(out.toString());
+                                    })
+                                    updateProc.on('close', function(code) {
+                                        console.log('close', outputs)
+                                        outputs.should.matchAny(new RegExp(t('matrix.update.version_update_successfully')), 'stdout Fail, expecting "' + t('matrix.update.version_update_successfully') + '"')
+                                        done();
+                                    })
+                                });
+                            });
+                        });
+
+                        context('unknown parameter', function() {
+                            it.skip('should show a "parameter doesn\'t exist "', function(done) {
+                                var updateProc = run('matrix', ['update', 'veryfirstapp', 'XXXXX'])
+                                var outputs = new Array();
+                                updateProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                updateProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString());
+                                })
+                                updateProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(t('matrix.update.version_doesnt_exist')), 'stdout Fail, expecting "' + t('matrix.update.version_doesnt_exist') + '"')
+                                    done();
+                                })
+                            });
+                        });
+                    });
+                });
+            }); // finish update  error 
+
+            context('start', function() {
+
+                context('No parameters specified', function() {
+                    it.skip('should show command "start" usage', function(done) {
+                        var startProc = run('Matrix', ['start'])
+                        var outputs = new Array();
+
+                        startProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString());
+                        })
+                        startProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString());
+                        })
+                        startProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.start.application_unspecified')), 'stdout Fail, expecting "' + t('matrix.start.application_unspecified') + '"')
+                            done();
+                        })
+                    });
+                });
+
+                context(' parameters specified', function() {
+                    context('start', function() {
+                        it.skip('Starts an app running on the active MatrixOS', function(done) {
+                            var startProc = run('Matrix', ['start', 'vehicle'])
+                            var outputs = new Array();
+
+                            startProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString());
+                            })
+                            startProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString());
+                            })
+                            startProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.start.starting_app')), 'stdout Fail, expecting "' + t('matrix.start.starting_app') + '"')
+                                done();
+                            })
+                        });
+                    });
+                    context('unknown parameter', function() {
+                        it.skip('should show an "parameter doesn\'t exist', function(done) {
+                            var startProc = run('Matrix', ['start', 'XXXX'])
+                            var outputs = new Array();
+                            startProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString());
+                            })
+                            startProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString());
+                            })
+                            startProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.start.app_undefined')), 'stdout Fail, expecting "' + t('matrix.start.app_undefined') + '"')
+                                done();
+                            })
+                        });
+                    });
+
+                });
+            }); // finish start error " client registration fail"
+
+            context('stop', function() {
+
+                context('No parameters specified', function() {
+                    it.skip('should show command "stop" usage', function(done) {
+                        var stopProc = run('matrix', ['stop'])
+                        var outputs = new Array();
+
+                        stopProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        stopProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        stopProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.stop.application_unspecified')), 'stdout Fail, expecting"' + t('matrix.stop.application_unspecified') + '"')
+                            done()
+                        })
+                    });
+                });
+
+                context(' parameters specified', function() {
+                    context('unknown parameter', function() {
+                        it.skip('should show an "parameter doesn\'t exist', function(done) {
+                            var stopProc = run('Matrix', ['stop', 'XXXX'])
+                            var outputs = new Array();
+
+                            stopProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            stopProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            stopProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.stop.app_undefined')), 'stdout Fail, expecting"' + t('matrix.stop.app_undefined') + '"')
+                                done()
+                            })
+                        });
+                    });
+                    context('stop', function() {
+                        it.skip('Stops an app running on the active MatrixOS', function(done) {
+                            var stopProc = run('Matrix', ['stop', 'vehicle'])
+                            var outputs = new Array();
+                            stopProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            stopProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            stopProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.stop.stopping_app')), 'stdout Fail, expecting"' + t('matrix.stop.stopping_app') + '"')
+                                done()
+                            })
+                        });
+                    });
+                });
+            }); //finish stop ERROR FAIL AUTHENTICATE !! 
+
+            context('restart', function() {
+
+                context('No parameters specified', function() {
+                    it.skip('should show command "restart" usage', function(done) {
+                        var restartProc = run('Matrix', ['restart']);
+                        var outputs = new Array();
+
+                        restartProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        restartProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        restartProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.restart.stopping_app')), 'stdout Fail, expecting"' + t('matrix.restart.stopping_app') + '"')
+                            done()
+                        })
+                    });
+                });
+
+                context(' parameters specified', function() {
+                    context('unknown parameter', function() {
+                        it.skip('should show an "parameter doesn\'t exist', function(done) {
+                            var restartProc = run('Matrix', ['restart', 'XXXX']);
+                            var outputs = new Array();
+
+
+                            restartProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            restartProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            restartProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.restart.app_undefined')), 'stdout Fail, expecting"' + t('matrix.restart.app_undefined') + '"')
+                                done()
+                            })
+                        });
+                    });
+
+                    context('restart', function() {
+                        it.skip('Restarts an app running on the MatrixOS', function(done) {
+                            var restartProc = run('Matrix', ['restart', 'vehicle']);
+                            var outputs = new Array();
+
+
+                            restartProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            restartProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            restartProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.restart.stopping_app')), 'stdout Fail, expecting"' + t('matrix.restart.stopping_app') + '"')
+                                done()
+                            })
+                        });
+
+                    });
+                });
+            }); //finish restart ERROR (Application.restart(admatrix.config, cb);)
+
+            context('create', function() {
+
+                context('No parameters specified', function() {
+                    it('should show commands "create" usage', function(done) {
+                        var createProc = run('matrix', ['create'])
+                        var outputs = new Array();
+
+                        createProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        createProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        createProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.create.name_undefined')), 'stdout Fail, expecting"' + t('matrix.create.name_undefined') + '"')
+                            done()
+                        })
+                    });
+                });
+
+                context('specified to name device create', function() {
+                    it('Creates a new scaffolding for a MatrixOS Application', function(done) {
+
+                        var createProc = run('matrix', ['create', 'test'])
+                        var outputs = new Array();
+
+                        createProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        createProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        createProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.create.new_folder')), 'stdout Fail, expecting"' + t('matrix.create.new_folder') + '"')
+                            done()
+                        })
+                    });
+                });
+
+            }); // finish create 'ERROR' 
+
+            context('deploy', function() {
+                context('No parameters specified', function() {
+                    it.skip('should show commands "deploy" usage', function(done) {
+                        var deployProc = run('matrix', ['deploy']);
+                        var outputs = new Array();
+
+                        deployProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        deployProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        deployProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.deploy.application_unspecified')), 'stdout Fail, expecting"' + t('matrix.deploy.application_unspecified') + '"')
+                            done()
+                        })
+                    });
+                });
+
+                context('parameters specified', function() {
+                    context('unknown parameter', function() {
+                        it.skip('should show an "parameter doesn\'t exist', function(done) {
+
+                            var deployProc = run('matrix', ['deploy', 'XXXXX']);
+                            var outputs = new Array();
+
+                            deployProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            deployProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            deployProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.deploy.app_undefined')), 'stdout Fail, expecting"' + t('matrix.deploy.app_undefined') + '"')
+                                done()
+                            })
+
+                        });
+                    });
+                    context('name device correct', function() {
+                        it.skip('Deploys an app to the active MatrixOS', function(done) {
+                            var deployProc = run('matrix', ['deploy', 'vehicle']);
+                            var outputs = new Array();
+
+                            deployProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            deployProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            deployProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.deploy.deploy_app_successfully')), 'stdout Fail, expecting"' + t('matrix.deploy.deploy_app_successfully') + '"')
+                                done()
+                            })
+                        });
+                    });
+
+                });
+            }); // finish deploy 'ERROR'
+
+            context('trigger', function() {
+                context('No parameters specified', function() {
+                    it.skip('should show commands "trigger" usage', function(done) {
+                        var triggerProc = run('matrix', ['trigger']);
+                        var outputs = new Array();
+
+                        triggerProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        triggerProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        triggerProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.trigger.no_specified_test')), 'stdout Fail, expecting"' + t('matrix.trigger.no_specified_test') + '"')
+                            done()
+                        })
+                    });
+                });
+
+                context('parameters specified', function() {
+                    context('unknown parameter specified  ', function() {
+                        it.skip('should show an "parameter doesn\'t exist', function(done) {
+                            var triggerProc = run('matrix', ['trigger', 'XXXXX']);
+                            var outputs = new Array();
+
+                            triggerProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            triggerProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            triggerProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.trigger.defined_test_doesn`t_exist')), 'stdout Fail, expecting"' + t('matrix.trigger.defined_test_doesn`t_exist') + '"')
+                                done()
+                            })
+                        });
+                    });
+                    context(' parameter specified is trigger ', function() {
+                        it.skip('Runs a trigger test', function(done) {
+                            var triggerProc = run('matrix', ['trigger', 'test']);
+                            var outputs = new Array();
+                            triggerProc.stdout.on('data', function(out) {
+                                console.log('stdout', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            triggerProc.stderr.on('data', function(out) {
+                                console.log('stderr', out.toString())
+                                outputs.push(out.toString())
+                            })
+                            triggerProc.on('close', function(code) {
+                                console.log('close', outputs)
+                                outputs.should.matchAny(new RegExp(t('matrix.trigger.run_trigger_successfully')), 'stdout Fail, expecting"' + t('matrix.trigger.run_trigger_successfully') + '"')
+                                done()
+                            })
+
+
+                        });
+                    });
+
+                });
+
+            }); //finish trigger ERROR (client registration fail)
+
+            context('log', function() {
+                context('No parameters specified', function() {
+                    it.skip('should show commands "log" usage', function(done) {
+                        var logProc = run('matrix', ['log']);
+                        var outputs = new Array();
+
+                        logProc.stdout.on('data', function(out) {
+                            console.log('stdout', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        logProc.stderr.on('data', function(out) {
+                            console.log('stderr', out.toString())
+                            outputs.push(out.toString())
+                        })
+                        logProc.on('close', function(code) {
+                            console.log('close', outputs)
+                            outputs.should.matchAny(new RegExp(t('matrix.log.app_not_select')), 'stdout Fail, expecting"' + t('matrix.log.app_not_select') + '"')
+                            done()
+                        })
+                    });
+                });
+                context(' parameters specified', function() {
+
+                    context(' device and app assigned', function() {
+
+                        context('unknown device and app specified', function() {
+                            it.skip('should show commands "log" usage', function(done) {
+                                var logProc = run('matrix', ['log', 'XXXXXXX', 'XXXXXXX']);
+                                var outputs = new Array();
+                                logProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
+                                    outputs.push(out.toString())
+                                })
+                                logProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString())
+                                })
+                                logProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(t('matrix.log.app_undefined')), 'stdout Fail, expecting"' + t('matrix.log.app_undefined') + '"')
+                                    done()
+                                })
+                            });
+                        });
+                        context('log', function() {
+                            it.skip('Logs output from selected MatrixOS and applications', function(done) {
+                                var logProc = run('matrix', ['log', 'AdBeacon1', 'vehicle']);
+                                var outputs = new Array();
+
+                                logProc.stdout.on('data', function(out) {
+                                    console.log('stdout', out.toString())
+                                    outputs.push(out.toString())
+                                })
+                                logProc.stderr.on('data', function(out) {
+                                    console.log('stderr', out.toString())
+                                    outputs.push(out.toString())
+                                })
+                                logProc.on('close', function(code) {
+                                    console.log('close', outputs)
+                                    outputs.should.matchAny(new RegExp(t('matrix.log.logs_show')), 'stdout Fail, expecting"' + t('matrix.log.logs_show') + '"')
+                                    done()
+                                })
+                            });
+                        });
+                    });
+                });
+            }); // finish log 'ERROR' 
 
         })
 

@@ -17,19 +17,19 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var appVersion = pkgs[1];
 
   if (appName === undefined) {
-    if (version === undefined) {
+    if (appVersion === undefined) {
       console.log(t('matrix.update.upgrading_to') + ' ', t('matrix.update.latest_version'), ' ' + t('matrix.update.of') + ' MATRIX OS');
       // TODO: update <appName> [version] - Upgrade to latest version of Matrix
     } else {
-      console.log(t('matrix.update.upgrading_to') + ' ', version, ' ' + t('matrix.update.of') + ' ', appName);
+      console.log(t('matrix.update.upgrading_to') + ' ', appVersion, ' ' + t('matrix.update.of') + ' ', appName);
       // TODO: update <appName> [version] - Upgrade Matrix
     }
   } else {
-    if (version === undefined) {
+    if (appVersion === undefined) {
       console.log(t('matrix.update.upgrading_to') + ' ' + t('matrix.update.latest_version'), ' ' + t('matrix.update.of') + ' ', appName);
       // TODO: update <appName> [version] - Upgrade to latest version of App
     } else {
-      console.log(t('matrix.update.upgrading_to') + ' ', version + ' ' + t('matrix.update.of') + ' ' + appName);
+      console.log(t('matrix.update.upgrading_to') + ' ', appVersion + ' ' + t('matrix.update.of') + ' ' + appName);
       // TODO: update <app> [version] - Upgrade Matrix
     }
   }
