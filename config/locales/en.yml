@@ -65,7 +65,7 @@ en:
         valid_locales: 'Valid locales'
     #MANAGEMENT:
     sim:
-      unknowm_parameter: parameter doesn´t exist  
+      unknowm_parameter: parameter doesn´t exist  #
       command_help_sim: matrix sim #
       please: 'Please'
       before_using_sim: 'before attempting to use the simulator'
@@ -74,7 +74,6 @@ en:
         warning_sim_init: please use ´matrix sim init´ #
         device_already_initialized: You already have a virtual device initialized
         target_device: To target this device
-        virtual_device_info: Please enter information for this virtual device
         device_is_already_used: is already used
         creating_device: Creating
         error_creating_device: Create Error
@@ -203,6 +202,7 @@ en:
       description_index: 'app entry point, do not modify'
       description_package: 'node.js information file, do not modify without knowledge'
     deploy:
+      # command_usage: deploy use #
       app_not_found: 'No %{detect_file} found. Are you sure a MatrixOS app resides in %{pwd}?'
       folders_not_supported: 'Our fault. Directories can not be deployed yet'
       cancel_deploy: 'Cancel deploy due to errors & warnings'
