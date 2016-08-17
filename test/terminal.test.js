@@ -1563,7 +1563,7 @@ describe('Matrix CLI Commands', function() {
 
             context('install', function() {
                 context('No parameters specified', function() {
-                    it.skip('should show command "install" usage', function(done) {
+                    it('should show command "install" usage', function(done) {
                         var installProc = run('matrix', ['install']);
                         var outputs = new Array();
                         installProc.stdout.on('data', function(out) {
