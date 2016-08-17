@@ -6,9 +6,10 @@ var fs = require('fs');
 var tar = require('tar');
 var fstream = require('fstream');
 var JSHINT = require('jshint').JSHINT;
+var yaml = require('js-yaml')
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   program
     .parse(process.argv);
 
@@ -26,6 +27,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   } else {
     pwd += '/' + appName + '/';
   }
+
+
 
   var tmp = __dirname + '/../' + appName + '.zip';
 
@@ -49,6 +52,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var appFile = fs.readFileSync(pwd + 'app.js').toString();
   var configFile = fs.readFileSync(pwd + detectFile).toString();
   var configObject = {};
+
+  try {
+    var config = yaml.safeLoad(fs.readFileSync(pwd + detectFile));
+  } catch (e){
+    return console.error(e.message.red);
+  }
+
+  debug('included config', config);
 
   // run JSHINT on the application
   JSHINT(appFile);
@@ -149,24 +160,42 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         var deployInfo = data.results;
         deployInfo.name = appName;
 
+        var firebase = require('matrix-firebase');
+        // update firebase record
+        firebase.init(
+          Matrix.config.user.id,
+          Matrix.config.device.identifier,
+          Matrix.config.user.token,
+          function (err) {
+            if (err) {
+              if (err.code === "EXPIRED_TOKEN"){
+                console.error(t('matrix.expired'))
+              } else {
+                console.error(err);
+              }
 
-        Matrix.api.app.assign(appName, function (err, resp) {
-          if (err) return console.error(err);
-          debug('App Assigned to', Matrix.config.device.identifier);
-        });
+              Matrix.helpers.checkPolicy(config, function(err, policy){
+                if (err) console.error(err);
+                config = Matrix.helpers.configHelper.validate(config);
+                firebase.app.add(config, policy);
+              });
 
-        // Tell device to download app
-        Matrix.api.app.install(deployInfo, Matrix.config.device.identifier, function (err, resp) {
-          if (err) {
-            return console.error(t('matrix.deploy.app_install_failed').red, err);
-          }
 
-          // remove zip file
-          fs.unlinkSync(tmp);
+              // Tell device to download app
+              Matrix.api.app.install(deployInfo, Matrix.config.device.identifier, function (err, resp) {
+                if (err) {
+                  return console.error(t('matrix.deploy.app_install_failed').red, err);
+                }
 
-          console.log(t('matrix.deploy.app_installed').green, appName, '--->', Matrix.config.device.identifier);
-          endIt();
-        })
+                // remove zip file
+                fs.unlinkSync(tmp);
+
+                console.log(t('matrix.deploy.app_installed').green, appName, '--->', Matrix.config.device.identifier);
+                endIt();
+              })
+            }
+          })
+
       })
     })
   }

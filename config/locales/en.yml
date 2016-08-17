@@ -210,8 +210,9 @@ en:
       logs_show: 'logs' #
     helpers:
       adding: Adding
-      config_error: Config error
-      config_save_error: Config save error
+      config_error: Configuration error
+      config_save_error: Configuration save error
+      config_parse_error: 'Configuration parsing Error'
       apps:
         name: Name
         description: Description

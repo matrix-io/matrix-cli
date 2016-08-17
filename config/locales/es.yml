@@ -1,7 +1,7 @@
 es:
   matrix:
     api_title: API
-    streaming_title: Streaming 
+    streaming_title: Streaming
     user_title: Usuario
     device_title: Dispositivo
     locale_title: Localización
@@ -28,10 +28,10 @@ es:
     please_login: 'No se ha iniciado sesión con un usuario, Por favor'
     set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
     validate:
-      no_device: No se ha selecionado un dispositivo 
+      no_device: No se ha selecionado un dispositivo
       select_device_id: selecciona el id de un dispositivo'
     #SETUP:
-    login: 
+    login:
       user_auth_error: 'Error en la autenticación'
       login_success: 'Sesión iniciada correctamente'
     logout:
@@ -59,11 +59,11 @@ es:
         locale_required: 'Localización requerida'
         locale: 'Localización'
         valid_locales: 'Localizaciónes válidas'
-    #MANAGEMENT:  
+    #MANAGEMENT:
     sim:
       please: 'Por favor'
       before_using: 'antes de que intente utilizar el simulador'
-      init: 
+      init:
         device_already_initialized: You already have a virtual device initialized
         target_device: To target this device
         virtual_device_info: Please enter information for this virtual device
@@ -76,7 +76,7 @@ es:
         register_error: Register Error
         success: Success
         to_target_device: To target this device
-      start:  
+      start:
         before_message: first please
         device: Device
         not_a_virtual_device: is not a virtual MatrixOS. Please
@@ -114,7 +114,7 @@ es:
       help_groups: 'mostrar grupos de dispositivos'
       help_apps: 'mostrar aplicaciones en el dispositivo actual'
       help_all: 'mostrar todos los dispositivos con aplicaciones instaladas'
-    reboot: 
+    reboot:
       rebooting: 'Reinciando dispositivo'
       app_reboot_successfully: 'Dispositivo reiniciado' #
     #APPS:
@@ -144,7 +144,7 @@ es:
       uninstalled: 'Se desinstaló'
       application_unspecified: 'especifique [ aplicacion ] <Nombre>' #
       app_undefined: 'esta aplicacion no existe' #
-    update: 
+    update:
       upgrading_to: 'Actualizando a'
       latest_version: 'versión mas reciente'
       of: 'de'
@@ -156,13 +156,13 @@ es:
       version_undefined: 'Versión de aplicación no soportada' #
       version_update_successfully: 'Aplicación actualizada con éxito a' #
       error_updating: Error actualizando #
-    start: 
+    start:
       application_unspecified: 'especifique [ app(name) ] ' #
       app_undefined: 'esta aplicación no existe' #
       starting_app: 'Iniciando'
       start_app_successfully: 'Iniciada'
       app_failed_to_start: 'Fallo al iniciar la aplicación' #
-    stop: 
+    stop:
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
       app_undefined: 'esta aplicacion no existe' #
       stopping_app: 'Deteniendo'
@@ -179,7 +179,7 @@ es:
       error_creating: Ha ocurrido un error
       description_app: esta es la logica de tu aplicación
       description_config: 'cambia variables, indica sensores, configura el dashboard'
-      description_developer: información acerca de desarrollar aplicaciones MATRIX 
+      description_developer: información acerca de desarrollar aplicaciones MATRIX
       description_index: 'punto de entrada de la aplicación, no modificar'
       description_package: 'archivo de información de node.js, no modificarlo sin conocimiento'
     deploy:
@@ -199,18 +199,19 @@ es:
       application_unspecified: 'especifique [ aplicacion ]' #?
       deploy_app_successfully: 'despliegue de la aplicacion satisfactoria' #?
       app_undefined: 'aplicacion indefinida' #?
-    trigger: 
+    trigger:
       no_specified_test: 'prueba indefinida' #?
       defined_test_doesn`t_exist: 'la prueba especificada no existe' #?
       run_trigger_successfully: 'corriendo prueba' #?
-    log: 
-      app_not_select: 'seleccione una aplicacion `matrix log app-nombre` ' #? 
+    log:
+      app_not_select: 'seleccione una aplicacion `matrix log app-nombre` ' #?
       app_undefined: 'la aplicacion especificada no existe' #?
       logs_show: 'logs' #?
     helpers:
       adding: Agregando
       config_error: Error de configuración
       config_save_error: Error guardando la configuración
+      config_parse_error: 'Configuration parsing Error'
       apps:
         name: Nombre
         description: Descripción
@@ -220,7 +221,7 @@ es:
         device_id: ID de dispositivo
         name: Nombre
         ok: ok
-        last_online: Última sesión 
+        last_online: Última sesión
       groups:
         name: Nombre
         devices: "# Dispositivos"
