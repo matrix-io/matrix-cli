@@ -4,6 +4,7 @@ require('./matrix-init');
 var program = require('commander');
 var firebase = require('matrix-firebase');
 var debug = debugLog('install');
+var firebaseAppFlow = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   
@@ -22,21 +23,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     if (err) return console.error(err);
     console.log(require('util').inspect(app, { depth: 3, colors: true }));
   }  
-  var policy = {test: "testVals"}  
-//install: function (token, deviceId, appId, policy, cb) {  
-  firebase.init(
-    Matrix.config.user.id,
-    Matrix.config.device.identifier,
-    Matrix.config.user.token,
-    function (err) {
-      console.log("Initted Firebase");
-      if (err) return console.error(err);
 
-      //firebase.device.get(handleResponse);
-      //firebase.app.get("clock", handleResponse);
-      //firebase.app.install(Matrix.config.user.token, "myDeviceId", "myAppId", policy, handleResponse);
-      //firebase.app.onChange("clock", handleResponse) //watch?
-      //firebase.app.set(target, value);
+  var policy = {test: "testVals"}  
+  //install: function (token, deviceId, appId, policy, cb) {
 
       //Defaults to app
       if (pkgs.length === 1) {
@@ -45,32 +34,67 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       }
 
       if (cmd.match(/a|ap|app|-a|--app/)) {
-        console.log('____ | ' + t('matrix.install.installing') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier)
-      
-        checkPolicy({}, function (err, policy) {
+        console.log('____ | ' + t('matrix.install.installing') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier);
 
-          console.warn('Policy>', policy, 'rest of flow unfinished');
-
-          firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, "myAppId", policy, handleResponse);
-
-          //TODO: make the rest of this work
-          return;
-          Matrix.api.app.install(target, Matrix.config.device.identifier, function (err, resp) {
-            if (err) return console.error(err);
-            console.log(t('matrix.install.app_installed').yellow, target);
-            debug(resp);
-
-            //manage api records
-            Matrix.api.app.assign(target, function (err, resp) {
+        if (firebaseAppFlow) {
+          firebase.init(
+            Matrix.config.user.id,
+            Matrix.config.device.identifier,
+            Matrix.config.user.token,
+            function (err) {
+              debug("Firebase Init");
               if (err) return console.error(err);
-              debug('App Assigned to', Matrix.config.device.identifier);
-              process.exit();
+
+              //Get list of apps with name X
+              /*firebase.app.get()
+              if (found) {
+                
+              }*/
+              //Get versionId of appId with version X
+
+              //firebase.device.get(handleResponse);
+              //firebase.app.get("clock", handleResponse);
+              //firebase.app.install(Matrix.config.user.token, "myDeviceId", "myAppId", policy, handleResponse);
+              //firebase.app.onChange("clock", handleResponse) //watch?
+              //firebase.app.set(target, value);
+
+              checkPolicy({}, function (err, policy) {
+
+                console.warn('Policy>', policy, 'rest of flow unfinished');
+                firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, "myAppId", policy, handleResponse);
+
+                //TODO: make the rest of this work
+
+              });
+
+            }
+          ); 
+        } else { //Using good ol' fashioned mxss flow
+          checkPolicy({}, function (err, policy) {
+
+            console.warn('Policy>', policy, 'rest of flow unfinished');
+
+            firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, "myAppId", policy, handleResponse);
+
+            //TODO: make the rest of this work
+            return;
+            Matrix.api.app.install(target, Matrix.config.device.identifier, function (err, resp) {
+              if (err) return console.error(err);
+              console.log(t('matrix.install.app_installed').yellow, target);
+              debug(resp);
+
+              //manage api records
+              Matrix.api.app.assign(target, function (err, resp) {
+                if (err) return console.error(err);
+                debug('App Assigned to', Matrix.config.device.identifier);
+                process.exit();
+              });
+
+              //TODO: Pull sensors / integrations. Ask permissions. Write Policy
             });
 
-            //TODO: Pull sensors / integrations. Ask permissions. Write Policy
           });
-
-        });
+        }
 
       } else if (cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
         Matrix.api.sensor.install(target, Matrix.config.device.identifier, function (err, resp) {
@@ -199,8 +223,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       }
 
-    }
-  );
+    
 
   
 });

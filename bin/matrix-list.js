@@ -3,7 +3,8 @@
 require('./matrix-init');
 var program = require('commander');
 var firebase = require('matrix-firebase');
-var debug = debugLog('sdk');
+var debug = debugLog('list');
+var firebaseAppFlow = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   
@@ -20,22 +21,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log(require('util').inspect(app, { depth: 3, colors: true }));  
   }
 
-//install: function (deviceId, appId, policy, cb) {  
-  /*firebase.init(
-    Matrix.config.user.id,
-    Matrix.config.device.identifier,
-    Matrix.config.user.token,
-    function (err) {
-      if (err) return console.error(err);
-
-        firebase.device.get(handleResponse);
-        firebase.app.get("clock", handleResponse);
-        //firebase.app.install("myDeviceId", myAppId, handleResponse);
-        firebase.app.onChange("clock", handleResponse) //watch?
-        //firebase.app.set(target, value);
-
-    });*/
-
   var target = pkgs[0];
 
 
@@ -48,11 +33,35 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
 
   } else if (target.match(/app/)) {
+    console.log("Using firebase: ", firebaseAppFlow);
 
-    Matrix.api.app.list(function (apps) {
-      console.log(Matrix.helpers.displayApps(apps));
-      process.exit();
-    });
+    if (firebaseAppFlow) {
+      firebase.init(
+        Matrix.config.user.id,
+        Matrix.config.device.identifier,
+        Matrix.config.user.token,
+        function (err) {
+          if (err) return console.error(err);
+          firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
+            if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
+            var result = {
+              "status": "OK",
+              results: []
+            };
+            if (data) {
+              result.results = data;
+            }
+            console.log(Matrix.helpers.displayApps(JSON.stringify(result)));
+            process.exit();
+          });
+        }
+      ); 
+    } else {
+      Matrix.api.app.list(function (apps) {
+        console.log(Matrix.helpers.displayApps(apps));
+        process.exit();
+      });
+    }
 
   } else if (target.match(/device/)) {
 
