@@ -1888,7 +1888,7 @@ describe('Matrix CLI Commands', function() {
 
             context('uninstall', function() {
                 context('No parameters specified', function() {
-                    it.skip('should show command "uninstall" usage', function(done) {
+                    it('should show command "uninstall" usage', function(done) {
                         var uninstallProc = run('matrix', ['uninstall']);
                         var outputs = new Array();
                         uninstallProc.stdout.on('data', function(out) {

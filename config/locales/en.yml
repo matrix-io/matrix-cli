@@ -160,7 +160,7 @@ en:
       key_value: 'value:'
     uninstall: 
       uninstalled: 'Uninstalled'
-      application_unspecified: 'specify [ app ] <name>' #
+      application_unspecified: 'error: missing required argument' #
       app_undefined: 'this app doesn`t exist' #
       device_offline: Device offline, reconect the device please #
     update:      
