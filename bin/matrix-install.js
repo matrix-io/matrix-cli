@@ -21,7 +21,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
         target = cmd;
         cmd = 'app';
     }else if (pkgs.length === 0) {
-      console.log('\n install [ app / sensor ] <name> \n '.yellow)
+      console.log('\n install [ app / sensor ] <name> \n ')
       process.exit(0);
     }
 

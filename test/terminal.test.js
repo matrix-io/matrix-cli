@@ -6,6 +6,7 @@ var should = require('should');
 var sinon = require('sinon');
 var Table = require('cli-table');
 
+
 describe('Matrix CLI Commands', function() {
     before(function(done) {
         Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {})
@@ -398,8 +399,8 @@ describe('Matrix CLI Commands', function() {
         //NO DEVICE REQUIRED
 
         context('No parameters specified', function() {
-            it.skip('should show the matrix command usage', function(done) {
-                var logProc = run('matrix', ['']);
+            it('should show the matrix command usage', function(done) {
+                var logProc = run('matrix');
                 var outputs = new Array();
                 logProc.stdout.on('data', function(out) {
                     console.log('stdout', out.toString())
@@ -419,18 +420,21 @@ describe('Matrix CLI Commands', function() {
         context('Parameters specified', function() { //------------------------------------------------
 
             context('login_NDR', function() {
-                it.skip('should show an "already logged in" warning', function(done) {
+                it('should show an "already logged in" warning', function(done) {
                     var loginProc = run('matrix', ['login']);
                     var outputs = new Array();
                     loginProc.stdout.on('data', function(out) {
+                        console.log('stdout', out.toString())
                         outputs.push(out.toString());
                         loginProc.kill('SIGINT');
                     });
                     loginProc.stderr.on('data', function(out) {
                         console.log('stderr', out.toString());
+                        outputs.push(out.toString());
                     })
                     loginProc.on('close', function(code) {
-                        outputs.should.matchAny(new RegExp(t('matrix.login.already_login_warning')), 'stdout Fail, expecting "' + t('matrix.login.already_login_warning') + '"')
+                        console.log('stdout', outputs)
+                        outputs.should.matchAny(new RegExp(t('matrix.already_login')), 'stdout Fail, expecting "' + t('matrix.already_login') + '"')
                         done();
                     });
                 });
@@ -438,7 +442,7 @@ describe('Matrix CLI Commands', function() {
 
 
             context('logout', function() {
-                it.skip('should log out', function(done) {
+                it('should log out', function(done) {
                     var logoutProc = run('matrix', ['logout']);
                     var outputs = new Array();
                     logoutProc.stdout.on('data', function(out) {
@@ -456,7 +460,7 @@ describe('Matrix CLI Commands', function() {
 
             context('use', function() {
                 context('No parameters specified ', function() {
-                    it.skip('Show "use" command usage', function(done) {
+                    it('Show "use" command usage', function(done) {
                         var useProc = run('matrix', ['use']);
                         var outputs = new Array();
                         useProc.stdout.on('data', function(out) {
@@ -478,7 +482,7 @@ describe('Matrix CLI Commands', function() {
 
                     context('Specified device doesn\'t exist', function() {
                         it.skip('should show an "invalid device" warning', function(done) {
-                            var useDProc = run('matrix', ['use', 'xx']);
+                            var useDProc = run('matrix', ['use', 'xxxx']);
                             var outputs = new Array();
                             useDProc.stdout.on('data', function(out) {
                                 console.log('stdout', out.toString())
@@ -531,12 +535,40 @@ describe('Matrix CLI Commands', function() {
 
                     });
                 });
-            }); // Finish use
+            }); // NO Finish use 
 
             context('sim', function() {
+                before(function(done) {
+                    this.timeout(15000);
+                    var loginProc = run('matrix', ['login']);
+                    loginProc.stdout.on('data', function(out) {
+                        if (out.toString().indexOf('username') > -1) {
+                            console.log('stdout', out.toString());
+                            loginProc.stdin.write('demo.admobilize@gmail.com\n')
+                        } else if (out.toString().indexOf('password') > -1) {
+                            console.log('stdout', out.toString());
+                            loginProc.stdin.write('admobdemo2016\n')
+                        } else if (out.toString().indexOf('Login Successful') > -1) {
+                            console.log('stdout', out.toString());
+                            if (readConfig().user.hasOwnProperty('token')) {
+                                console.log('stdout', out.toString());
+                                console.log(out.toString().red);
+                            }
+                        }
+
+                    });
+                    loginProc.stderr.on('data', function(out) {
+                        console.log('stderr', out.toString())
+                    })
+                    loginProc.on('close', function(code) {
+                        console.log('Inicia sesion'.magenta);
+                        done();
+                    });
+
+                })
 
                 context('No parameters specified ', function() {
-                    it.skip('Show "sim" command usage', function(done) {
+                    it('Show "sim" command usage', function(done) {
                         var simProc = run('matrix', ['sim', '']);
                         var outputs = new Array();
                         simProc.stdout.on('data', function(out) {
@@ -563,7 +595,8 @@ describe('Matrix CLI Commands', function() {
                             var outputs = new Array();
                             simProc.stdout.on('data', function(out) {
                                 console.log('stdout', out.toString());
-                                simProc.stdin.write('Examsssple\n');
+                                //simProc.stdin.write('Examsssple\n');
+                                simProc.kill('SIGINT');
                                 outputs.push(out.toString());
                             });
                             simProc.stderr.on('data', function(out) {
@@ -796,7 +829,7 @@ describe('Matrix CLI Commands', function() {
                         });
 
                         context('clear', function() {
-                            it.skip('should remove simulation local data', function(done) {
+                            it('should remove simulation local data', function(done) {
                                 var clearProc = run('matrix', ['sim', 'clear']);
                                 var outputs = new Array();
                                 clearProc.stdout.on('data', function(out) {
@@ -832,12 +865,12 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
                 });
-            }); //Finish sim
+            }); //NO Finish sim
 
             context('list', function() {
 
                 context('No parameters specified', function() {
-                    it.skip('Show "list" command usage', function(done) {
+                    it('Show "list" command usage', function(done) {
                         var listProc = run('matrix', ['list', '']);
                         var outputs = new Array();
                         listProc.stdout.on('data', function(out) {
@@ -857,7 +890,7 @@ describe('Matrix CLI Commands', function() {
 
                 context('Parameters specified', function() {
                     context('devices', function() {
-                        it.skip('display available devices', function(done) { //No se puede recibir la tabla de devices 
+                        it('display available devices', function(done) { //No se puede recibir la tabla de devices 
                             this.timeout(15000);
                             var listProc = run('matrix', ['list', 'devices']);
                             var outputs = new Array();
@@ -901,7 +934,7 @@ describe('Matrix CLI Commands', function() {
                     });
 
                     context('apps', function() {
-                        it.skip('display apps on current device', function(done) {
+                        it('display apps on current device', function(done) {
                             var appsProc = run('matrix', ['list', 'apps'])
                             var outputs = new Array();
                             appsProc.stdout.on('data', function(out) {
@@ -921,18 +954,18 @@ describe('Matrix CLI Commands', function() {
                     });
 
                     context('all', function() {
-                        it.skip('display all devices with installed apps', function(done) {
+                        it('display all devices with installed apps', function(done) {
                             var allProc = run('matrix', ['list', 'all'])
                             var outputs = new Array();
-                            appsProc.stdout.on('data', function(out) {
+                            allProc.stdout.on('data', function(out) {
                                 console.log('stdout', out.toString());
                                 outputs.push(out.toString())
                             })
-                            appsProc.stderr.on('data', function(out) {
+                            allProc.stderr.on('data', function(out) {
                                 console.log('stderr', out.toString())
                                 outputs.push(out.toString())
                             })
-                            appsProc.on('close', function(code) {
+                            allProc.on('close', function(code) {
                                 console.log('close', outputs)
                                 outputs.should.matchAny(new RegExp(t('matrix.list.list_all')), 'stdout Fail, expecting "' + t('matrix.list.list_all') + '"')
                                 done()
@@ -941,9 +974,9 @@ describe('Matrix CLI Commands', function() {
                     });
 
                     context('Unknown parameter specified', function() {
-                        it.skip('should display an "unknown parameter warning"', function(done) {
+                        it('should display an "unknown parameter warning"', function(done) {
 
-                            var unknownProc = run('matrix', ['list', 'XXXXX'])
+                            var unknownProc = run('matrix', ['list', 'xxxxxx'])
                             var outputs = new Array();
                             unknownProc.stdout.on('data', function(out) {
                                 console.log('stdout', out.toString());
@@ -961,7 +994,7 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
                 });
-            }); //list
+            }); // Finish list
 
             //DEVICE REQUIRED
 
@@ -1252,7 +1285,7 @@ describe('Matrix CLI Commands', function() {
                 }); // Finish log
 
             })
-            context('Device selected', function() { //.........................
+            context('Device selected', function() { // danilo
                 before(function(done) {
                     this.timeout(15000);
                     var useProc = run('matrix', ['use', 'AdBeacon1']);
@@ -1267,7 +1300,7 @@ describe('Matrix CLI Commands', function() {
                 });
                 context('set', function() {
                     context('No parameters specified', function() {
-                        it.skip('should command "set" usage', function(done) {
+                        it('should command "set" usage', function(done) {
                             var setProc = run('matrix', ['set']);
                             var outputs = new Array();
                             setProc.stdout.on('data', function(out) {
@@ -1290,7 +1323,7 @@ describe('Matrix CLI Commands', function() {
                     context('Parameters specified', function() {
                         context('env', function() {
                             context('No parameters specified', function() {
-                                it.skip('should show command "set env" usage', function(done) {
+                                it('should show command "set env" usage', function(done) {
                                     var setProc = run('matrix', ['set', 'env']);
                                     var outputs = new Array();
                                     setProc.stdout.on('data', function(out) {
@@ -1333,7 +1366,7 @@ describe('Matrix CLI Commands', function() {
                                     });
                                 });
                                 context('production', function() {
-                                    it.skip('should set the device environment to production', function(done) {
+                                    it('should set the device environment to production', function(done) {
                                         var setProc = run('matrix', ['set', 'env', 'production']);
                                         var outputs = new Array();
                                         setProc.stdout.on('data', function(out) {
@@ -1355,7 +1388,7 @@ describe('Matrix CLI Commands', function() {
                         });
                         context('config', function() {
                             context('No parameters specified', function() {
-                                it.skip('should show command "set config" usage', function(done) {
+                                it('should show command "set config" usage', function(done) {
                                     var setProc = run('matrix', ['set', 'config']);
                                     var outputs = new Array();
                                     setProc.stdout.on('data', function(out) {
@@ -1376,7 +1409,7 @@ describe('Matrix CLI Commands', function() {
                             });
                             context('Parameters specified', function() {
                                 context('Invalid app name', function() {
-                                    it.skip('should show an "invalid app" warning', function(done) {
+                                    it('should show an "invalid app" warning', function(done) {
                                         var setProc = run('matrix', ['set', 'config', 'invalid']);
                                         var outputs = new Array();
                                         setProc.stdout.on('data', function(out) {
@@ -1489,7 +1522,7 @@ describe('Matrix CLI Commands', function() {
 
             context('search', function() {
                 context('No parameters specified', function() {
-                    it.skip('should show command "search" usage', function(done) {
+                    it('should show command "search" usage', function(done) {
                         var searchProc = run('matrix', ['search']);
                         var outputs = new Array();
                         searchProc.stdout.on('data', function(out) {
@@ -1510,7 +1543,7 @@ describe('Matrix CLI Commands', function() {
 
                 context('Parameters specified', function() {
                     context('search term has less than 2 characters', function() {
-                        it.skip('should show a search term warning', function(done) {
+                        it('should show a search term warning', function(done) {
                             var searchProc = run('matrix', ['search', 'xx']);
                             var outputs = new Array();
                             searchProc.stdout.on('data', function(out) {
@@ -1530,24 +1563,89 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
 
-                    context('search term has more than 2 characters', function() {
-                        it.skip('should list the results of an app search', function(done) {
+                    context('search term has more than 2 characters', function() { //danilo
+                        it('should list the results of an app search', function(done) {
+                            Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {// se debe quitar
+                                program
+                                    .parse(process.argv);
+                                var pkgs = program.args;
+                                if (_.isUndefined(Matrix, 'config.user.token')) {
+                                    return console.error(t('matrix.please_login') + ' `matrix login`'.grey);
+                                }
+                                if (_.isUndefined(Matrix.config.device.identifier)) {
+                                    console.warn(t('matrix.set_device') + ' `matrix use`'.grey);
+                                    process.exit(0);
+                                }
+                                if (_.isEmpty(pkgs)) {
+                                    return showHelp();
+                                }
+                                firebase.init(
+                                    Matrix.config.user.id,
+                                    Matrix.config.device.identifier,
+                                    Matrix.config.user.token,
+                                    function(err) {
+                                        if (err) return console.error(err);
+                                        var options = {};
+                                        if (pkgs.indexOf('-w') > -1 || pkgs.indexOf('--watch') > -1) {
+                                            options.watch = true;
+                                            _.omit(pkgs, '-w', '--watch')
+                                        }
+                                        if (pkgs.indexOf('--help') > -1 || pkgs.indexOf('-h') > -1) {
+                                            showHelp();
+                                        } else
+                                        // show matrix config
+                                        if (pkgs.length === 0) {
+                                            // get form
+                                            console.log(t('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
+                                            firebase.device.get(handleResponse);
+                                            // matrix config base
+                                        } else if (pkgs.length === 1) {
+                                            var target = pkgs[0]
+                                            firebase.app.get(target, handleResponse);
+                                            // matrix config base services.vehicle.engine
+                                            if (options.watch) {
+                                                firebase.app.onChange(target, handleResponse)
+                                            }
+                                        } else if (pkgs.length === 2) {
+                                            // get deep
+                                            var key = pkgs[1];
+                                            var target = pkgs[0] + '/' + key.replace(/\./g, '/');
+                                            debug('Firebase: '.blue, target)
+                                            firebase.app.get(target, handleResponse)
+                                            if (options.watch) {
+                                                firebase.app.onChange(target, handleResponse)
+                                            }
+                                            // matrix config base keywords=test,keyword
+                                        } else if (pkgs.length >= 3) {
+                                            var key = pkgs[1];
+                                            var value = pkgs[2];
+                                            //typing
+                                            if (pkgs.length > 4) {
+                                                //string
+                                                value = _.drop(pkgs, 2).join(' ');
+                                            } else {
+                                                // is array?
+                                                if (value.indexOf(',') > -1) {
+                                                    value = value.split(',');
+                                                }
+                                            }
+                                            var target = pkgs[0] + '/' + key.replace(/\./g, '/');
+                                            debug(target, value);
+                                            firebase.app.set(target, value);
+                                        } else {
+                                            showHelp();
+                                        }
+                                    });
+                            });
                             var searchProc = run('matrix', ['search', 'xxxx']);
                             var outputs = new Array();
+
                             searchProc.stdout.on('data', function(out) {
-                                console.log('BRAYAN>>>>', out.toString());
-                                console.log("Instance: ", out instanceof Array);
-                                console.log("OUT Type: ", typeof out);
                                 console.log('stdout', out.toString());
                                 outputs.push(out.toString());
                             })
                             searchProc.stderr.on('data', function(out) {
-                                console.log('BRAYAN>>>>', out);
-                                var arr = Object.keys(out).map(function(key) { console.log("RES: ", out[key]) });
-                                console.log("ARR: ", arr.toString());
-                                console.log("Instance: ", out instanceof Array);
-                                console.log("ERR Type: ", typeof out);
-                                console.log('stderr', out.toString())
+                                console.log('stderr', out);
                                 outputs.push(out.toString());
                             })
                             searchProc.on('close', function(code) {
@@ -1559,7 +1657,7 @@ describe('Matrix CLI Commands', function() {
                     });
                 });
 
-            }); //finish search pending (matrix search XXX) by return on a table ! 
+            }); //Finish search 
 
             context('install', function() {
                 context('No parameters specified', function() {
@@ -1606,11 +1704,12 @@ describe('Matrix CLI Commands', function() {
 
                     context('Valid app/sensor name', function() {
                         context('app is already installed', function() {
-                            it.skip('should show warning app already installed', function(done) {
+                            it('should show warning app already installed', function(done) {
                                 var installProc = run('matrix', ['install', 'Test Ruben']);
                                 var outputs = new Array();
                                 installProc.stdout.on('data', function(out) {
                                     console.log('stdout', out.toString());
+                                    installProc.kill('SIGINT');
                                     outputs.push(out.toString());
                                 })
                                 installProc.stderr.on('data', function(out) {
@@ -1619,7 +1718,7 @@ describe('Matrix CLI Commands', function() {
                                 })
                                 installProc.on('close', function(code) {
                                     console.log('close', outputs);
-                                    outputs.should.matchAny(new RegExp(t('matrix.install.app_installed')), 'stdout Fail, expecting "' + t('matrix.install.app_installed') + '"')
+                                    outputs.should.matchAny(new RegExp(t('matrix.install.installing')), 'stdout Fail, expecting "' + t('matrix.install.installing') + '"')
                                     done();
                                 })
                             });
@@ -1649,12 +1748,12 @@ describe('Matrix CLI Commands', function() {
                 });
 
 
-            }); //finish install  
+            }); // NO Finish install  
 
 
             context('config', function() { //pending by error tokens 
                 context('No parameters specified', function() {
-                    it.skip('should show device configurations', function(done) {
+                    it('should show device configurations', function(done) {
                         var configProc = run('matrix', ['config']);
                         var outputs = new Array();
                         configProc.stdout.on('data', function(out) {
@@ -2212,7 +2311,7 @@ describe('Matrix CLI Commands', function() {
             context('create', function() {
 
                 context('No parameters specified', function() {
-                    it('should show commands "create" usage', function(done) {
+                    it.skip('should show commands "create" usage', function(done) {
                         var createProc = run('matrix', ['create'])
                         var outputs = new Array();
 
@@ -2233,7 +2332,7 @@ describe('Matrix CLI Commands', function() {
                 });
 
                 context('specified to name device create', function() {
-                    it('Creates a new scaffolding for a MatrixOS Application', function(done) {
+                    it.skip('Creates a new scaffolding for a MatrixOS Application', function(done) {
 
                         var createProc = run('matrix', ['create', 'test'])
                         var outputs = new Array();
