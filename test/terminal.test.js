@@ -1977,7 +1977,7 @@ describe('Matrix CLI Commands', function() {
             context('update', function() {
 
                 context('No parameters specified', function() {
-                    it.skip('should show command "update" usage', function(done) {
+                    it('should show command "update" usage', function(done) {
                         var updateProc = run('matrix', ['update']);
                         var outputs = new Array();
                         updateProc.stdout.on('data', function(out) {
@@ -2020,7 +2020,7 @@ describe('Matrix CLI Commands', function() {
                         });
 
                         context('device has the app installed', function() {
-                            it.skip('should update the application to its latest version', function(done) {
+                            it('should update the application to its latest version', function(done) {
                                 var updateProc = run('matrix', ['update', 'vehicle'])
                                 var outputs = new Array();
                                 updateProc.stdout.on('data', function(out) {
@@ -2061,7 +2061,7 @@ describe('Matrix CLI Commands', function() {
                             });
 
                             context('version exists', function() {
-                                it.skip('should update to that version', function(done) {
+                                it('should update to that version', function(done) {
                                     var updateProc = run('matrix', ['update', 'veryfirstapp', '0.7'])
                                     var outputs = new Array();
 
@@ -2103,7 +2103,7 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
                 });
-            }); // finish update  error 
+            }); // Finish update  error 
 
             context('start', function() {
 

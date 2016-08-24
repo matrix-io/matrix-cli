@@ -171,10 +171,10 @@ en:
       help_update_app: 'update application to latest'
       help_update_app_version: 'update application to specified version'
       app_undefined: 'Application doesn`t exist' #
-      app_update_successfully: 'Application updated successfully to latest' #
+      app_update_successfully: 'Upgrading to latest version' #
       version_undefined: 'Unsupported app version' #
       version_doesnt_exist: this version doesn´t exist # 
-      version_update_successfully: 'Application updated successfully to' #
+      version_update_successfully: 'Upgrading to' #
       error_updating: Error updating #
     start: 
       application_unspecified: 'specify [ app(name) ] ' #
