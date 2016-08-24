@@ -33,7 +33,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
 
   } else if (target.match(/app/)) {
-    console.log("Using firebase: ", firebaseAppFlow);
 
     if (firebaseAppFlow) {
       firebase.init(

@@ -100,12 +100,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
 
   var files = fs.readdirSync(pwd);
-
+  //console.log('Files found = ', files);
   _.each(files, function (file) {
     debug('Adding to zip', file)
-    zip.append(fs.createReadStream(pwd + file), {
-      name: file
-    });
+    //TODO need to properly validate filenames
+    if (_.isEmpty(file) || _.isUndefined(file) || file == ':'){
+      console.log('Skipping invalid file: ', file);
+    } else {
+      zip.append(fs.createReadStream(pwd + file), {
+        name: file
+      });
+    }
   });
 
   // zip.on('end', onEnd);
@@ -120,19 +125,35 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   function onEnd() {
-    console.log('Packed!');
+    console.log('Finished packaging app folder');
     if (firebaseAppFlow) {
-      var appData = {
-        'meta': {
-          'name': appName
-        },
-        'config': configObject
-      };
-      //file: tmp
-      //TODO Need to upload the file and add the URL
-      //upload file (located in tmp) to firebase storage or google cloud storage
-      //add file URL under file: http://...
-      firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, handleResponse);
+      firebase.init(
+        Matrix.config.user.id,
+        Matrix.config.device.identifier,
+        Matrix.config.user.token,
+        function (err) {
+          debug('Firebase init');
+          if (err) return console.error(err);
+
+          var appData = {
+            'meta': {
+              'name': appName
+            },
+            'config': configObject
+          };
+          //file: tmp
+          //TODO Need to upload the file and add the URL
+          //upload file (located in tmp) to firebase storage or google cloud storage
+          //add file URL under file: http://...
+
+          firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, function (err, result) {
+            console.log('App '.green + appName + ' deployment request successfully generated'.green);
+            if (err) console.log('Error: ', err);
+            if (result) console.log('Result: ', result);
+            endIt();
+          });
+        }
+      );
       
     } else {
       Matrix.api.app.deploy({
@@ -192,6 +213,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         process.exit(0);
       })
     }, 1000)
-  }
+  }  
 
 });
