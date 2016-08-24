@@ -1682,6 +1682,7 @@ describe('Matrix CLI Commands', function() {
                 });
 
                 context('Parameters specified', function() {
+
                     context('Invalid app/sensor name', function() {
                         it.skip('should show invalid "app/sensor" warning', function(done) {
                             var installProc = run('matrix', ['install', 'XXXX'])
@@ -1766,7 +1767,7 @@ describe('Matrix CLI Commands', function() {
                         })
                         configProc.on('close', function(code) {
                             console.log('close', outputs)
-                            outputs.should.matchAny(new RegExp(t('')), 'stdout Fail, expecting "' + t('') + '"')
+                            outputs.should.matchAny(new RegExp(t('matrix.config.help')), 'stdout Fail, expecting "' + t('matrix.config.help') + '"')
                             done();
                         })
                     });
@@ -1795,7 +1796,7 @@ describe('Matrix CLI Commands', function() {
 
                         });
                     });
-                    context('specified app exists', function() {
+                    context('specified app exists', function() {//danilo
                         context('app', function() {
                             it.skip('should show application configurations', function(done) {
 
@@ -1882,7 +1883,7 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
                 });
-            }); //finish config   with errors
+            }); //No Finish config   
 
 
             context('uninstall', function() {
