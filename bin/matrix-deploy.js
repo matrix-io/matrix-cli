@@ -2,10 +2,13 @@
 
 require('./matrix-init');
 var program = require('commander')
+var firebase = require('matrix-firebase');
 var fs = require('fs');
 var tar = require('tar');
 var fstream = require('fstream');
 var JSHINT = require('jshint').JSHINT;
+var debug = debugLog('deploy');
+var firebaseAppFlow = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   
@@ -13,9 +16,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     .parse(process.argv);
 
   var pkgs = program.args;
-
   var appName = pkgs[0];
-
   var pwd = process.cwd();
   var detectFile = 'config.yaml';
 
@@ -34,7 +35,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     return console.error(t('matrix.deploy.app_not_found', {detect_file: detectFile, pwd: pwd}));
   }
 
-  //See of any files are a directory. #113583355 Add other checks here sometime?
+  //See if any files are a directory. #113583355 Add other checks here sometime?
   var files = fs.readdirSync(pwd);
   _.each(files, function (f) {
     var s = fs.statSync(pwd + f);
@@ -120,57 +121,70 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function onEnd() {
     console.log('Packed!');
-    Matrix.api.app.deploy({
-      appConfig: configObject,
-      file: tmp,
-      name: appName
-    }, function (err, resp) {
-      if (err) return console.error(t('matrix.deploy.deploy_error') + ':'.red, err);
-      console.log(t('matrix.deploy.deply_started').yellow);
-      resp.setEncoding();
+    if (firebaseAppFlow) {
+      var appData = {
+        'meta': {
+          'name': appName
+        },
+        'config': configObject
+      };
+      //file: tmp
+      //TODO Need to upload the file and add the URL
+      //upload file (located in tmp) to firebase storage or google cloud storage
+      //add file URL under file: http://...
+      firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, handleResponse);
+      
+    } else {
+      Matrix.api.app.deploy({
+        appConfig: configObject,
+        file: tmp,
+        name: appName
+      }, function (err, resp) {
+        if (err) return console.error(t('matrix.deploy.deploy_error') + ':'.red, err);
+        console.log(t('matrix.deploy.deply_started').yellow);
+        resp.setEncoding();
 
-      var data = '';
-      resp.on('error', function (e) {
-        console.error(t('matrix.deploy.stream_error').red, e)
-      })
-      resp.on('data', function (d) {
-        data += d;
-      });
-      resp.on('end', function () {
-        console.log(t('matrix.deploy.deploy_complete').green);
-        debug(data);
-
-        try {
-          data = JSON.parse(data);
-        } catch (e) {
-          console.error(t('matrix.deploy.bad_payload'), e);
-        }
-
-        var deployInfo = data.results;
-        deployInfo.name = appName;
-
-
-        Matrix.api.app.assign(appName, function (err, resp) {
-          if (err) return console.error(err);
-          debug('App Assigned to', Matrix.config.device.identifier);
+        var data = '';
+        resp.on('error', function (e) {
+          console.error(t('matrix.deploy.stream_error').red, e)
+        })
+        resp.on('data', function (d) {
+          data += d;
         });
+        resp.on('end', function () {
+          console.log(t('matrix.deploy.deploy_complete').green);
+          debug(data);
 
-        // Tell device to download app
-        Matrix.api.app.install(deployInfo, Matrix.config.device.identifier, function (err, resp) {
-          if (err) {
-            return console.error(t('matrix.deploy.app_install_failed').red, err);
+          try {
+            data = JSON.parse(data);
+          } catch (e) {
+            console.error(t('matrix.deploy.bad_payload'), e);
           }
 
-          // remove zip file
-          fs.unlinkSync(tmp);
+          var deployInfo = data.results;
+          deployInfo.name = appName;
 
-          console.log(t('matrix.deploy.app_installed').green, appName, '--->', Matrix.config.device.identifier);
-          endIt();
+          Matrix.api.app.assign(appName, function (err, resp) {
+            if (err) return console.error(err);
+            debug('App Assigned to', Matrix.config.device.identifier);
+          });
+
+          // Tell device to download app
+          Matrix.api.app.install(deployInfo, Matrix.config.device.identifier, function (err, resp) {
+            if (err) {
+              return console.error(t('matrix.deploy.app_install_failed').red, err);
+            }
+
+            // remove zip file
+            fs.unlinkSync(tmp);
+
+            console.log(t('matrix.deploy.app_installed').green, appName, '--->', Matrix.config.device.identifier);
+            endIt();
+          })
         })
       })
-    })
+    }
   }
-
 
   function endIt() {
     setTimeout(function () {
@@ -179,4 +193,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       })
     }, 1000)
   }
+
 });

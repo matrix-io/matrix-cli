@@ -51,16 +51,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 
               }*/
               //Get versionId of appId with version X
-
-              //firebase.device.get(handleResponse);
-              //firebase.app.get("clock", handleResponse);
-              //firebase.app.install(Matrix.config.user.token, "myDeviceId", "myAppId", policy, handleResponse);
               //firebase.app.onChange("clock", handleResponse) //watch?
-              //firebase.app.set(target, value);
 
               checkPolicy({}, function (err, policy) {
 
-                console.warn('Policy>', policy, 'rest of flow unfinished');
+                debug('Policy>', policy);
                 firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, "myAppId", policy, handleResponse);
 
                 //TODO: make the rest of this work
@@ -71,13 +66,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           ); 
         } else { //Using good ol' fashioned mxss flow
           checkPolicy({}, function (err, policy) {
-
             console.warn('Policy>', policy, 'rest of flow unfinished');
-
-            firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, "myAppId", policy, handleResponse);
-
-            //TODO: make the rest of this work
-            return;
+            return; //TODO: make the rest of this work
+            /*
             Matrix.api.app.install(target, Matrix.config.device.identifier, function (err, resp) {
               if (err) return console.error(err);
               console.log(t('matrix.install.app_installed').yellow, target);
@@ -92,6 +83,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
               //TODO: Pull sensors / integrations. Ask permissions. Write Policy
             });
+            */
 
           });
         }

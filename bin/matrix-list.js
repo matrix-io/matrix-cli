@@ -41,7 +41,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         Matrix.config.device.identifier,
         Matrix.config.user.token,
         function (err) {
-          if (err) return console.error(err);
+          if (err) {
+            console.error('Error initializing Firebase: ', err);
+            process.exit();
+          }
           firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
             if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
             var result = {
