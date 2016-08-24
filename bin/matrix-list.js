@@ -5,7 +5,7 @@ var program = require('commander');
 var debug = debugLog('sdk');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   program
     .parse(process.argv);
   var pkgs = program.args;
@@ -24,16 +24,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       debug('Device List>', resp);
       console.log(Matrix.helpers.displayDeviceApps(resp));
     });
-
   } else if (target.match(/app/)) {
-
     Matrix.api.app.list(function (apps) {
       console.log(Matrix.helpers.displayApps(apps));
       process.exit();
     });
-
   } else if (target.match(/device/)) {
-
     var group = pkgs[1];
     /** do nothing if not device **/
     if (group !== undefined) {
@@ -41,6 +37,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       var options = {
         group: group
       };
+
       Matrix.api.device.list(options, function (body) {
         //print device
         console.log(Matrix.helpers.displayDevices(body));
@@ -51,10 +48,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         //print device
         console.log(Matrix.helpers.displayDevices(body));
         // save device map to config
-        Matrix.config.deviceMap = _.map(JSON.parse(body).results, function (d) {
+
+        Matrix.config.deviceMap = _.map(JSON.parse(body).results.name, function (d) {
           return { name: d.name, id: d.deviceId }
         });
         Matrix.helpers.saveConfig(function () {
+
           process.exit();
         });
 
@@ -62,7 +61,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
 
   } else if (target.match(/group/)) {
-
     /** do nothing if not device **/
     Matrix.api.group.list(function (body) {
       //print group
@@ -70,6 +68,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       process.exit();
     });
   } else {
+    console.log('`No Results Found` please select an option : '.yellow)
     displayHelp();
   }
 
