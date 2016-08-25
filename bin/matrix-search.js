@@ -3,9 +3,10 @@
 require('./matrix-init');
 var program = require('commander');
 var debug = debugLog('search');
+var firebase = require('matrix-firebase');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   program
     .parse(process.argv);
   var pkgs = program.args;
@@ -22,12 +23,28 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     return console.error(t('matrix.search.small_needle') + '.')
   }
   // console.warn('Search not implemented yet')
-  Matrix.api.app.search(needle, function (err, results) {
-    if (err) return console.error(err);
-    console.log(Matrix.helpers.displaySearch(results, needle));
-    process.exit();
+  firebase.init(
+    Matrix.config.user.id,
+    Matrix.config.device.identifier,
+    Matrix.config.user.token,
+    function (err) {
+      debug("Firebase Init");
+      if (err) return console.error(err);
 
-  })
+      firebase.app.search(needle, function(data){
+          console.log(arguments)
+      });
+      //Get app with name X
+      //Get versionId of appId with version X
+      process.exit();
+    }
+  );
+  // Matrix.api.app.search(needle, function (err, results) {
+  //   if (err) return console.error(err);
+  //   console.log(Matrix.helpers.displaySearch(results, needle));
+  //   process.exit();
+  //
+  // })
 
   var search = pkgs[0];
-})  
+})
