@@ -153,12 +153,6 @@ matrix start <appName>
 matrix log
 ```
 
-## Now What?
-
-- Visit your [http://dev.admobilize.com/](dashboard)
-- Make some Appz [http://api.admobilize.com/](API)
-- Be an [http://developers.admobilize.com](adDeveloper)
-
 ## Matrix App Development
 
 
