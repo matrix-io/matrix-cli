@@ -8,10 +8,11 @@ var tar = require('tar');
 var fstream = require('fstream');
 var JSHINT = require('jshint').JSHINT;
 var debug = debugLog('deploy');
-var firebaseAppFlow = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
+var firebaseWorkers = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
+var yaml = require('js-yaml')
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   program
     .parse(process.argv);
 
@@ -27,6 +28,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   } else {
     pwd += '/' + appName + '/';
   }
+
+
 
   var tmp = __dirname + '/../' + appName + '.zip';
 
@@ -50,6 +53,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var appFile = fs.readFileSync(pwd + 'app.js').toString();
   var configFile = fs.readFileSync(pwd + detectFile).toString();
   var configObject = {};
+
+  try {
+    var config = yaml.safeLoad(fs.readFileSync(pwd + detectFile));
+  } catch (e){
+    return console.error(e.message.red);
+  }
+
+  debug('included config', config);
 
   // run JSHINT on the application
   JSHINT(appFile);
@@ -126,35 +137,38 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function onEnd() {
     console.log('Finished packaging app folder');
-    if (firebaseAppFlow) {
-      firebase.init(
-        Matrix.config.user.id,
-        Matrix.config.device.identifier,
-        Matrix.config.user.token,
-        function (err) {
-          debug('Firebase init');
-          if (err) return console.error(err);
-
-          var appData = {
-            'meta': {
-              'name': appName
-            },
-            'config': configObject
-          };
-          //file: tmp
-          //TODO Need to upload the file and add the URL
-          //upload file (located in tmp) to firebase storage or google cloud storage
-          //add file URL under file: http://...
-
-          firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, function (err, result) {
-            console.log('App '.green + appName + ' deployment request successfully generated'.green);
-            if (err) console.log('Error: ', err);
-            if (result) console.log('Result: ', result);
-            endIt();
-          });
+    
+    firebase.init(
+      Matrix.config.user.id,
+      Matrix.config.device.identifier,
+      Matrix.config.user.token,
+      function (err) {
+        if (err) {
+          if (err.code === "EXPIRED_TOKEN") {
+            console.error(t('matrix.expired'))
+          } else {
+            console.error(err);
+          }
         }
-      );
-      
+
+    if (firebaseWorkers) {
+      var appData = {
+        'meta': {
+          'name': appName
+        },
+        'config': configObject
+      };
+      //file: tmp
+      //TODO Need to upload the file and add the URL
+      //upload file (located in tmp) to firebase storage or google cloud storage
+      //add file URL under file: http://...
+
+      firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, function (err, result) {
+        console.log('App '.green + appName + ' deployment request successfully generated'.green);
+        if (err) console.log('Error: ', err);
+        if (result) console.log('Result: ', result);
+        endIt();
+      });
     } else {
       Matrix.api.app.deploy({
         appConfig: configObject,
@@ -184,11 +198,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
           var deployInfo = data.results;
           deployInfo.name = appName;
-
-          Matrix.api.app.assign(appName, function (err, resp) {
-            if (err) return console.error(err);
-            debug('App Assigned to', Matrix.config.device.identifier);
+          Matrix.helpers.checkPolicy(config, function (err, policy) {
+            if (err) console.error(err);
+            config = Matrix.helpers.configHelper.validate(config);
+            firebase.app.add(config, policy);
           });
+
 
           // Tell device to download app
           Matrix.api.app.install(deployInfo, Matrix.config.device.identifier, function (err, resp) {
@@ -201,10 +216,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
             console.log(t('matrix.deploy.app_installed').green, appName, '--->', Matrix.config.device.identifier);
             endIt();
-          })
-        })
-      })
-    }
+          });
+
+        });
+      });
+      }
+    });    
   }
 
   function endIt() {
