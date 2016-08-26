@@ -25,38 +25,37 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   if (cmd.match(/a|ap|app|-a|--app/)) {
-    console.log('____ | ' + t('matrix.install.installing') + ' ', t, ' ==> '.yellow, Matrix.config.device.identifier)
     // TODO lookup policy from config file, pass to function
-    Matrix.helpers.checkPolicy({}, function (err, policy) {
-      console.warn('Policy>', policy, 'rest of flow unfinished');
+
 
       if (firebaseWorkers) {
+        console.log('____ | ' + t('matrix.install.installing') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier)
         firebase.init(
           Matrix.config.user.id,
           Matrix.config.device.identifier,
           Matrix.config.user.token,
           function (err) {
             debug("Firebase Init");
-            if (err) return console.error(err);
+            if (err) return console.error('Firebase Fail'.red, err);
 
-            firebase.app.search(target);
-            //Get app with name X
-            //Get versionId of appId with version X
-            //firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, "myAppId", policy, handleResponse);
-            process.exit();
-          }
-        );
-      } else {
-        //TODO: make the rest of this work
-        return;
-        /*Matrix.api.app.install(t, Matrix.config.device.identifier, function (err, resp) {
-          if (err) return console.error(err);
-          console.log(t('matrix.install.app_installed').yellow, t);
-          debug(resp);
-        });*/
+            firebase.app.search(target, function(result){
+              if ( !_.isNull( result )){
+                console.log('>>', result)
+                var appId = _.keys(result)[0];
+
+              Matrix.helpers.checkPolicy(result[appId].policy, function (err, policy) {
+                console.warn('Policy>', policy, 'rest of flow unfinished');
+
+                firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, policy, function(err){
+                  console.log('Install Complete', err)
+                  process.exit();
+                });
+              });
+            }
+          });
+        });
       }
 
-    });
   } else if (cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
     Matrix.api.sensor.install(t, Matrix.config.device.identifier, function (err, resp) {
       if (err) return console.error(err);
@@ -65,14 +64,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       process.exit();
     })
   }
-
-  // if (!_.isUndefined(o) && o.sensors === true) {
-  //   //sensor install
-  //   console.warn('sensor not implemented yet');
-  // } else {
-  //   // application install
-  //   // TODO: ensure if file is not found, we're hitting api directory
-  //   // console.log('Installing app', name)
-  // }
 
 });
