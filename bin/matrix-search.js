@@ -29,14 +29,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     Matrix.config.user.token,
     function (err) {
       debug("Firebase Init");
-      if (err) return console.error(err);
+      if (err) return console.error('Firebase Fail'.red, err);
 
       firebase.app.search(needle, function(data){
-          console.log(arguments)
+          if ( !_.isNull(data) ) {
+            console.log( data )
+          }
       });
       //Get app with name X
       //Get versionId of appId with version X
-      process.exit();
     }
   );
   // Matrix.api.app.search(needle, function (err, results) {
