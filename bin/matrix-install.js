@@ -40,19 +40,21 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
             firebase.app.search(target, function(result){
               if ( !_.isNull( result )){
+                debug(result)
                 var appId = _.keys(result)[0];
-                var versionId = result[appId].meta.latest;
+                var versionId = result[appId].meta.currentVersion;
 
               Matrix.helpers.checkPolicy(result[appId].versions[versionId].policy, target, function (err, policy) {
                 console.warn('\n⇒ Installing %s with policy:', target.yellow);
+                debug(policy);
                 _.each(policy, function(v, k){
                   console.log('\n', k+':')
                   _.each(v, function(val, key){
                     // passes
                     if ( val ){
-                      console.log(' ✅ ' + key.blue );
+                      console.log(' ✅  ' + key.blue );
                     } else {
-                      console.log(' ❌ ' + key.grey );
+                      console.log(' ❌  ' + key.grey );
                     }
                   })
                 })
