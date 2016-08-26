@@ -46,14 +46,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         if (firebaseWorkers) {    
           firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
             if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
-            var result = {
-              "status": "OK",
-              results: []
-            };
-            if (data) {
-              result.results = data;
-            }
-            console.log(Matrix.helpers.displayApps(JSON.stringify(result)));
+            if (_.isUndefined(data)) data = {};
+            console.log(Matrix.helpers.displayApps(data));
             process.exit();
           });
         } else {

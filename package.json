@@ -39,6 +39,7 @@
     "node-yaml-localize": "https://github.com/diegoribero/node-yaml-localize/tarball/master",
     "prompt": "^0.2.14",
     "q": "^1.4.1",
+    "request": "^2.74.0",
     "rx": "^4.1.0",
     "should": "^9.0.2",
     "socket.io-client": "^1.4.5",
