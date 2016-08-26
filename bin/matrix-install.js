@@ -41,7 +41,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             firebase.app.search(target, function(result){
               if ( !_.isNull( result )){
                 var appId = _.keys(result)[0];
-                var versionId = result[appId].meta.latest;
+                var versionId = result[appId].meta.currentVersion;
 
               Matrix.helpers.checkPolicy(result[appId].versions[versionId].policy, target, function (err, policy) {
                 console.warn('\n⇒ Installing %s with policy:', target.yellow);
