@@ -34,6 +34,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       firebase.app.search(needle, function(data){
           if ( !_.isNull(data) ) {
             console.log( data )
+            console.log(Matrix.helpers.displaySearch(data, needle));
           }
       });
       //Get app with name X
@@ -42,7 +43,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   );
   // Matrix.api.app.search(needle, function (err, results) {
   //   if (err) return console.error(err);
-  //   console.log(Matrix.helpers.displaySearch(results, needle));
   //   process.exit();
   //
   // })
