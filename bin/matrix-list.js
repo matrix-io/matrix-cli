@@ -42,20 +42,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });
 
       } else if (target.match(/app/)) {
-        if (firebaseWorkers) {
-          firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
-            if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
-            if (_.isUndefined(data)) data = {};
-            console.log(Matrix.helpers.displayApps(data));
-            process.exit();
-          });
-        } else {
-          firebase.app.list( function(err, apps){
-            console.log(Matrix.helpers.displayApps(apps));
-            process.exit();
-          });
-        }
-
+        firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
+          if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
+          if (_.isUndefined(data)) data = {};
+          console.log(Matrix.helpers.displayApps(data));
+          process.exit();
+        });
       } else if (target.match(/device/)) {
 
         var group = pkgs[1];
