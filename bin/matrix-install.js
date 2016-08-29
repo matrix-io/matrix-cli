@@ -4,7 +4,6 @@ require('./matrix-init');
 var program = require('commander');
 var firebase = require('matrix-firebase');
 var debug = debugLog('install');
-var firebaseWorkers = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
@@ -28,7 +27,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     // TODO lookup policy from config file, pass to function
 
 
-      if (firebaseWorkers) {
         console.log('____ | ' + t('matrix.install.installing') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier)
         firebase.init(
           Matrix.config.user.id,
@@ -68,7 +66,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             }
           });
         });
-      }
 
   } else if (cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
     Matrix.api.sensor.install(t, Matrix.config.device.identifier, function (err, resp) {

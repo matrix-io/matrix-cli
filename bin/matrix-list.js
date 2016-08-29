@@ -4,10 +4,9 @@ require('./matrix-init');
 var program = require('commander');
 var firebase = require('matrix-firebase');
 var debug = debugLog('list');
-var firebaseWorkers = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   program
     .parse(process.argv);
   var pkgs = program.args;
@@ -18,7 +17,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function handleResponse(err, app) {
     if (err) return console.error(err);
-    console.log(require('util').inspect(app, { depth: 3, colors: true }));  
+    console.log(require('util').inspect(app, { depth: 3, colors: true }));
   }
 
   var target = pkgs[0];
@@ -43,7 +42,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });
 
       } else if (target.match(/app/)) {
-        if (firebaseWorkers) {    
+        if (firebaseWorkers) {
           firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
             if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
             if (_.isUndefined(data)) data = {};
@@ -108,6 +107,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log('\n')
     process.exit(1);
   }
-  
+
  // TODO: support config <app>
 });

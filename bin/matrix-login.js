@@ -3,7 +3,6 @@
 require('./matrix-init');
 var prompt = require('prompt');
 var debug = debugLog('login');
-var firebaseWorkers = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 

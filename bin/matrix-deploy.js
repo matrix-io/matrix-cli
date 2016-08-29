@@ -8,7 +8,6 @@ var tar = require('tar');
 var fstream = require('fstream');
 var JSHINT = require('jshint').JSHINT;
 var debug = debugLog('deploy');
-var firebaseWorkers = _.has(process.env, 'MATRIX_WORKER'); //Use new firebase flow if MATRIX_WORKER env var is found
 var yaml = require('js-yaml')
 var request = require('request');
 
@@ -152,7 +151,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           }
         }
 
-        if (firebaseWorkers) {
           var versionParam = appVersion + '.zip';
           var url = serverUrl + '/' + uploadEndpoint
             + '?access_token=' + Matrix.config.user.token
@@ -203,63 +201,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 stream.on('error', function (err) {
                   return console.log('Error reading zipped file (' + destinationFilePath + '): \n', err);
                 })
-                /*.on('finish', function (err, response) { 
+                /*.on('finish', function (err, response) {
 
                 });*/
               } else {
-                return console.error("Unknown structure reported");
+                return console.error(t('matrix.deploy.app_install_failed').red);
               }
             }
           });
-
-        } else { //Non worker flow
-          Matrix.api.app.deploy({
-            appConfig: configObject,
-            file: destinationFilePath,
-            name: appName
-          }, function (err, resp) {
-            if (err) return console.error(t('matrix.deploy.deploy_error') + ':'.red, err);
-            console.log(t('matrix.deploy.deply_started').yellow);
-            resp.setEncoding();
-
-            var data = '';
-            resp.on('error', function (e) {
-              console.error(t('matrix.deploy.stream_error').red, e)
-            })
-            resp.on('data', function (d) {
-              data += d;
-            });
-            resp.on('end', function () {
-              console.log(t('matrix.deploy.deploy_complete').green);
-              debug(data);
-
-              try {
-                data = JSON.parse(data);
-              } catch (e) {
-                console.error(t('matrix.deploy.bad_payload'), e);
-              }
-
-              var deployInfo = data.results;
-              deployInfo.name = appName;
-              Matrix.helpers.checkPolicy(config, function (err, policy) {
-                if (err) console.error(err);
-                config = Matrix.helpers.configHelper.validate(config);
-                firebase.app.add(config, policy);
-              });
-
-              // Tell device to download app
-              Matrix.api.app.install(deployInfo, Matrix.config.device.identifier, function (err, resp) {
-                if (err) {
-                  return console.error(t('matrix.deploy.app_install_failed').red, err);
-                }
-                fs.unlinkSync(destinationFilePath); // remove zip file
-                console.log(t('matrix.deploy.app_installed').green, appName, '--->', Matrix.config.device.identifier);
-                endIt();
-              });
-
-            });
-          });
-        } //End of non worker flow
       });
   }
 
