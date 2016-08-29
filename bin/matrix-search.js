@@ -33,8 +33,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       firebase.app.search(needle, function(data){
           if ( !_.isNull(data) ) {
-            console.log( data )
-            console.log(Matrix.helpers.displaySearch(data, needle));
+            debug( data )
+            // get rid of non matches
+            data = _.filter( data, function (app, appId) {
+              return ( app.meta.name.indexOf(needle) > -1 );
+            })
+
+            if ( _.isEmpty (data) ){
+              console.log(t('matrix.search.no_results').green);
+            } else {
+              console.log(Matrix.helpers.displaySearch(data, needle));
+            }
+            process.exit();
           }
       });
       //Get app with name X
@@ -46,6 +56,4 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   //   process.exit();
   //
   // })
-
-  var search = pkgs[0];
 })
