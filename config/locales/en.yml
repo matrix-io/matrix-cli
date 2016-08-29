@@ -2,7 +2,7 @@ en:
   matrix:
     already_login: username
     api_title: API
-    streaming_title: Streaming 
+    streaming_title: Streaming
     user_title: User
     device_title: Device
     locale_title: Locale
@@ -26,7 +26,8 @@ en:
     help_deploy: Deploys an app to the active MatrixOS
     help_trigger: Runs a trigger test
     help_log: Logs output from selected MatrixOS and applications
-    please_login: No user logged in. Please
+    please_login: No user logged in. Use
+    expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:
       no_device: No Device Indicated
@@ -84,7 +85,7 @@ en:
         register_error: Register Error
         success: Success
         to_target_device: To target this device
-      start:  
+      start:
         before_message: first please
         device: Device
         not_a_virtual_device: is not a virtual MatrixOS. Please
@@ -158,12 +159,12 @@ en:
       specify_key: specify a key # 
       key_doesnt_exist: this key specified doesn´t exist # 
       key_value: 'value:'
-    uninstall: 
+    uninstall:
       uninstalled: 'Uninstalled'
       application_unspecified: 'error: missing required argument' #
       app_undefined: 'this app doesn`t exist' #
       device_offline: Device offline, reconect the device please #
-    update:      
+    update:
       upgrading_to: 'Upgrading to'
       latest_version: 'latest version'
       of: 'of'
@@ -176,30 +177,30 @@ en:
       version_doesnt_exist: this version doesn´t exist # 
       version_update_successfully: 'Upgrading to' #
       error_updating: Error updating #
-    start: 
+    start:
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
-      starting_app: 'Starting' 
-      start_app_successfully: 'Started' 
+      starting_app: 'Starting'
+      start_app_successfully: 'Started'
       app_failed_to_start: 'Failed starting app' #
-    stop: 
+    stop:
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       stopping_app: 'Stopping'
-      stop_app_successfully: 'Stopped' 
-    restart: 
+      stop_app_successfully: 'Stopped'
+    restart:
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       restarting_app: 'Restarting'
-      restart_app_successfully: 'Restarted' 
-    #DEVELOPMENT  
+      restart_app_successfully: 'Restarted'
+    #DEVELOPMENT
     create:
       name_undefined: 'Must specify app name'
       new_folder: New Folder
       error_creating: An error occurred
       description_app: this is your application logic
       description_config: 'change variables, indicate sensors, configure dashboard'
-      description_developer: information about developing MATRIX apps 
+      description_developer: information about developing MATRIX apps
       description_index: 'app entry point, do not modify'
       description_package: 'node.js information file, do not modify without knowledge'
     deploy:
@@ -224,14 +225,15 @@ en:
       no_specified_test: 'error: missing required argument' #
       defined_test_doesn`t_exist: 'test doesn`t exist' #
       run_trigger_successfully: 'running test' #
-    log: 
-      app_not_select: 'select an app `matrix log app-name` ' # 
+    log:
+      app_not_select: 'select an app `matrix log app-name` ' #
       app_undefined: 'app specified doesn´t  exits ' #
       logs_show: 'logs' #
     helpers:
       adding: Adding
-      config_error: Config error
-      config_save_error: Config save error
+      config_error: Configuration error
+      config_save_error: Configuration save error
+      config_parse_error: 'Configuration parsing Error'
       apps:
         name: Name
         description: Description
@@ -241,7 +243,7 @@ en:
         device_id: Device ID
         name: Name
         ok: ok
-        last_online: Last Online 
+        last_online: Last Online
       groups:
         name: Name
         devices: "# Devices"

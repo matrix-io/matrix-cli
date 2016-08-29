@@ -2,178 +2,77 @@
 
 require('./matrix-init');
 var program = require('commander');
+var firebase = require('matrix-firebase');
 var debug = debugLog('install');
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
+Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
-    require('./matrix-validate');
-    program 
-        .parse(process.argv);
+  require('./matrix-validate');
+  program
+    .parse(process.argv);
 
-    var pkgs = program.args;
+  var pkgs = program.args;
 
-    var cmd = pkgs[0];
-    //target
-    var target = pkgs[1];
+  var cmd = pkgs[0];
+  //target
+  var target = pkgs[1];
 
-    //Defaults to app
-    if (pkgs.length === 1) {
-        target = cmd;
-        cmd = 'app';
-    }else if (pkgs.length === 0) {
-      console.log('\n install [ app / sensor ] <name> \n ')
-      process.exit(0);
-    }
+  //Defaults to app
+  if (pkgs.length === 1) {
+    target = cmd;
+    cmd = 'app';
+  }
 
-    if (cmd.match(/a|ap|app|-a|--app/)) {
+  if (cmd.match(/a|ap|app|-a|--app/)) {
+    // TODO lookup policy from config file, pass to function
+
 
         console.log('____ | ' + t('matrix.install.installing') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier)
+        firebase.init(
+          Matrix.config.user.id,
+          Matrix.config.device.identifier,
+          Matrix.config.user.token,
+          function (err) {
+            debug("Firebase Init");
+            if (err) return console.error('Firebase Fail'.red, err);
 
+            firebase.app.search(target, function(result){
+              if ( !_.isNull( result )){
+                debug(result)
+                var appId = _.keys(result)[0];
+                var versionId = result[appId].meta.currentVersion;
 
-        checkPolicy({}, function(err, policy) {
+              Matrix.helpers.checkPolicy(result[appId].versions[versionId].policy, target, function (err, policy) {
+                console.warn('\n⇒ Installing %s with policy:', target.yellow);
+                debug(policy);
+                _.each(policy, function(v, k){
+                  console.log('\n', k+':')
+                  _.each(v, function(val, key){
+                    // passes
+                    if ( val ){
+                      console.log(' ✅  ' + key.blue );
+                    } else {
+                      console.log(' ❌  ' + key.grey );
+                    }
+                  })
+                })
 
-
-            console.warn('Policy>', policy, 'rest of flow unfinished')
-                //TODO: make the rest of this work
-            return;
-            Matrix.api.app.install(target, Matrix.config.device.identifier, function(err, resp) {
-                if (err) return console.error(err);
-                console.log(t('matrix.install.app_installed').yellow, target);
-                debug(resp);
-
-                //manage api records
-                Matrix.api.app.assign(target, function(err, resp) {
-                    if (err) return console.error(err);
-                    debug('App Assigned to', Matrix.config.device.identifier);
-                    process.exit();
+                console.log("\ninstalling to device... ")
+                firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, function(err){
+                  console.log('Install Complete')
+                  process.exit();
                 });
-
-                //TODO: Pull sensors / integrations. Ask permissions. Write Policy
-            });
-
-        });
-
-    } else if (cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
-        Matrix.api.sensor.install(target, Matrix.config.device.identifier, function(err, resp) {
-            console.log('BRAYAN')
-            if (err) return console.error(err);
-            debug(resp);
-            console.log(target, ' ' + t('matrix.install.sensor_installed') + '.')
-            process.exit();
-        })
-    } else {
-
-    }
-
-    // if (!_.isUndefined(o) && o.sensors === true) {
-    //   //sensor install
-    //   console.warn('sensor not implemented yet');
-    // } else {
-    //   // application install
-    //   // TODO: ensure if file is not found, we're hitting api directory
-    //   // console.log('Installing app', name)
-    // }
-
-    function checkPolicy(config, cb) {
-
-        var Rx = require('rx')
-        var defaultTruth;
-
-        var write = {};
-
-        // replace with config
-        var s = {
-            'sensors': ['camera', 'mic', 'temperature', 'humidity'],
-            'integrations': ['nest', 'hue', 'august'],
-            'services': ['face', 'thumb_up'],
-            'events': ['ok-detected']
-        };
-
-        _.each(s, function(items, title) {
-            write[title] = {};
-            console.log(title.grey, ':', items.join(' '))
-            _.each(items, function(item) {
-                write[title][item] = false;
-            })
-        })
-        console.log('==== ^^^^ GRANT ACCESS ???? ^^^^ ===='.blue)
-
-
-        // need to inject results of answers into questions for decision trees
-        var prompts = new Rx.Subject();
-
-        require('inquirer').prompt(prompts).ui.process.subscribe(function(ans) {
-            if (ans.name === 'default') {
-                //setup default
-                defaultTruth = ans.answer;
-                stepThroughConfig();
+              });
             }
-            console.log(ans)
-            if (!_.isNull(ans.name.match(/sensors|integrations|events|services/)) && _.isArray(ans.answer)) {
-                //namespace object
-                _.each(ans.answer, function(answer) {
-                    write[ans.name][answer] = true;
-                })
-            }
-        }, function(e) { console.error(e) }, function() {
-
-            // TODO: Reformat object from [ 'foo','bar'] to { foo: true, bar: true, baz: false }
-            cb(null, write);
+          });
         });
 
-
-        function stepThroughConfig() {
-
-            _.forIn(s, function(v, k) {
-
-                var baseQ = {
-                    type: 'checkbox',
-                    name: k,
-                    message: 'Grant access to '.white + k.grey + '?'.white,
-                    choices: [],
-                    // {
-                    //   key: 'p',
-                    //   name: 'Pepperoni and cheese',
-                    //   value: 'PepperoniCheese'
-                    // },
-
-                };
-                //add choices
-                _.each(v, function(jot) {
-                    baseQ.choices.push({
-                        key: jot.toLowerCase(),
-                        name: jot,
-                        checked: defaultTruth
-                    })
-                })
-
-                // add this question to queue
-                prompts.onNext(baseQ);
-            });
-
-            prompts.onCompleted();
-        }
-
-
-
-
-
-        prompts.onNext({
-            type: 'confirm',
-            name: 'quick',
-            message: 'OK to allow '.white + target.yellow + ' access to the above? '.white,
-            default: true
-        });
-        prompts.onNext({
-            type: 'confirm',
-            name: 'default',
-            message: 'Default Permission Setting? Y/n'.white,
-            default: true,
-            when: function(answers) {
-                return answers.quick === false
-            }
-        });
-        // prompts.onCompleted(function (ans) {console.log(ans)});
-
-    }
+  } else if (cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
+    Matrix.api.sensor.install(t, Matrix.config.device.identifier, function (err, resp) {
+      if (err) return console.error(err);
+      debug(resp);
+      console.log(t, ' ' + t('matrix.install.sensor_installed') + '.')
+      process.exit();
+    })
+  }
 });
