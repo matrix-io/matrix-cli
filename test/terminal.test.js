@@ -2103,7 +2103,7 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
                 });
-            }); // Finish update  error 
+            }); // starFinish update  error 
 
             context('start', function() {
 
@@ -2307,12 +2307,12 @@ describe('Matrix CLI Commands', function() {
 
                     });
                 });
-            }); //finish restart ERROR (Application.restart(admatrix.config, cb);)
+            }); //No Finish restart ERROR (Application.restart(admatrix.config, cb);)
 
             context('create', function() {
 
                 context('No parameters specified', function() {
-                    it.skip('should show commands "create" usage', function(done) {
+                    it('should show commands "create" usage', function(done) {
                         var createProc = run('matrix', ['create'])
                         var outputs = new Array();
 
@@ -2333,7 +2333,7 @@ describe('Matrix CLI Commands', function() {
                 });
 
                 context('specified to name device create', function() {
-                    it.skip('Creates a new scaffolding for a MatrixOS Application', function(done) {
+                    it('Creates a new scaffolding for a MatrixOS Application', function(done) {
 
                         var createProc = run('matrix', ['create', 'test'])
                         var outputs = new Array();
@@ -2354,7 +2354,7 @@ describe('Matrix CLI Commands', function() {
                     });
                 });
 
-            }); // finish create 'ERROR' 
+            }); // Finish create  
 
             context('deploy', function() {
                 context('No parameters specified', function() {
@@ -2423,11 +2423,11 @@ describe('Matrix CLI Commands', function() {
                     });
 
                 });
-            }); // finish deploy 'ERROR'
+            }); // No Finish deploy 'ERROR'
 
             context('trigger', function() {
                 context('No parameters specified', function() {
-                    it.skip('should show commands "trigger" usage', function(done) {
+                    it('should show commands "trigger" usage', function(done) {
                         var triggerProc = run('matrix', ['trigger']);
                         var outputs = new Array();
 
@@ -2492,7 +2492,7 @@ describe('Matrix CLI Commands', function() {
 
                 });
 
-            }); //finish trigger ERROR (client registration fail)
+            }); //No Finish trigger ERROR (client registration fail socket)
 
             context('log', function() {
                 context('No parameters specified', function() {

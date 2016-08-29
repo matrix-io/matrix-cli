@@ -221,7 +221,7 @@ en:
       deploy_app_successfully: 'deploying app Successfully' #
       app_undefined: 'could not do deploy' #
     trigger: 
-      no_specified_test: 'test undefined' #
+      no_specified_test: 'error: missing required argument' #
       defined_test_doesn`t_exist: 'test doesn`t exist' #
       run_trigger_successfully: 'running test' #
     log: 
