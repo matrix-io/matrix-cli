@@ -15,7 +15,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   // log(pkgs, pkgs.length)
 
   if (_.isUndefined(Matrix, 'config.user.token')) {
-    return console.error(t('matrix.please_login') + ' `matrix login`'.grey);
+    return console.error(t('matrix.please_login') + ' `matrix register`'.grey);
   }
 
   if (_.isUndefined(Matrix.config.device.identifier)) {
