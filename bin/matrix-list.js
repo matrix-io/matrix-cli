@@ -39,22 +39,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
           debug('Device List>', resp);
           console.log(Matrix.helpers.displayDeviceApps(resp));
+          process.exit();
         });
 
       } else if (target.match(/app/)) {
-        if (firebaseWorkers) {
+       
           firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
             if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
             if (_.isUndefined(data)) data = {};
             console.log(Matrix.helpers.displayApps(data));
             process.exit();
           });
-        } else {
-          firebase.app.list( function(err, apps){
-            console.log(Matrix.helpers.displayApps(apps));
-            process.exit();
-          });
-        }
+        
 
       } else if (target.match(/device/)) {
 
@@ -73,6 +69,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         } else {
           Matrix.api.device.list({}, function(body) {
             //print device
+
             console.log(Matrix.helpers.displayDevices(body));
             // save device map to config
             Matrix.config.deviceMap = _.map(JSON.parse(body).results, function(d){
@@ -93,6 +90,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           process.exit();
         });
       } else {
+        console.log('No Results Found'.yellow);
         displayHelp();
       }
     }

@@ -5,6 +5,7 @@ var colors = require('colors');
 var should = require('should');
 var sinon = require('sinon');
 var Table = require('cli-table');
+var program = require('commander');
 
 
 describe('Matrix CLI Commands', function() {
@@ -858,7 +859,7 @@ describe('Matrix CLI Commands', function() {
                                 outputs.push(out.toString());
                             })
                             unkProc.on('close', function(code) {
-                                console.log('brayan', outputs);
+                                console.log('close', outputs);
                                 outputs.should.matchAny(new RegExp(t('matrix.sim.unknowm_parameter')), 'stdout Fail, expecting "' + t('matrix.sim.unknowm_parameter') + '"')
                                 done();
                             })
@@ -873,6 +874,7 @@ describe('Matrix CLI Commands', function() {
                     it('Show "list" command usage', function(done) {
                         var listProc = run('matrix', ['list', '']);
                         var outputs = new Array();
+                        this.timeout(15000)
                         listProc.stdout.on('data', function(out) {
                             console.log('stdout', out.toString());
                             outputs.push(out.toString());
@@ -881,7 +883,7 @@ describe('Matrix CLI Commands', function() {
                             console.log('stderr', out.toString());
                         })
                         listProc.stdout.on('close', function(code) {
-                            console.log('brayanClose', outputs);
+                            console.log('Close', outputs);
                             outputs.should.matchAny(new RegExp(t('matrix.list.help_devices')), 'stdout Fail, expecting "' + t('matrix.list.help_devices') + '"')
                             done();
                         })
@@ -891,9 +893,9 @@ describe('Matrix CLI Commands', function() {
                 context('Parameters specified', function() {
                     context('devices', function() {
                         it('display available devices', function(done) { //No se puede recibir la tabla de devices 
-                            this.timeout(15000);
                             var listProc = run('matrix', ['list', 'devices']);
                             var outputs = new Array();
+                            this.timeout(15000);
                             listProc.stdout.on('data', function(out) {
                                 console.log('stdout', out.toString());
                                 outputs.push(out.toString());
@@ -937,6 +939,7 @@ describe('Matrix CLI Commands', function() {
                         it('display apps on current device', function(done) {
                             var appsProc = run('matrix', ['list', 'apps'])
                             var outputs = new Array();
+                            this.timeout(15000)
                             appsProc.stdout.on('data', function(out) {
                                 console.log('stdout', out.toString());
                                 outputs.push(out.toString())
@@ -957,6 +960,7 @@ describe('Matrix CLI Commands', function() {
                         it('display all devices with installed apps', function(done) {
                             var allProc = run('matrix', ['list', 'all'])
                             var outputs = new Array();
+                            this.timeout(20000)
                             allProc.stdout.on('data', function(out) {
                                 console.log('stdout', out.toString());
                                 outputs.push(out.toString())
@@ -978,6 +982,7 @@ describe('Matrix CLI Commands', function() {
 
                             var unknownProc = run('matrix', ['list', 'xxxxxx'])
                             var outputs = new Array();
+                            this.timeout(15000)
                             unknownProc.stdout.on('data', function(out) {
                                 console.log('stdout', out.toString());
                                 outputs.push(out.toString())
@@ -1412,6 +1417,7 @@ describe('Matrix CLI Commands', function() {
                                     it('should show an "invalid app" warning', function(done) {
                                         var setProc = run('matrix', ['set', 'config', 'invalid']);
                                         var outputs = new Array();
+                                        this.timeout(15000)  
                                         setProc.stdout.on('data', function(out) {
                                             console.log('stdout', out.toString())
                                             outputs.push(out.toString());
@@ -1525,6 +1531,7 @@ describe('Matrix CLI Commands', function() {
                     it('should show command "search" usage', function(done) {
                         var searchProc = run('matrix', ['search']);
                         var outputs = new Array();
+                        this.timeout(15000)
                         searchProc.stdout.on('data', function(out) {
                             console.log('stdout', out.toString());
                             outputs.push(out.toString());
@@ -1563,7 +1570,7 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
 
-                    context('search term has more than 2 characters', function() { //danilo
+                    context('search term has more than 2 characters', function() { 
                         it('should list the results of an app search', function(done) {
                             Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {// se debe quitar
                                 program
@@ -1705,9 +1712,10 @@ describe('Matrix CLI Commands', function() {
 
                     context('Valid app/sensor name', function() {
                         context('app is already installed', function() {
-                            it('should show warning app already installed', function(done) {
+                            it.skip('should show warning app already installed', function(done) {
                                 var installProc = run('matrix', ['install', 'Test Ruben']);
                                 var outputs = new Array();
+                                this.timeout(15000);
                                 installProc.stdout.on('data', function(out) {
                                     console.log('stdout', out.toString());
                                     installProc.kill('SIGINT');
@@ -1753,10 +1761,11 @@ describe('Matrix CLI Commands', function() {
 
 
             context('config', function() { //pending by error tokens 
-                context('No parameters specified', function() {
+                context.skip('No parameters specified', function() {
                     it('should show device configurations', function(done) {
                         var configProc = run('matrix', ['config']);
                         var outputs = new Array();
+                        this.timeout(15000)
                         configProc.stdout.on('data', function(out) {
                             console.log('stdout', out.toString())
                             outputs.push(out.toString());
@@ -1891,6 +1900,7 @@ describe('Matrix CLI Commands', function() {
                     it('should show command "uninstall" usage', function(done) {
                         var uninstallProc = run('matrix', ['uninstall']);
                         var outputs = new Array();
+                        this.timeout(15000)
                         uninstallProc.stdout.on('data', function(out) {
                             console.log('stdout', out.toString())
                             outputs.push(out.toString());
@@ -1980,6 +1990,7 @@ describe('Matrix CLI Commands', function() {
                     it('should show command "update" usage', function(done) {
                         var updateProc = run('matrix', ['update']);
                         var outputs = new Array();
+                        this.timeout(15000)
                         updateProc.stdout.on('data', function(out) {
                             console.log('stdout', out.toString())
                             outputs.push(out.toString());

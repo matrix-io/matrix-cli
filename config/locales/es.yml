@@ -33,7 +33,6 @@ es:
     #SETUP:
     login: 
       already_login_warning: 'Ya hay una cuenta registrada' #
-    login:
       user_auth_error: 'Error en la autenticación'
       login_success: 'Sesión iniciada correctamente'
     logout:
