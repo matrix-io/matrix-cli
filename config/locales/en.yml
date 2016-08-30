@@ -6,6 +6,7 @@ en:
     device_title: Device
     locale_title: Locale
     help_login: Login to the MatrixOS platform
+    help_register: Create a MatrixOS platform user
     help_logout: Log out of the MatrixOS platform
     help_use: Indicate active device
     help_set: 'Set environment settings, update application configuration, change cli locale'
