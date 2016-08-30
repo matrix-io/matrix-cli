@@ -30,6 +30,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       api: 'http://dev-demo.admobilize.com',
       mxss: 'http://localhost:3000'
     },
+    local2: {
+      api: 'http://dev-demo.admobilize.com',
+      mxss: 'http://localhost:3001'
+    },
     dev: {
       api: 'http://dev-demo.admobilize.com',
       mxss: 'http://dev-mxss.admobilize.com'
