@@ -42,7 +42,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });
 
       } else if (target.match(/app/)) {
-        firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
+        firebase.app.list(function (err, data) {
           if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
           if (_.isUndefined(data)) data = {};
           console.log(Matrix.helpers.displayApps(data));
