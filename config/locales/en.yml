@@ -232,6 +232,7 @@ en:
         installs: +1s
         name: Name
         description: Description
+        short_name: Short Name 
         latest: Latest
       device_apps:
         device: Device

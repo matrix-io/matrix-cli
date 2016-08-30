@@ -41,7 +41,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 debug(result)
 
                 var appId = _.findKey( result, function (app, appId) {
-                  return ( app.meta.name == target );
+                  if(app.meta.name == target || (app.meta.hasOwnProperty("shortName") && app.meta.shortName == target)){
+                    return 1;
+                  }
                 });
 
                 if(_.isUndefined(appId)){

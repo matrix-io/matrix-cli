@@ -231,6 +231,7 @@ es:
         installs: +1s
         name: Nombre
         description: Descriptción
+        short_name: Nombre Corto
         latest: Mas reciente
       device_apps:
         device: Dispositivo
