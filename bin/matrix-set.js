@@ -5,7 +5,7 @@ var program = require('commander');
 var debug = debugLog('set');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
 
   program
     .parse(process.argv);
@@ -30,17 +30,21 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       api: 'http://dev-demo.admobilize.com',
       mxss: 'http://localhost:3000'
     },
+    local2: {
+      api: 'http://dev-demo.admobilize.com',
+      mxss: 'http://localhost:3001'
+    },
     dev: {
       api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://dev-mxss.admobilize.com:80'
+      mxss: 'http://dev-mxss.admobilize.com'
     },
     stage: {
       api: 'http://stage-api.admobilize.com',
-      mxss: 'http://stage-mxss.admobilize.com:80'
+      mxss: 'http://stage-mxss.admobilize.com'
     },
     production: {
       api: 'http://demo.admobilize.com',
-      mxss: 'http://mxss.admobilize.com:80'
+      mxss: 'http://mxss.admobilize.com'
     },
     hardcode: {
       api: 'http://dev-demo.admobilize.com',
@@ -59,7 +63,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       // TODO: set-env [value] sets a environment on the Matrix
       if (_.isUndefined(Matrix.config.device.identifier)) {
         console.warn(t('matrix.set.no_device') + ' `matrix use`');
-        
+
       }
     } else {
       console.error(t('matrix.set.env.valid_environments') + ' = [ sandbox, production ]')
@@ -113,7 +117,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       process.exit(0);
     } else {
       var localesRegExp = new RegExp(Object.keys(locales).join('|'));
-      
+
       if (locale && locale.match(localesRegExp)) {
         Matrix.config.locale = _.assign(locale, { "name": locale });
         Matrix.helpers.saveConfig();

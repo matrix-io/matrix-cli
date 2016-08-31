@@ -6,6 +6,7 @@ es:
     device_title: Dispositivo
     locale_title: Localización
     help_login: Iniciar sesión en la plataforma del MatrixOS
+    help_register: Crea un usuario en la plataforma MatrixOS
     help_logout: Cerrar la sesión en la plataforma MatrixOS
     help_use: Indica el dispositivo activo
     help_set: 'Establece la configuración de ambiente, actualiza la configuración de una aplicación, cambia la localización del cli'
@@ -250,6 +251,7 @@ es:
         installs: +1s
         name: Nombre
         description: Descriptción
+        short_name: Nombre Corto
         latest: Mas reciente
       device_apps:
         device: Dispositivo

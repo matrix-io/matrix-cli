@@ -43,17 +43,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });
 
       } else if (target.match(/app/)) {
-       
-          firebase.app.getApps(Matrix.config.device.identifier, Matrix.config.user.token, function (err, data) {
-            if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
-            if (_.isUndefined(data)) data = {};
-            console.log(Matrix.helpers.displayApps(data));
-            process.exit();
-          });
-        
 
+        firebase.app.list(function (err, data) {
+          if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
+          if (_.isUndefined(data)) data = {};
+          console.log(Matrix.helpers.displayApps(data));
+          process.exit();
+        });
       } else if (target.match(/device/)) {
-
         var group = pkgs[1];
         /** do nothing if not device **/
         if (group !== undefined) {
@@ -80,9 +77,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             });
           });
         }
-
       } else if (target.match(/group/)) {
-
         /** do nothing if not device **/
         Matrix.api.group.list(function (body) {
           //print group

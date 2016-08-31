@@ -39,8 +39,19 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             firebase.app.search(target, function(result){
               if ( !_.isNull( result )){
                 debug(result)
-                var appId = _.keys(result)[0];
+
+                var appId = _.findKey( result, function (app, appId) {
+                  if(app.meta.name == target || (app.meta.hasOwnProperty("shortName") && app.meta.shortName == target)){
+                    return 1;
+                  }
+                });
+
+                if(_.isUndefined(appId)){
+                  console.log('App ' + target.red + ' not found');
+                  return process.exit();
+                }
                 var versionId = result[appId].meta.currentVersion;
+                debug('VERSION: '.blue, versionId, 'APP: '.blue, appId);
 
               Matrix.helpers.checkPolicy(result[appId].versions[versionId].policy, target, function (err, policy) {
                 console.warn('\n⇒ Installing %s with policy:', target.yellow);
