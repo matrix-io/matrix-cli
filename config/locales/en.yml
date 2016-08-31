@@ -1,6 +1,6 @@
 en:
   matrix:
-    already_login: username
+    already_login: already logged with
     api_title: API
     streaming_title: Streaming
     user_title: User
@@ -26,7 +26,7 @@ en:
     help_deploy: Deploys an app to the active MatrixOS
     help_trigger: Runs a trigger test
     help_log: Logs output from selected MatrixOS and applications
-    please_login: No user logged in. Use
+    please_login: No user logged in.
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:

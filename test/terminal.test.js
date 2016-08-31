@@ -22,11 +22,12 @@ describe('Matrix CLI Commands', function() {
             })
 
 
-            it.skip('should show a log in warning', function(done) {
+            it('should show a log in warning', function(done) {
                     var notloggedProc = run('matrix');
                     var outputs = new Array();
                     notloggedProc.stdout.on('data', function(out) {
                         outputs.push(out.toString());
+
                     });
                     notloggedProc.stderr.on('data', function(out) {
                         //console.log('stderr', out.toString());
@@ -37,7 +38,7 @@ describe('Matrix CLI Commands', function() {
                     });
 
                 }) //finish matrix
-            it.skip('should request user credentials...', function(done) {
+            it('should request user credentials...', function(done) {
                 this.timeout(15000);
                 var loginProc = run('matrix', ['login']);
                 var outputs = new Array();
@@ -70,7 +71,7 @@ describe('Matrix CLI Commands', function() {
             }); //finish matrix `login`
             context('logout', function() {
 
-                it.skip('should show a logout in warning ', function(done) {
+                it('should show a logout in warning ', function(done) {
                     var logoutProc = run('matrix', ['logout']);
                     var outputs = new Array();
 
@@ -87,7 +88,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); // Finish  Logout
             context('use ', function() {
-                it.skip('should show a in warning', function(done) {
+                it('should show a in warning', function(done) {
                     var useProc = run('matrix', ['use']);
                     var outputs = new Array();
 
@@ -107,7 +108,7 @@ describe('Matrix CLI Commands', function() {
             }); // Finish use
 
             context('sim', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var simProc = run('matrix', ['sim']);
                     var outputs = new Array();
 
@@ -127,7 +128,7 @@ describe('Matrix CLI Commands', function() {
             }); // Finish sim
 
             context('list', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var listProc = run('matrix', ['list']);
                     var outputs = new Array();
                     listProc.stdout.on('data', function(out) {
@@ -144,7 +145,7 @@ describe('Matrix CLI Commands', function() {
             }); // Finish 
             context('set', function() {
 
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var setProc = run('matrix', ['set']);
                     var outputs = new Array();
                     setProc.stdout.on('data', function(out) {
@@ -160,7 +161,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); // Finish set
             context('reboot', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var rebootProc = run('matrix', ['reboot']);
                     var outputs = new Array();
                     rebootProc.stdout.on('data', function(out) {
@@ -176,7 +177,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); // Finish reboot
             context('install', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var installProc = run('matrix', ['install']);
                     var outputs = new Array();
                     installProc.stdout.on('data', function(out) {
@@ -193,7 +194,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); //Finish install 
             context('config', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var configProc = run('matrix', ['config']);
                     var outputs = new Array();
 
@@ -210,7 +211,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); //Finish config
             context('uninstall', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var uninstallProc = run('matrix', ['uninstall']);
                     var outputs = new Array();
 
@@ -228,7 +229,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); //Finish uninstall  
             context('update', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var updateProc = run('matrix', ['update']);
                     var outputs = new Array();
                     updateProc.stdout.on('data', function(out) {
@@ -244,7 +245,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); //Finish update
             context('start', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var startProc = run('matrix', ['start']);
                     var outputs = new Array();
                     startProc.stdout.on('data', function(out) {
@@ -260,7 +261,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); //Finish start
             context('stop', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var stopProc = run('matrix', ['stop']);
                     var outputs = new Array();
                     stopProc.stdout.on('data', function(out) {
@@ -279,7 +280,7 @@ describe('Matrix CLI Commands', function() {
             }); //Finish stop
 
             context('restart', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var restartProc = run('matrix', ['restart']);
                     var outputs = new Array();
                     restartProc.stdout.on('data', function(out) {
@@ -298,7 +299,7 @@ describe('Matrix CLI Commands', function() {
             }); //Finish restart 
 
             context('create', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var createProc = run('matrix', ['create']);
                     var outputs = new Array();
                     createProc.stdout.on('data', function(out) {
@@ -314,7 +315,7 @@ describe('Matrix CLI Commands', function() {
                 });
             }); //Finish create 
             context('deploy', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var deployProc = run('matrix', ['deploy']);
                     var outputs = new Array();
                     deployProc.stdout.on('data', function(out) {
@@ -332,7 +333,7 @@ describe('Matrix CLI Commands', function() {
             }); //Finish deploy 
 
             context('trigger', function() {
-                it.skip('should show a log in warning', function(done) {
+                it('should show a log in warning', function(done) {
                     var triggerProc = run('matrix', ['trigger']);
                     var outputs = new Array();
                     triggerProc.stdout.on('data', function(out) {
@@ -350,7 +351,7 @@ describe('Matrix CLI Commands', function() {
             }); //Finish trigger 
 
             context('log }', function() {
-                it.skip('should show a log in warning Log', function(done) {
+                it('should show a log in warning Log', function(done) {
                     var logProc = run('matrix', ['log']);
                     var outputs = new Array();
                     logProc.stdout.on('data', function(out) {
@@ -424,6 +425,7 @@ describe('Matrix CLI Commands', function() {
                 it('should show an "already logged in" warning', function(done) {
                     var loginProc = run('matrix', ['login']);
                     var outputs = new Array();
+                    this.timeout(15000)
                     loginProc.stdout.on('data', function(out) {
                         console.log('stdout', out.toString())
                         outputs.push(out.toString());
@@ -1417,7 +1419,7 @@ describe('Matrix CLI Commands', function() {
                                     it('should show an "invalid app" warning', function(done) {
                                         var setProc = run('matrix', ['set', 'config', 'invalid']);
                                         var outputs = new Array();
-                                        this.timeout(15000)  
+                                        this.timeout(15000)
                                         setProc.stdout.on('data', function(out) {
                                             console.log('stdout', out.toString())
                                             outputs.push(out.toString());
@@ -1550,7 +1552,7 @@ describe('Matrix CLI Commands', function() {
 
                 context('Parameters specified', function() {
                     context('search term has less than 2 characters', function() {
-                        it('should show a search term warning', function(done) {
+                        it.skip('should show a search term warning', function(done) {
                             var searchProc = run('matrix', ['search', 'xx']);
                             var outputs = new Array();
                             searchProc.stdout.on('data', function(out) {
@@ -1570,80 +1572,8 @@ describe('Matrix CLI Commands', function() {
                         });
                     });
 
-                    context('search term has more than 2 characters', function() { 
+                    context('search term has more than 2 characters', function() {
                         it('should list the results of an app search', function(done) {
-                            Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {// se debe quitar
-                                program
-                                    .parse(process.argv);
-                                var pkgs = program.args;
-                                if (_.isUndefined(Matrix, 'config.user.token')) {
-                                    return console.error(t('matrix.please_login') + ' `matrix login`'.grey);
-                                }
-                                if (_.isUndefined(Matrix.config.device.identifier)) {
-                                    console.warn(t('matrix.set_device') + ' `matrix use`'.grey);
-                                    process.exit(0);
-                                }
-                                if (_.isEmpty(pkgs)) {
-                                    return showHelp();
-                                }
-                                firebase.init(
-                                    Matrix.config.user.id,
-                                    Matrix.config.device.identifier,
-                                    Matrix.config.user.token,
-                                    function(err) {
-                                        if (err) return console.error(err);
-                                        var options = {};
-                                        if (pkgs.indexOf('-w') > -1 || pkgs.indexOf('--watch') > -1) {
-                                            options.watch = true;
-                                            _.omit(pkgs, '-w', '--watch')
-                                        }
-                                        if (pkgs.indexOf('--help') > -1 || pkgs.indexOf('-h') > -1) {
-                                            showHelp();
-                                        } else
-                                        // show matrix config
-                                        if (pkgs.length === 0) {
-                                            // get form
-                                            console.log(t('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
-                                            firebase.device.get(handleResponse);
-                                            // matrix config base
-                                        } else if (pkgs.length === 1) {
-                                            var target = pkgs[0]
-                                            firebase.app.get(target, handleResponse);
-                                            // matrix config base services.vehicle.engine
-                                            if (options.watch) {
-                                                firebase.app.onChange(target, handleResponse)
-                                            }
-                                        } else if (pkgs.length === 2) {
-                                            // get deep
-                                            var key = pkgs[1];
-                                            var target = pkgs[0] + '/' + key.replace(/\./g, '/');
-                                            debug('Firebase: '.blue, target)
-                                            firebase.app.get(target, handleResponse)
-                                            if (options.watch) {
-                                                firebase.app.onChange(target, handleResponse)
-                                            }
-                                            // matrix config base keywords=test,keyword
-                                        } else if (pkgs.length >= 3) {
-                                            var key = pkgs[1];
-                                            var value = pkgs[2];
-                                            //typing
-                                            if (pkgs.length > 4) {
-                                                //string
-                                                value = _.drop(pkgs, 2).join(' ');
-                                            } else {
-                                                // is array?
-                                                if (value.indexOf(',') > -1) {
-                                                    value = value.split(',');
-                                                }
-                                            }
-                                            var target = pkgs[0] + '/' + key.replace(/\./g, '/');
-                                            debug(target, value);
-                                            firebase.app.set(target, value);
-                                        } else {
-                                            showHelp();
-                                        }
-                                    });
-                            });
                             var searchProc = run('matrix', ['search', 'xxxx']);
                             var outputs = new Array();
 
@@ -1805,7 +1735,7 @@ describe('Matrix CLI Commands', function() {
 
                         });
                     });
-                    context('specified app exists', function() {//danilo
+                    context('specified app exists', function() { //danilo
                         context('app', function() {
                             it.skip('should show application configurations', function(done) {
 
