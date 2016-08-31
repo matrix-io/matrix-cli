@@ -3,9 +3,10 @@
 require('./matrix-init');
 var program = require('commander');
 var debug = debugLog('search');
+var firebase = require('matrix-firebase');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   program
     .parse(process.argv);
   var pkgs = program.args;
@@ -22,12 +23,37 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     return console.error(t('matrix.search.small_needle') + '.')
   }
   // console.warn('Search not implemented yet')
-  Matrix.api.app.search(needle, function (err, results) {
-    if (err) return console.error(err);
-    console.log(Matrix.helpers.displaySearch(results, needle));
-    process.exit();
+  firebase.init(
+    Matrix.config.user.id,
+    Matrix.config.device.identifier,
+    Matrix.config.user.token,
+    function (err) {
+      debug("Firebase Init");
+      if (err) return console.error('Firebase Fail'.red, err);
 
-  })
+      firebase.app.search(needle, function(data){
+          if ( !_.isNull(data) ) {
+            debug( data )
+            // get rid of non matches
+            data = _.filter( data, function (app, appId) {
+              return ( app.meta.name.indexOf(needle) > -1 );
+            })
 
-  var search = pkgs[0];
-})  
+            if ( _.isEmpty (data) ){
+              console.log(t('matrix.search.no_results').green);
+            } else {
+              console.log(Matrix.helpers.displaySearch(data, needle));
+            }
+            process.exit();
+          }
+      });
+      //Get app with name X
+      //Get versionId of appId with version X
+    }
+  );
+  // Matrix.api.app.search(needle, function (err, results) {
+  //   if (err) return console.error(err);
+  //   process.exit();
+  //
+  // })
+})

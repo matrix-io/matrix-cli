@@ -7,7 +7,9 @@
     "matrix": "./bin/matrix"
   },
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha test",
+    "local-setup": "cd node_modules; ln -s ../../matrix-app-config-helper ./matrix-app-config-helper;ln -s ../../matrix-firebase ./matrix-firebase; ln -s ../../matrix-node-sdk ./matrix-node-sdk; cd ..",
+    "install-clear": "sudo rm -r node_modules/matrix-firebase node_modules/matrix-node-sdk"
   },
   "repository": {
     "type": "git",
@@ -26,8 +28,10 @@
     "engine.io-client": "^1.6.8",
     "fstream": "^1.0.7",
     "inquirer": "^1.1.2",
+    "js-yaml": "^3.6.1",
     "jshint": "^2.8.0",
     "lodash": "^3.10.0",
+    "matrix-app-config-helper": "git+https://github.com/matrix-io/matrix-app-config-helper.git",
     "matrix-firebase": "https://github.com/matrix-io/matrix-firebase/tarball/master",
     "matrix-node-sdk": "https://github.com/matrix-io/matrix-node-sdk/tarball/master",
     "mocha": "^2.5.3",
@@ -35,10 +39,11 @@
     "node-yaml-localize": "https://github.com/diegoribero/node-yaml-localize/tarball/master",
     "prompt": "^0.2.14",
     "q": "^1.4.1",
+    "request": "^2.74.0",
     "rx": "^4.1.0",
     "should": "^9.0.2",
     "socket.io-client": "^1.4.5",
     "tar": "^2.2.0",
-    "yamljs": "^0.2.4"
+    "ws": "^1.1.1"
   }
 }
