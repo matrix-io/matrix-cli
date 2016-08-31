@@ -1,6 +1,6 @@
 {
   "name": "matrix-cli",
-  "version": "1.1.6",
+  "version": "1.1.8",
   "description": "Matrix CLI Enables Communication with MatrixOS devices.",
   "preferGlobal": true,
   "bin": {
@@ -47,7 +47,6 @@
     "rx": "^4.1.0",
     "should": "^9.0.2",
     "socket.io-client": "^1.4.5",
-    "tar": "^2.2.0",
-    "ws": "^1.1.1"
+    "tar": "^2.2.0"
   }
 }

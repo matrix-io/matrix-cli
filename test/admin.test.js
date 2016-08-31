@@ -90,5 +90,5 @@ var exec = require('child_process').exec;
   })
 
 function readConfig(){
-  return JSON.parse( require('fs').readFileSync('./tmp/store.json') );
+  return JSON.parse( require('fs').readFileSync('./store.json') );
 }
