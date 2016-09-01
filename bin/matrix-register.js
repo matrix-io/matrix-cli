@@ -29,7 +29,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   };
 
   prompt.delimiter = '';
-  prompt.message = 'User registration -- ';
+  prompt.message = 'Registration -- ';
   prompt.start();
   prompt.get(schema, function (err, result) {
     if (err) throw err;

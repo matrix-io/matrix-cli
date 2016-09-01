@@ -1,42 +1,32 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var program = require('commander');
-var firebase = require('matrix-firebase');
 var debug = debugLog('install');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
-  require('./matrix-validate');
-  program
-    .parse(process.argv);
-
-  var pkgs = program.args;
-
-  var cmd = pkgs[0];
-  //target
-  var target = pkgs[1];
+  if (!Matrix.pkgs.length || showTheHelp) {
+    return displayHelp();
+  }
+  
+  var cmd = Matrix.pkgs[0];
+  var target = Matrix.pkgs[1];
 
   //Defaults to app
-  if (pkgs.length === 1) {
+  if (Matrix.pkgs.length === 1) {
     target = cmd;
     cmd = 'app';
   }
 
   if (cmd.match(/a|ap|app|-a|--app/)) {
+    Matrix.validate.user(); //Make sure the user has logged in
+    Matrix.validate.device(); //Make sure the user has logged in
     // TODO lookup policy from config file, pass to function
 
 
         console.log('____ | ' + t('matrix.install.installing') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier)
-        firebase.init(
-          Matrix.config.user.id,
-          Matrix.config.device.identifier,
-          Matrix.config.user.token,
-          function (err) {
-            debug("Firebase Init");
-            if (err) return console.error('Firebase Fail'.red, err);
-
-            firebase.app.search(target, function(result){
+        Matrix.firebaseInit(function () {
+            Matrix.firebase.app.search(target, function(result){
               if ( !_.isNull( result )){
                 debug(result)
 
@@ -69,7 +59,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 })
 
                 console.log("\ninstalling to device... ")
-                firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, function(err){
+                Matrix.firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, function(err){
                   console.log('Install Complete')
                   process.exit();
                 });
@@ -79,11 +69,22 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });
 
   } else if (cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
+    Matrix.validate.user(); //Make sure the user has logged in
+    Matrix.validate.device(); //Make sure the user has logged in
     Matrix.api.sensor.install(t, Matrix.config.device.identifier, function (err, resp) {
       if (err) return console.error(err);
       debug(resp);
       console.log(t, ' ' + t('matrix.install.sensor_installed') + '.')
       process.exit();
     })
+  }
+
+  //TODO add text for help  
+  function displayHelp() {
+    console.log('\n> matrix install ¬\n');
+    console.log('\t    matrix install app -', t('matrix.install.help_app').grey)
+    console.log('\t    matrix install sensor -', t('matrix.install.help_sensor').grey)
+    console.log('\n')
+    process.exit(1);
   }
 });

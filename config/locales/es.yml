@@ -1,5 +1,6 @@
 es:
   matrix:
+    already_login: 'Sesión ya iniciada como:'
     api_title: API
     streaming_title: Streaming
     user_title: Usuario

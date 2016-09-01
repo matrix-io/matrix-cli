@@ -6,7 +6,7 @@ var debug = debugLog('list');
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
   if (!Matrix.pkgs.length || showTheHelp) {
-    displayHelp();
+    return displayHelp();
   }
   
   var target = Matrix.pkgs[0];

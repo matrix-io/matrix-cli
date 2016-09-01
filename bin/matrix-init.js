@@ -40,7 +40,11 @@ if ( _.has( Matrix.config.environment, 'name' ) ) {
   options.apiUrl = Matrix.config.environment.api;
   options.mxssUrl = Matrix.config.environment.mxss;
 } else {
-  debug('No env set')
+  debug('No env set, using default');
+  Matrix.config.environment = {
+    api: options.apiUrl,
+    mxss: options.mxssUrl
+  };
 }
 
 Matrix.options = options;

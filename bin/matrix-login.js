@@ -3,27 +3,37 @@
 require('./matrix-init');
 var prompt = require('prompt');
 var debug = debugLog('login');
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
+Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
+  
   var schema = {
     properties: {
       username: {
-        required: true
+        required: true,
+        pattern: /\S+@\S+\.\S+/
       },
       password: {
         hidden: true
       }
     }
   };
-  if (Matrix.config.user.hasOwnProperty('username')) {
-    //t('matrix.list.app_list_error')
-    console.log(t('matrix.already_login').yellow, Matrix.config.user.username,' you change user'.red)
+
+  if (!_.isEmpty(Matrix.config.user)) {
+    console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
   }
   prompt.delimiter = '';
-  prompt.message = 'matrix login -- ';
+  prompt.message = 'Login -- ';
   prompt.start();
   prompt.get(schema, function (err, result) {
-    if (err) throw err;
+    if (err) {
+      console.log(err[0]);
+      if (err.toString().indexOf('canceled') > 0) {
+        process.exit();
+      } else { 
+        console.log("Error: ", err);
+        process.exit();
+      }
+    }
 
     /** set the creds **/
     Matrix.config.user = {
