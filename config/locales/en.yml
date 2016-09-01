@@ -1,6 +1,6 @@
 en:
   matrix:
-    already_login: already logged with
+    already_login: 'already logged with:'
     api_title: API
     streaming_title: Streaming
     user_title: User

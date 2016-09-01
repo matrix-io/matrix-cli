@@ -43,17 +43,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     prompt.message = [t('matrix.sim.init.specify_data_for_init') + '\n'];
     prompt.start();
 //
-    prompt.get(['name:'], function (err, inputs) {
+    prompt.get(['name', 'description'], function (err, inputs) {
       if (err) return console.error(err) ;
-      prompt.get(['description:'], function (err, inputs2) {
-        if (err) return console.error(err) ;
       // check for dupe name, note, this requires matrix list devices to have run
 
       _.each(Matrix.config.deviceMap, function (d) {
-          console.log('deviceBrayan')
         if (inputs.name === d.name) {   
           console.error(d.name, ' ' + t('matrix.sim.init.device_is_already_used'));
-          console.log('deviceBRayan')
           process.exit();
         }
       });
@@ -64,11 +60,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         deviceDescription: inputs2,
         user: Matrix.config.user.id,
       };
-      //console.log('Brayan',deviceObj)
 
       Matrix.api.device.create(deviceObj, function (err, device) {
         if (err) return console.error(t('matrix.sim.init.error_creating_device'), err);
-        console.log(err,'BRAYAN')
         debug('Create Device:', device);
         Matrix.api.device.register(deviceObj.deviceId, function (err, results) {
           if (err) {
@@ -91,8 +85,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });
       });
     });
-    });
-
+    
   } else if (cmd === 'start') {
     var option = pkgs[1];
 
@@ -157,12 +150,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     var cmd = 'docker pull admobilize/matrix-os:latest';
 
     var proc = require('child_process').exec(cmd, {}, function (err, out, stderr) {
-      if (stderr) console.error(t('matrix.sim.start.error').red,'BRAYSNNNN', stderr);
-      console.log('BRAYAN',stderr)
+      if (stderr) console.error(t('matrix.sim.start.error').red, stderr);
     })
 
     proc.stdout.on('data', function (data) {
-      console.log('Brayan',data,'Brayan');
+      console.log('stdout',data);
     })
 
   if ( Matrix.config.hasOwnProperty('sim')) {
@@ -214,7 +206,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   function runDockerCmd(cmd) {
     log(cmd);
     var proc = require('child_process').exec('docker ' + cmd, {}, function (err, out, stderr) {
-      if (stderr) console.error('ERRbsdfbfgbOR'.red, stderr,'Brayan');
+      if (stderr) console.error('ERROR'.red, stderr);
     })
 
     proc.stdout.on('data', function (data) {
