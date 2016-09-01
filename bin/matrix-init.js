@@ -11,8 +11,11 @@ Matrix.config = require( '../config/index' );
 Matrix.api = require( 'matrix-node-sdk' );
 _ = require( 'lodash' );
 
-Matrix.localization = require('../lib/localization');
+var program = require('commander');
+program.parse(process.argv);
+Matrix.pkgs = program.args;
 
+Matrix.localization = require('../lib/localization');
 Matrix.localesFolder = __dirname + '/../config/locales';
 // international translator
 t = Matrix.localization.get;
@@ -20,6 +23,8 @@ t = Matrix.localization.get;
 Matrix.helpers = require('../lib/helpers');
 //sets Matrix.config with local variables
 Matrix.config = Matrix.helpers.getConfig();
+//Use this to validate for user and display messages accordingly
+Matrix.validate = require('./matrix-validate');
 
 var options = {
   clientId: 'AdMobilizeAPIDev',
@@ -46,3 +51,20 @@ Matrix.api.makeUrls( options.apiUrl, options.mxssUrl );
 Matrix.api.setConfig( Matrix.config );
 
 // debug(Matrix.config);
+
+Matrix.firebase = require('matrix-firebase');
+Matrix.firebaseInit = function (cb) {
+  var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier: '';  
+  Matrix.firebase.init(
+    Matrix.config.user.id,
+    currentDevice,
+    Matrix.config.user.token,
+    function (err) {
+      var errorCode = Matrix.validate.firebaseError(err);
+      if (errorCode != 0) {
+        console.error('Error initializing Firebase: ', err);
+        process.exit();
+      }
+      return cb();
+  });
+}
