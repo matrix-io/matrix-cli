@@ -1,19 +1,12 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var program = require('commander');
 var debug = debugLog('set');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
-
-  program
-    .parse(process.argv);
-
-  var pkgs = program.args;
-
-  if (!pkgs.length) {
-    showHelp();
+  if (!Matrix.pkgs.length || showTheHelp) {
+    return displayHelp();
   }
 
   var locales = {
@@ -52,32 +45,26 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   };
 
-  if (pkgs.indexOf('env') === 0) {
+  if (Matrix.pkgs.indexOf('env') === 0) {
 
-    var value = pkgs[1];
+    var value = Matrix.pkgs[1];
 
     if (value && value.match(/sandbox|dev|stage|local|production|hardcode/)) {
       Matrix.config.environment = _.assign(environments[value], { name: value });
       Matrix.helpers.saveConfig();
       console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
       // TODO: set-env [value] sets a environment on the Matrix
-      if (_.isUndefined(Matrix.config.device.identifier)) {
-        console.warn(t('matrix.set.no_device') + ' `matrix use`');
-
-      }
+      Matrix.validate.device(); //Make sure the user has logged in
     } else {
       console.error(t('matrix.set.env.valid_environments') + ' = [ sandbox, production ]')
     }
 
-  } else if (pkgs.indexOf('config') === 0) {
-    var appName = pkgs[1];
-    var configStr = pkgs[2];
+  } else if (Matrix.pkgs.indexOf('config') === 0) {
+    Matrix.validate.user(); //Make sure the user has logged in
+    Matrix.validate.device(); //Make sure the user has logged in
+    var appName = Matrix.pkgs[1];
+    var configStr = Matrix.pkgs[2];
     var key, val;
-
-    if (_.isUndefined(Matrix.config.device.identifier)) {
-      console.warn(t('matrix.set.no_device') + ' `matrix use`');
-      process.exit(0);
-    }
 
     if (_.isUndefined(appName)) {
       console.warn(t('matrix.set.config.no_app') + ': `matrix set config <appName> [key=value]` ')
@@ -109,9 +96,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       setTimeout(process.exit, 1000);
     });
 
-  } else if (pkgs.indexOf('locale') === 0) {
+  } else if (Matrix.pkgs.indexOf('locale') === 0) {
 
-    var locale = pkgs[1];
+    var locale = Matrix.pkgs[1];
     if (_.isUndefined(locale)) {
       console.warn(t('matrix.set.locale.locale_required') + ': `matrix set locale <locale>` ')
       process.exit(0);
@@ -129,10 +116,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
 
   } else {
-    showHelp();
+    displayHelp();
   }
 
-  function showHelp() {
+  function displayHelp() {
 
     console.log('\n> matrix set ¬\n');
     console.log('\t         matrix set env [env] -', t('matrix.set.help_device').grey + ' ( production | sandbox )'.grey)
@@ -141,4 +128,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log('\n')
     process.exit(1);
   }
+
 });

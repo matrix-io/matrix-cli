@@ -32,7 +32,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   prompt.message = 'Registration -- ';
   prompt.start();
   prompt.get(schema, function (err, result) {
-    if (err) throw err;
+    if (err) {
+      if (err.toString().indexOf('canceled') > 0) {
+        console.log('');
+        process.exit();
+      } else { 
+        console.log("Error: ", err);
+        process.exit();
+      }
+    }
     if (result.password != result.confirmPassword) {
       return console.error("Passwords didn't match");
     }

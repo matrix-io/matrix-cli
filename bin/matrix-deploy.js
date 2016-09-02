@@ -137,25 +137,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function onEnd() {
     console.log('Finished packaging ', appName);
-    Matrix.firebase.init(
-      Matrix.config.user.id,
-      Matrix.config.device.identifier,
-      Matrix.config.user.token,
-      function (err) {
-        if (err) {
-          if (err.code === "EXPIRED_TOKEN") {
-            console.error(t('matrix.expired'));
-          } else {
-            console.error(err);
-          }
-        }
+    Matrix.firebaseInit(function () {
 
           var versionParam = appVersion + '.zip';
           var url = Matrix.config.environment.api + '/' + uploadEndpoint
             + '?access_token=' + Matrix.config.user.token
             + '&appName=' + appName
             + '&version=' + versionParam;
-
+          console.log(url);
           request.get(url, function (error, response, body) { //Get the upload URL
             if (error) {
               return console.error("Error getting the upload URL: ", error);
@@ -218,11 +207,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       })
     }, 1000)
   }
-
-  //TODO Complete deploy help  
+  
   function displayHelp() { 
     console.log('\n> matrix deploy ¬\n');
-    console.log('\t    matrix deploy -', t('matrix.deploy.help').grey)
+    console.log('\t    matrix deploy <app> -', t('matrix.deploy.help', {app: '<app>'}).grey)
     console.log('\n')
     process.exit(1);
   }

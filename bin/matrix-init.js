@@ -14,15 +14,15 @@ _ = require( 'lodash' );
 var program = require('commander');
 program.parse(process.argv);
 Matrix.pkgs = program.args;
-
 Matrix.localization = require('../lib/localization');
 Matrix.localesFolder = __dirname + '/../config/locales';
-// international translator
-t = Matrix.localization.get;
+Matrix.config.locale = 'en'; // set default locale 
+t = Matrix.localization.get; // international translator
 
 Matrix.helpers = require('../lib/helpers');
 //sets Matrix.config with local variables
-Matrix.config = Matrix.helpers.getConfig();
+Matrix.config = _.assign(Matrix.config, Matrix.helpers.getConfig());
+//set default locale
 //Use this to validate for user and display messages accordingly
 Matrix.validate = require('./matrix-validate');
 

@@ -4,6 +4,7 @@ en:
     api_title: API
     streaming_title: Streaming
     user_title: User
+    no_user_message: No user selected
     device_title: Device
     locale_title: Locale
     help_login: Login to the MatrixOS platform
@@ -24,7 +25,7 @@ en:
     help_stop: Stops an app running on the active MatrixOS
     help_restart: Restarts an app running on the MatrixOS
     help_create: Creates a new scaffolding for a MatrixOS Application
-    help_deploy: Deploys an app to the active MatrixOS
+    help_deploy: Uploads and deploys an app to the active MatrixOS
     help_trigger: Runs a trigger test
     help_log: Logs output from selected MatrixOS and applications
     please_login: No user logged in.
@@ -139,6 +140,8 @@ en:
       search_successfully: Search results #
       no_results: No results found #
     install:
+      help_app: Install the app %{app} to active MatrixOS device
+      help_sensor: Install the sensor %{sensor} to active MatrixOS device
       installing: Installing
       app_installed:  Installed app
       sensor_installed: sensor installed
@@ -179,23 +182,27 @@ en:
       version_update_successfully: 'Upgrading to' #
       error_updating: Error updating #
     start:
+      help: start the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       starting_app: 'Starting'
       start_app_successfully: 'Started'
       app_failed_to_start: 'Failed starting app' #
     stop:
+      help: stop the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       stopping_app: 'Stopping'
       stop_app_successfully: 'Stopped'
     restart:
+      help: restart the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       restarting_app: 'Restarting'
       restart_app_successfully: 'Restarted'
     #DEVELOPMENT
     create:
+      help: Creates a scaffolding for the app %{app}
       name_undefined: 'Must specify app name'
       new_folder: New Folder
       error_creating: An error occurred
@@ -205,7 +212,7 @@ en:
       description_index: 'app entry point, do not modify'
       description_package: 'node.js information file, do not modify without knowledge'
     deploy:
-      # command_usage: deploy use #
+      help: Uploads and deploys an app to the active MatrixOS %{app}
       app_not_found: 'No %{detect_file} found. Are you sure a MatrixOS app resides in %{pwd}?'
       folders_not_supported: 'Our fault. Directories can not be deployed yet'
       cancel_deploy: 'Cancel deploy due to errors & warnings'
@@ -222,6 +229,8 @@ en:
       application_unspecified: 'specify [ app ]' #
       deploy_app_successfully: 'deploying app Successfully' #
       app_undefined: 'could not do deploy' #
+    publish: 
+      help: Publishes the approved app %{app} on the app store
     trigger: 
       no_specified_test: 'error: missing required argument' #
       defined_test_doesn`t_exist: 'test doesn`t exist' #

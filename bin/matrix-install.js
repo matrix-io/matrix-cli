@@ -79,11 +79,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     })
   }
 
-  //TODO add text for help  
   function displayHelp() {
     console.log('\n> matrix install ¬\n');
-    console.log('\t    matrix install app -', t('matrix.install.help_app').grey)
-    console.log('\t    matrix install sensor -', t('matrix.install.help_sensor').grey)
+    console.log('\t    matrix install app -', t('matrix.install.help_app', {app: '<app>'}).grey)
+    console.log('\t    matrix install sensor -', t('matrix.install.help_sensor', {sensor: '<sensor>'}).grey)
     console.log('\n')
     process.exit(1);
   }

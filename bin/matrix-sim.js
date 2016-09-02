@@ -1,25 +1,19 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var program = require('commander');
 var debug = debugLog('sim');
 var prompt = require('prompt');
 var p = require('child_process');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   
-  program
-    .parse(process.argv);
-  var pkgs = program.args;
-  var cmd = pkgs[0];
-
-  if (_.isEmpty(cmd) || showTheHelp) {
-    showHelp();
+  if (!Matrix.pkgs.length || showTheHelp) {
+    return displayHelp();
   }
 
-  if (_.isUndefined(Matrix.config.user.id)) {
-    return console.log(t('matrix.sim.please') + ', ' + 'matrix login'.grey +  ' ' + t('matrix.sim.before_using_sim'));
-  }
+  var cmd = Matrix.pkgs[0];
+
+  Matrix.validate.user(); //Make sure the user has logged in
 
   // matrix sim init
   if (cmd === 'init') {
@@ -37,14 +31,19 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     debug(deviceId);
 
-
     prompt.delimiter = '';
-
     prompt.message = [t('matrix.sim.init.specify_data_for_init') + '\n'];
     prompt.start();
-//
     prompt.get(['name', 'description'], function (err, inputs) {
-      if (err) return console.error(err) ;
+      if (err) {
+        if (err.toString().indexOf('canceled') > 0) {
+          console.log('');
+          process.exit();
+        } else { 
+          console.log("Error: ", err);
+          process.exit();
+        }
+      }
       // check for dupe name, note, this requires matrix list devices to have run
 
       _.each(Matrix.config.deviceMap, function (d) {
@@ -87,7 +86,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
     
   } else if (cmd === 'start') {
-    var option = pkgs[1];
+    var option = Matrix.pkgs[1];
 
     if (!Matrix.config.hasOwnProperty('sim')) {
       return console.log('matrix sim init'.grey + ' ' + t('matrix.sim.start.before_message'))
@@ -214,19 +213,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     })
   }
 
-
-  function showHelp() {
-    console.log('\n> matrix sim ¬\n');
-    console.log('\t               matrix sim upgrade -', t('matrix.sim.help_upgrade').grey)
-    console.log('\t               matrix sim restore -', t('matrix.sim.help_restore').grey)
-    console.log('\t                  matrix sim init -', t('matrix.sim.help_init').grey)
-    console.log('\t                 matrix sim start -', t('matrix.sim.help_start').grey)
-    console.log('\t                  matrix sim save -', t('matrix.sim.help_save').grey)
-    console.log('\t                 matrix sim clear -', t('matrix.sim.help_clear').grey)
-    console.log('\n')
-    process.exit(1);
-  }
-
   function checkDocker() {
     try {
       var proc = require('child_process').execSync('which docker', {
@@ -240,5 +226,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         process.exit(1);
       }
     }
+  }
+
+  function displayHelp() {
+    console.log('\n> matrix sim ¬\n');
+    console.log('\t               matrix sim upgrade -', t('matrix.sim.help_upgrade').grey)
+    console.log('\t               matrix sim restore -', t('matrix.sim.help_restore').grey)
+    console.log('\t                  matrix sim init -', t('matrix.sim.help_init').grey)
+    console.log('\t                 matrix sim start -', t('matrix.sim.help_start').grey)
+    console.log('\t                  matrix sim save -', t('matrix.sim.help_save').grey)
+    console.log('\t                 matrix sim clear -', t('matrix.sim.help_clear').grey)
+    console.log('\n')
+    process.exit(1);
   }
 });

@@ -26,8 +26,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   prompt.start();
   prompt.get(schema, function (err, result) {
     if (err) {
-      console.log(err[0]);
       if (err.toString().indexOf('canceled') > 0) {
+        console.log('');
         process.exit();
       } else { 
         console.log("Error: ", err);

@@ -24,7 +24,7 @@ es:
     help_stop: Detiene una aplicación corriendo en el MatrixOS activo
     help_restart: Reinicia una aplicación corriendo en el MatrixOS
     help_create: Crea un nuevo andamiaje para una aplicación de MatrixOS
-    help_deploy: Despliega una aplicación al dispositivo MatrixOS activo
+    help_deploy: Sube y despliega una aplicación al dispositivo MatrixOS activo
     help_trigger: Ejecuta una prueba de disparador
     help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
     please_login: 'No se ha iniciado sesión con un usuario, Por favor'
