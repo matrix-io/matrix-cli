@@ -21,6 +21,8 @@ if (!_.isUndefined(targetDevice)) {
 
   // still API dependent, TODO: depreciate to firebase
   Matrix.api.device.register(targetDevice, function(err, state) {
+
+    if (err) return console.log(err);
     if (state.status === "OK") {
       var name = Matrix.helpers.lookupDeviceName(targetDevice);
 

@@ -2,6 +2,10 @@
 
 ## NOTICE: This is not yet ready for public use. Check back Sept 2016.
 
+# Documentation
+
+Comprehensive documentation can be found at http://github.io/matrix-io/matrix-documentation/CLI.
+
 # Installation
 
 ```
@@ -16,6 +20,7 @@ npm install
 npm link
 
 ```
+
 ```
 > matrix
 
@@ -53,6 +58,14 @@ deploy - Deploys an app to the Matrix.
 trigger - Runs a trigger test
 log - logs output from selected MatrixOS
 ```
+
+## Registration
+
+If you do not have an AdMobilize MATRIX account, use:
+```
+matrix register
+```
+Check your email to confirm the account then you can login.
 
 ## Login First
 
