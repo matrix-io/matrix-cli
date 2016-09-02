@@ -1,5 +1,6 @@
 es:
   matrix:
+    already_login: 'Sesión ya iniciada como:'
     api_title: API
     streaming_title: Streaming
     user_title: Usuario
@@ -23,7 +24,7 @@ es:
     help_stop: Detiene una aplicación corriendo en el MatrixOS activo
     help_restart: Reinicia una aplicación corriendo en el MatrixOS
     help_create: Crea un nuevo andamiaje para una aplicación de MatrixOS
-    help_deploy: Despliega una aplicación al dispositivo MatrixOS activo
+    help_deploy: Sube y despliega una aplicación al dispositivo MatrixOS activo
     help_trigger: Ejecuta una prueba de disparador
     help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
     please_login: 'No se ha iniciado sesión con un usuario, Por favor'
@@ -32,7 +33,8 @@ es:
       no_device: No se ha selecionado un dispositivo
       select_device_id: selecciona el id de un dispositivo'
     #SETUP:
-    login:
+    login: 
+      already_login_warning: 'Ya hay una cuenta registrada' #
       user_auth_error: 'Error en la autenticación'
       login_success: 'Sesión iniciada correctamente'
     logout:
@@ -46,6 +48,7 @@ es:
       try: 'Intenta'
       command_help: 'establece como dispositivo activo el dispositivo con id'
     set:
+      warning_device_required: Dispositivo no indicado # 
       help_device: 'configurar el ambiente del dispositivo'
       help_config: 'configurar las variables de aplicacion'
       help_locale: 'establecer la localización actual de cli'
@@ -55,6 +58,7 @@ es:
       config:
         use: Usa
         no_app: 'Nombre de la app requerido'
+        invalid_key_value: Llave y valor invalido #
         no_key_value: 'Debe ingresar llave y valor'
       locale:
         locale_required: 'Localización requerida'
@@ -62,53 +66,60 @@ es:
         valid_locales: 'Localizaciónes válidas'
     #MANAGEMENT:
     sim:
+      unknowm_parameter: Parametro no existe  #
+      command_help_sim: matrix sim #
       please: 'Por favor'
       before_using: 'antes de que intente utilizar el simulador'
-      init:
-        device_already_initialized: You already have a virtual device initialized
-        target_device: To target this device
-        virtual_device_info: Please enter information for this virtual device
-        device_is_already_used: is already used
-        creating_device: Creating
-        error_creating_device: Create Error
-        invalid_session: Invalid Session
-        please: Please
-        and: and
-        register_error: Register Error
-        success: Success
-        to_target_device: To target this device
-      start:
-        before_message: first please
-        device: Device
-        not_a_virtual_device: is not a virtual MatrixOS. Please
-        and: and
-        custom_image_detected: Custom Simulator Image detected
-        debug_on: Debug mode on
+      init: 
+        specify_data_for_init: Por favor ingrese la información para este dispositivo virtual #
+        warning_sim_init: please use ´matrix sim init´ #
+        device_already_initialized: Ya se inicio un dispositivo virtual
+        target_device: Referencia a este dispositivo
+        device_is_already_used: Ya esta en uso
+        creating_device: Creando
+        error_creating_device: Error al crear 
+        invalid_session: Sesión invalida
+        please: Por favor
+        and: 'y' 
+        register_error: Error de registro
+        success: exito 
+        to_target_device: Referencia a este dispositivo
+      start:  
+        before_message: Primero por favor
+        device: Dispositivo
+        not_a_virtual_device: No es un MatrixOS virtual. Por favor 
+        and: 'y'
+        custom_image_detected: Simulador de imagen personalizada detecta
+        debug_on: Modo de depuracion 
         error: ERROR
-        please: Please
-        then: Then
-        if_different_name: "If you have a different machine name, use that"
-        starting_sim: MatrixOS Simulator Starting
-        stop_with: Stop with Ctrl + C or
+        please: Por favor
+        then: Entonces
+        if_different_name: "Si usted tiene un nombre de maquina diferente, use"
+        starting_sim: MatrixOS Simulador iniciado
+        stop_with: Detenga con  Ctrl + C 
       restore:
-        downloading_image: Downloading latest MatrixOS image
+        downloading_image: Descargando ultima imagen de MatrixOS
       save:
-        state_saved: Simulator state saved
+        state_saved: Estado de simulacion guardados
       clear:
-        simulation_cleared: Simulation Cleared
+        simulation_cleared: Simulador limpio
       stop:
-        sim_stopped: Matrix Simulator Stopped
+        sim_stopped: Simulador matrix detenido
       docker:
-        docker_not_found: Docker not found
-        install_from: Please install docker from
-        then: Then
-      help_upgrade: upgrade your simulator image
-      help_restore: reset your simulator
-      help_init: initialize your simulator
-      help_start: start MatrixOS virtual environment
-      help_save: "save MatrixOS state, use after deploy / install"
-      help_clear: remove simulation local data
+        docker_not_found: Docker no encontrado
+        install_from: Por favor instale docker de 
+        then: Entonces
+      help_upgrade: Actualizando la imagen de su simulador
+      help_restore: Reinciando su simulador
+      help_init: Iniciar su simulador
+      help_start:  Ambiente Virtual MatrixOS 
+      help_save: "Estado guardado de MatrixOS, use despues deploy / install"
+      help_clear: Eliminar la simulacion de datos local
     list:
+      list_devices: Lista de dispositivos # 
+      list_groups: Lista de grupos  # 
+      list_apps: Lista de aplicaciones # 
+      list_all: Lista de todo #  
       app_list_error: 'Error en la lista de apps'
       no_results: 'No se encontraron resultados'
       help_devices: 'mostrar dispositivos disponibles'
@@ -116,8 +127,10 @@ es:
       help_apps: 'mostrar aplicaciones en el dispositivo actual'
       help_all: 'mostrar todos los dispositivos con aplicaciones instaladas'
     reboot:
+      device_offline: Dispositivo no esta online #  
       rebooting: 'Reinciando dispositivo'
-      app_reboot_successfully: 'Dispositivo reiniciado' #
+      rebooted: 'Dispositivo reinciando' #
+      
     #APPS:
     search:
       help: busca aplicaciones de MATRIX
@@ -134,18 +147,24 @@ es:
       app_not_found: La aplicación no existe #
       sensor_not_found: El sensor no existe #
     config:
+      config_usage_command: 'advertencias' # 
       device_config: 'Configuración para el dispositivo'
+      show_config_app1: 'configuration the apliccation' #
       help: traer las configuraciones del dispositivo
       help_app: traer las configuraciones de la aplicación
       help_app_key: traer la llave de la configuración de la aplicación
       help_app_key_value: configurar el valor y la llave a la aplicación
       show_config_app: 'configuracion de aplicacion ' #
       specified_application_does_not_exist: 'la aplicacion especificada no existe' #
+      specify_key: Especifique una llave  # 
+      key_doesnt_exist: La llave especificada no existe  # 
+      key_value: 'Valor:' #
     uninstall:
       uninstalled: 'Se desinstaló'
       application_unspecified: 'especifique [ aplicacion ] <Nombre>' #
       app_undefined: 'esta aplicacion no existe' #
-    update:
+      device_offline: Dispositivo desconectado, Por favor reconecte el dispositivo  #
+    update: 
       upgrading_to: 'Actualizando a'
       latest_version: 'versión mas reciente'
       of: 'de'
@@ -155,6 +174,7 @@ es:
       app_undefined: 'La aplicación no existe' #
       app_update_successfully: 'Aplicación actualizada a la versión mas reciente' #
       version_undefined: 'Versión de aplicación no soportada' #
+      version_doesnt_exist: Esta version no existe # 
       version_update_successfully: 'Aplicación actualizada con éxito a' #
       error_updating: Error actualizando #
     start:
@@ -184,6 +204,7 @@ es:
       description_index: 'punto de entrada de la aplicación, no modificar'
       description_package: 'archivo de información de node.js, no modificarlo sin conocimiento'
     deploy:
+      # command_usage: deploy use #
       app_not_found: 'No se encontró el archivo %{detect_file}. Estás seguro que una aplicación MatrixOS reside en %{pwd}?'
       folders_not_supported: 'Culpa nuestra. Añun no se puede hacer despliegue de directorios'
       cancel_deploy: 'SE cancela el despliegue debido a errores y advertencias'

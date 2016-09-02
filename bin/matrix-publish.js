@@ -1,18 +1,33 @@
+#!/usr/bin/env node
+
 require('./matrix-init');
-var program = require('commander');
+var debug = debugLog('publish');
 
-program
-  .parse(process.argv);
-var pkgs = program.args;
-var name = pkgs[0];
+Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
-if ( !_.isUndefined(name)){
-  // check vs folder name
-  // check vs config name
-  // upload to firebase -> url
-  // tell user to install url
-}
+  if (!Matrix.pkgs.length || showTheHelp) {
+    return displayHelp();
+  }  
+  
+  Matrix.validate.user();
+  var app = Matrix.pkgs[0];
 
-function showHelp(){
-  console.log('matrix publish <name>')
-}
+  Matrix.firebaseInit(function () {
+    // check vs folder name
+    // check vs config name
+    // upload to firebase -> url
+    // tell user to install url
+
+    //or
+
+    //TODO Change app state from approved to published    
+  });
+
+  function displayHelp() {
+    console.log('\n> matrix publish ¬\n');
+    console.log('\t    matrix publish <app> -', t('matrix.publish.help').grey, {app: '<app>'})
+    console.log('\n')
+    process.exit(1);
+  }
+  
+});

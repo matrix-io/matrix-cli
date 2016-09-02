@@ -40,12 +40,13 @@
     "matrix-node-sdk": "https://github.com/matrix-io/matrix-node-sdk/tarball/master",
     "mocha": "^2.5.3",
     "moment": "^2.10.3",
-    "node-yaml-localize": "https://github.com/diegoribero/node-yaml-localize/tarball/master",
+    "node-yaml-localize": "https://github.com/matrix-io/node-yaml-localize/tarball/bt/localization",
     "prompt": "^0.2.14",
     "q": "^1.4.1",
     "request": "^2.74.0",
     "rx": "^4.1.0",
     "should": "^9.0.2",
+    "sinon": "^1.17.5",
     "socket.io-client": "^1.4.5",
     "tar": "^2.2.0"
   }

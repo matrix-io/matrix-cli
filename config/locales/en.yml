@@ -1,8 +1,10 @@
 en:
   matrix:
+    already_login: 'Already logged as:'
     api_title: API
     streaming_title: Streaming
     user_title: User
+    no_user_message: No user selected
     device_title: Device
     locale_title: Locale
     help_login: Login to the MatrixOS platform
@@ -23,10 +25,10 @@ en:
     help_stop: Stops an app running on the active MatrixOS
     help_restart: Restarts an app running on the MatrixOS
     help_create: Creates a new scaffolding for a MatrixOS Application
-    help_deploy: Deploys an app to the active MatrixOS
+    help_deploy: Uploads and deploys an app to the active MatrixOS
     help_trigger: Runs a trigger test
     help_log: Logs output from selected MatrixOS and applications
-    please_login: No user logged in. Use
+    please_login: No user logged in.
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:
@@ -34,6 +36,7 @@ en:
       select_device_id: select a device id'
     #SETUP:
     login:
+      already_login_warning: 'there is already a registered account' #
       user_auth_error: 'User Authentication Error'
       login_success: 'Login Successful'
     logout:
@@ -42,11 +45,13 @@ en:
       using_device_by_name: 'Now using device'
       using_device_by_id: 'Now using device id'
       not_authorized: 'Not Authorized'
-      device_not_found: Device doesn't exist' #
+      device_not_found: Device doesn`t exist #
       invalid_token: 'Your token is invalid'
       try: 'Try'
       command_help: 'set active device to device id'
+      
     set:
+      warning_device_required: no device Indicated # 
       help_device: 'set device environment'
       help_config: 'configures application variables'
       help_locale: 'set current locale for the cli'
@@ -56,21 +61,25 @@ en:
       config:
         use: Use
         no_app: 'App Name Required'
-        no_key_value: 'Must supply key and value'
+        invalid_key_value: key and value invalid # 
+        no_key_value: 'Must supply key and value invalid`'
       locale:
         locale_required: 'Locale Required'
         locale: 'Locale'
         valid_locales: 'Valid locales'
     #MANAGEMENT:
     sim:
+      unknowm_parameter: parameter doesn´t exist  #
+      command_help_sim: matrix sim #
       please: 'Please'
       before_using_sim: 'before attempting to use the simulator'
-      init:
+      init: 
+        specify_data_for_init: Please enter information for this virtual device #
+        warning_sim_init: please use ´matrix sim init´ #
         device_already_initialized: You already have a virtual device initialized
         target_device: To target this device
-        virtual_device_info: Please enter information for this virtual device
         device_is_already_used: is already used
-        creating_device: Creating
+        creating_device: Creating 
         error_creating_device: Create Error
         invalid_session: Invalid Session
         please: Please
@@ -110,13 +119,18 @@ en:
       help_save: "save MatrixOS state, use after deploy / install"
       help_clear: remove simulation local data
     list:
+      list_devices: devices list # 
+      list_groups: groups list # 
+      list_apps: apps list # 
+      list_all: all #  
       app_list_error: 'App List Error'
       no_results: 'No Results Found'
       help_devices: 'display available devices'
       help_groups: 'display groups of devices'
       help_apps: 'display apps on current device'
       help_all: 'display all devices with installed apps'
-    reboot:
+    reboot: 
+        device_offline: device is not online # 
         rebooting: 'Device rebooting'
         rebooted: 'Device rebooted' #
     #APPS:
@@ -126,8 +140,10 @@ en:
       search_successfully: Search results #
       no_results: No results found #
     install:
+      help_app: Install the app %{app} to active MatrixOS device
+      help_sensor: Install the sensor %{sensor} to active MatrixOS device
       installing: Installing
-      app_installed: Installed app
+      app_installed:  Installed app
       sensor_installed: sensor installed
       command_help: install # [ app / sensor ] <name> #
       app_install_error: Application installation failed #
@@ -135,17 +151,23 @@ en:
       app_not_found: Application doesn't exists #
       sensor_not_found: Sensor doesn't exists #
     config:
+      config_usage_command: 'warnings' # 
       device_config: Config for device
+      show_config_app1: 'configuration the apliccation' #
       help: get device configurations
       help_app: get application configurations
-      help_app_key: get application configuration key
+      help_app_key: 'get application configuration key'
       help_app_key_value: set application configuration key value
       show_config_app: 'app settings ' #
       specified_application_does_not_exist: 'app specified doesn`t exist' #
+      specify_key: specify a key # 
+      key_doesnt_exist: this key specified doesn´t exist # 
+      key_value: 'value:'
     uninstall:
       uninstalled: 'Uninstalled'
-      application_unspecified: 'specify [ app ] <name>' #
+      application_unspecified: 'error: missing required argument' #
       app_undefined: 'this app doesn`t exist' #
+      device_offline: Device offline, reconect the device please #
     update:
       upgrading_to: 'Upgrading to'
       latest_version: 'latest version'
@@ -154,28 +176,33 @@ en:
       help_update_app: 'update application to latest'
       help_update_app_version: 'update application to specified version'
       app_undefined: 'Application doesn`t exist' #
-      app_update_successfully: 'Application updated successfully to latest' #
+      app_update_successfully: 'Upgrading to latest version' #
       version_undefined: 'Unsupported app version' #
-      version_update_successfully: 'Application updated successfully to' #
+      version_doesnt_exist: this version doesn´t exist # 
+      version_update_successfully: 'Upgrading to' #
       error_updating: Error updating #
     start:
+      help: start the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       starting_app: 'Starting'
       start_app_successfully: 'Started'
       app_failed_to_start: 'Failed starting app' #
     stop:
+      help: stop the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       stopping_app: 'Stopping'
       stop_app_successfully: 'Stopped'
     restart:
+      help: restart the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       restarting_app: 'Restarting'
       restart_app_successfully: 'Restarted'
     #DEVELOPMENT
     create:
+      help: Creates a scaffolding for the app %{app}
       name_undefined: 'Must specify app name'
       new_folder: New Folder
       error_creating: An error occurred
@@ -185,6 +212,7 @@ en:
       description_index: 'app entry point, do not modify'
       description_package: 'node.js information file, do not modify without knowledge'
     deploy:
+      help: Uploads and deploys an app to the active MatrixOS %{app}
       app_not_found: 'No %{detect_file} found. Are you sure a MatrixOS app resides in %{pwd}?'
       folders_not_supported: 'Our fault. Directories can not be deployed yet'
       cancel_deploy: 'Cancel deploy due to errors & warnings'
@@ -201,8 +229,10 @@ en:
       application_unspecified: 'specify [ app ]' #
       deploy_app_successfully: 'deploying app Successfully' #
       app_undefined: 'could not do deploy' #
-    trigger:
-      no_specified_test: 'test undefined' #
+    publish: 
+      help: Publishes the approved app %{app} on the app store
+    trigger: 
+      no_specified_test: 'error: missing required argument' #
       defined_test_doesn`t_exist: 'test doesn`t exist' #
       run_trigger_successfully: 'running test' #
     log:

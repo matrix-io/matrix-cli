@@ -1,42 +1,41 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var program = require('commander');
+var debug = debugLog('update');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
-  program
-    .parse(process.argv);
-  var pkgs = program.args;
 
-  if (!pkgs.length || showTheHelp) {
-    showHelp();
+  if (!Matrix.pkgs.length || showTheHelp) {
+    return displayHelp();
   }
 
-  var appName = pkgs[0];
-  var appVersion = pkgs[1];
+  Matrix.validate.user(); //Make sure the user has logged in
+  Matrix.validate.device(); //Make sure the user has logged in  
+  
+  var appName = Matrix.pkgs[0];
+  var appVersion = Matrix.pkgs[1];
 
-  if (appName === undefined) {
-    if (version === undefined) {
+  if (_.isUndefined(appName)) {
+    if (_.isUndefined(appVersion)) {
       console.log(t('matrix.update.upgrading_to') + ' ', t('matrix.update.latest_version'), ' ' + t('matrix.update.of') + ' MATRIX OS');
       // TODO: update <appName> [version] - Upgrade to latest version of Matrix
     } else {
-      console.log(t('matrix.update.upgrading_to') + ' ', version, ' ' + t('matrix.update.of') + ' ', appName);
+      console.log(t('matrix.update.upgrading_to') + ' ', appVersion, ' ' + t('matrix.update.of') + ' ', appName);
       // TODO: update <appName> [version] - Upgrade Matrix
     }
   } else {
-    if (version === undefined) {
+    if (_.isUndefined(appVersion)) {
       console.log(t('matrix.update.upgrading_to') + ' ' + t('matrix.update.latest_version'), ' ' + t('matrix.update.of') + ' ', appName);
       // TODO: update <appName> [version] - Upgrade to latest version of App
     } else {
-      console.log(t('matrix.update.upgrading_to') + ' ', version + ' ' + t('matrix.update.of') + ' ' + appName);
+      console.log(t('matrix.update.upgrading_to') + ' ', appVersion + ' ' + t('matrix.update.of') + ' ' + appName);
       // TODO: update <app> [version] - Upgrade Matrix
     }
   }
 
   console.warn('not implemented yet');
 
-  function showHelp() {
+  function displayHelp() {
     console.log('\n> matrix update ¬ \n');
     console.log('\t                 matrix update -', t('matrix.update.help_update').grey)
     console.log('\t           matrix update <app> -', t('matrix.update.help_update_app').grey)

@@ -5,11 +5,12 @@ var prompt = require('prompt');
 var debug = debugLog('login');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-
+  
   var schema = {
     properties: {
       username: {
-        required: true
+        required: true,
+        pattern: /\S+@\S+\.\S+/
       },
       password: {
         hidden: true
@@ -17,11 +18,22 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   };
 
+  if (!_.isEmpty(Matrix.config.user)) {
+    console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
+  }
   prompt.delimiter = '';
-  prompt.message = 'matrix login -- ';
+  prompt.message = 'Login -- ';
   prompt.start();
-  prompt.get(schema, function(err, result) {
-    if (err) throw err;
+  prompt.get(schema, function (err, result) {
+    if (err) {
+      if (err.toString().indexOf('canceled') > 0) {
+        console.log('');
+        process.exit();
+      } else { 
+        console.log("Error: ", err);
+        process.exit();
+      }
+    }
 
     /** set the creds **/
     Matrix.config.user = {
@@ -36,11 +48,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     /** authenticate client and user **/
     debug('Client', Matrix.options);
-    Matrix.api.auth.client(Matrix.options, function(err, out) {
+    Matrix.api.auth.client(Matrix.options, function (err, out) {
       if (err) throw err;
       debug('User', Matrix.config.user, out);
       Matrix.api.auth.user(Matrix.config.user, function (err, state) {
-        if(err) return console.error('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red );
+        if (err) return console.error('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
 
         debug('User Login OK', state);
         Matrix.config.user.token = state.access_token;
@@ -49,7 +61,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         /** token stores, delete extra stuff **/
         // delete Matrix.config.user.username;
         delete Matrix.config.user.password;
-        Matrix.helpers.saveConfig(function() {
+        Matrix.helpers.saveConfig(function () {
           console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
           process.exit();
         });
@@ -61,4 +73,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     /** save the creds if it's good **/
 
   });
+
 });

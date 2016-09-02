@@ -66,15 +66,16 @@ function runMatrix(cmd, target, errors, cb){
     it('`matrix set config app key=value`')
   })
 
-  describe('has application development functions', function(done){
-    it('`matrix create`', function () {
+  describe('has application development functions', function(){
+    it('`matrix create`', function (done) {
       var name = _.map(Array(16), function(){
         return Math.round(Math.random()*16).toString(16)
       }).join('');
 
-      run('matrix', ['create', name ])
+      // needs to finish before continuing
+      require('child_process').spawnSync('matrix', ['create', name ])
       var fs = require('fs');
-      if ( fs.stat( name ).isDirectory() ) {
+      if ( fs.statSync( name ).isDirectory() ) {
         exec('rm -r '+ name);
         done();
       } else {

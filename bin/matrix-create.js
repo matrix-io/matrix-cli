@@ -1,22 +1,17 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var program = require('commander');
+var debug = debugLog('create');
 var fs = require('fs');
 var tar = require('tar');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
-  program
-    .parse(process.argv);
 
-  var pkgs = program.args;
-
-  var app = pkgs[0];
-
-  if (_.isUndefined(app)) {
-    return console.error(t('matrix.create.name_undefined'));
+  if (!Matrix.pkgs.length || showTheHelp) {
+    return displayHelp();
   }
+
+  var app = Matrix.pkgs[0];
 
   function onError(err) {
     console.error(t('matrix.create.error_creating') + ':', err);
@@ -31,6 +26,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log('  package.json'.grey, '-', t('matrix.create.description_package'))
   }
 
+  //TODO check if path already exists, refuse if so
+
   var extractor = tar.Extract({
     path: process.cwd() + "/" + app,
     strip: 1
@@ -42,4 +39,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     .on('error', onError)
     .pipe(extractor);
   // unzip baseApp.zip to named folder
+
+  function displayHelp() {
+    console.log('\n> matrix create ¬\n');
+    console.log('\t    matrix create <app> -', t('matrix.create.help', { app: '<app>'}).grey)
+    console.log('\n')
+    process.exit(1);
+  }
 });

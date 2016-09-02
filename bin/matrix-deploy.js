@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var program = require('commander')
-var firebase = require('matrix-firebase');
 var fs = require('fs');
 var tar = require('tar');
 var fstream = require('fstream');
@@ -11,19 +9,20 @@ var debug = debugLog('deploy');
 var yaml = require('js-yaml')
 var request = require('request');
 
-var serverUrl = 'http://dev-demo.admobilize.com';
 var uploadEndpoint = 'v2/app/resources/uploadurl';
 var fileUrl = 'https://storage.cloud.google.com/admobilize-data-training/apps';
+var detectFile = 'config.yaml';
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
-  program
-    .parse(process.argv);
+  if (!Matrix.pkgs.length || showTheHelp) {
+    return displayHelp();
+  }
 
-  var pkgs = program.args;
-  var appName = pkgs[0];
-  var pwd = process.cwd();
-  var detectFile = 'config.yaml';
+  Matrix.validate.user(); //Make sure the user has logged in
+  Matrix.validate.device(); //Make sure the user has logged in  
+  var appName = Matrix.pkgs[0];
+  var pwd = process.cwd();  
 
   //TODO: make sure package.json is included
   if (_.isUndefined(appName)) {
@@ -138,25 +137,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function onEnd() {
     console.log('Finished packaging ', appName);
-    firebase.init(
-      Matrix.config.user.id,
-      Matrix.config.device.identifier,
-      Matrix.config.user.token,
-      function (err) {
-        if (err) {
-          if (err.code === "EXPIRED_TOKEN") {
-            console.error(t('matrix.expired'));
-          } else {
-            console.error(err);
-          }
-        }
+    Matrix.firebaseInit(function () {
 
           var versionParam = appVersion + '.zip';
-          var url = serverUrl + '/' + uploadEndpoint
+          var url = Matrix.config.environment.api + '/' + uploadEndpoint
             + '?access_token=' + Matrix.config.user.token
             + '&appName=' + appName
             + '&version=' + versionParam;
-
+          console.log(url);
           request.get(url, function (error, response, body) { //Get the upload URL
             if (error) {
               return console.error("Error getting the upload URL: ", error);
@@ -188,7 +176,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       };
                       console.log('Queuing app deployment for ' + appName + '-' + appVersion);
                       console.log('URL: ' + downloadURL);
-                      firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, function (err, result) {
+                      Matrix.firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, function (err, result) {
                         console.log('App '.green + appName + ' deployment request successfully generated'.green);
                         if (err) console.log('Error: ', err);
                         if (result) console.log('Result: ', result);
@@ -218,6 +206,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         process.exit(0);
       })
     }, 1000)
+  }
+  
+  function displayHelp() { 
+    console.log('\n> matrix deploy ¬\n');
+    console.log('\t    matrix deploy <app> -', t('matrix.deploy.help', {app: '<app>'}).grey)
+    console.log('\n')
+    process.exit(1);
   }
 
 });
