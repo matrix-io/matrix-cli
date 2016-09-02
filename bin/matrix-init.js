@@ -66,7 +66,14 @@ Matrix.firebaseInit = function (cb) {
     function (err) {
       var errorCode = Matrix.validate.firebaseError(err);
       if (errorCode != 0) {
-        console.error('Error initializing Firebase: ', err);
+        if (errorCode == 1) {
+          //TODO try to refresh token before failing
+          console.log('Invalid user, logging in will possibly fix this'.yellow);
+        } else if (errorCode == 4) {
+          console.log('Network timeout, please check your connection and try again'.yellow);
+        } else { 
+          console.error('Error initializing Firebase: '.yellow, err.red);
+        }
         process.exit();
       }
       return cb();

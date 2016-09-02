@@ -14,12 +14,18 @@ function device() {
   } 
 }
 
+// 1 Invalid token
+// 2 Unlisted error
+// 3 Unknown error
+// 4 Network timeout
+//Returns a specific code for each case
 function firebaseError(err) {
   if (err) {
     if(err.hasOwnProperty('code')){
-      if(err.code == 'auth/invalid-custom-token'){
-        console.log("Invalid token, please login");
+      if (err.code == 'auth/invalid-custom-token') {
         return 1;
+      } else if (err.code == 'auth/network-request-failed') {
+        return 4;
       } else {
         console.log('Authentication error (' + err.code + '): ', err.message);
         return 2;

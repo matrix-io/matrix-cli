@@ -52,14 +52,23 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           process.exit();
         }
       });
+
       console.log(t('matrix.sim.init.creating_device') + ' ', inputs, '[' + deviceId + ']')
       var deviceObj = {
-        deviceId: deviceId,
-        deviceName: inputs,
-        deviceDescription: inputs2,
-        user: Matrix.config.user.id,
+        type: 'matrix',
+        osVersion: 'sim',
+        version: require(__dirname + 'package.json').version,
+        name: input.name,
+        description: input.description,
+        hardwareId: deviceId
       };
+      
+      Matrix.firebase.device.add(deviceObj, function () { 
+        console.log('Install Complete')
+        process.exit();
+      });
 
+      /*
       Matrix.api.device.create(deviceObj, function (err, device) {
         if (err) return console.error(t('matrix.sim.init.error_creating_device'), err);
         debug('Create Device:', device);
@@ -82,7 +91,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           console.log('\n' + t('matrix.sim.init.to_target_device') + ':\n');
           console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
         });
-      });
+      });*/
     });
     
   } else if (cmd === 'start') {
