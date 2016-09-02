@@ -1,5 +1,5 @@
-tmp/store.json
 node_modules
 .vscode
 *.zip
 store.json
+.DS_Store

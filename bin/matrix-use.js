@@ -1,40 +1,33 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var program = require('commander');
 var debug = debugLog('use');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
-  program
-    .parse(process.argv);
-  var cmd = program.args;
+  if (!Matrix.pkgs.length || showTheHelp) {
+    return displayHelp();
+  }
 
-
-if (showTheHelp){
-  showHelp();
-}
-var targetDevice = cmd[0];
-//TODO: exit if no targetDevice
-//TODO: store device list locally
-if (!_.isUndefined(targetDevice)) {
+  var target = Matrix.pkgs[0];
+  //TODO: store device list locally
 
   // still API dependent, TODO: depreciate to firebase
-  Matrix.api.device.register(targetDevice, function(err, state) {
+  Matrix.api.device.register(target, function(err, state) {
 
     if (err) return console.log(err);
     if (state.status === "OK") {
-      var name = Matrix.helpers.lookupDeviceName(targetDevice);
+      var name = Matrix.helpers.lookupDeviceName(target);
 
       if (!_.isUndefined(name)) {
         console.log('Now using device:'.grey, name);
       } else {
-        console.log('Now using device id:'.grey, targetDevice);
+        console.log('Now using device id:'.grey, target);
       }
 
       // Save the device token
       Matrix.config.device = {}
-      Matrix.config.device.identifier = targetDevice;
+      Matrix.config.device.identifier = target;
       Matrix.config.device.token = state.results.device_token;
       Matrix.helpers.saveConfig(process.exit);
 
@@ -49,11 +42,7 @@ if (!_.isUndefined(targetDevice)) {
 
   });
 
-} else {
-  showHelp();
-}
-
-  function showHelp() {
+  function displayHelp() {
     console.log('\n> matrix use ¬ \n');
     console.log('\t                 matrix use <deviceid> -', t('matrix.use.command_help').grey)
     console.log('\n')
