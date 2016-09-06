@@ -8,18 +8,22 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   if (!Matrix.pkgs.length || showTheHelp) {
     return displayHelp();
   }
-  
+
   var target = Matrix.pkgs[0];
 
   if (target.match(/all/)) {
     Matrix.validate.user(); //Make sure the user has logged in
     Matrix.firebaseInit(function () {
-      Matrix.api.device.getAppList(Matrix.config.device.identifier, function (err, resp) {
-        if (err) return console.error(t('matrix.list.app_list_error') + ':', err);
+      Matrix.firebase.user.getAllApps(function (resp) {
         if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
         debug('Device List>', resp);
         console.log(Matrix.helpers.displayDeviceApps(resp));
-        process.exit();
+
+        // save for later
+        Matrix.config.appMap = resp;
+        Matrix.helpers.saveConfig(function(){
+          process.exit();
+        })
       });
     });
   } else if (target.match(/app/)) {
