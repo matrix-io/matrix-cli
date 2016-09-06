@@ -44,6 +44,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           process.exit();
         }
       }
+      //TODO Probably need to adjust this later
       // check for dupe name, note, this requires matrix list devices to have run
 
       _.each(Matrix.config.deviceMap, function (d) {
@@ -57,15 +58,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       var deviceObj = {
         type: 'matrix',
         osVersion: 'sim',
-        version: require(__dirname + 'package.json').version,
-        name: input.name,
-        description: input.description,
+        version: require(__dirname + '/../package.json').version,
+        name: inputs.name,
+        description: inputs.description,
         hardwareId: deviceId
       };
       
-      Matrix.firebase.device.add(deviceObj, function () { 
-        console.log('Install Complete')
-        process.exit();
+      Matrix.firebaseInit(function () {
+        Matrix.firebase.device.add(deviceObj, function (err) {
+          if (err) console.error('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
+          process.exit();
+        });
       });
 
       /*

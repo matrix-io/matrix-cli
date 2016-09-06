@@ -37,7 +37,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   if (!fs.existsSync(pwd + detectFile)) {
     return console.error(t('matrix.deploy.app_not_found', { detect_file: detectFile, pwd: pwd }));
   }
-
+  
   //See if any files are a directory. #113583355 Add other checks here sometime?
   var files = fs.readdirSync(pwd);
   _.each(files, function (f) {
@@ -52,6 +52,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var appFile = fs.readFileSync(pwd + 'app.js').toString();
   var configFile = fs.readFileSync(pwd + detectFile).toString();
   var configObject = {};
+  var policyObject = {};
   var appVersion;
 
   try {
@@ -59,81 +60,84 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   } catch (e) {
     return console.error(e.message.red);
   }
-
+  //TODO include actual config
   debug('included config', config);
+  Matrix.helpers.checkPolicy(config, appName, function (err, policy) {
+    if (err) return console.error('Invalid policy ', policy);
+    policyObject = policy;
+    // run JSHINT on the application
+    JSHINT(appFile);
 
-  // run JSHINT on the application
-  JSHINT(appFile);
-
-  if (JSHINT.errors.length > 0) {
-    console.log(t('matrix.deploy.cancel_deploy').red)
-    _.each(JSHINT.errors, function (e) {
-      if (_.isNull(e)) {
-        return;
-      }
-      var a = [];
-      if (e.hasOwnProperty('evidence')) {
-        a[e.character - 1] = '^';
-        // regular error
-      }
-      e.evidence = e.evidence || '';
-      console.log('\n' + '(error)'.red, e.raw, '[app.js]', e.line + ':' + e.character, '\n' + e.evidence.grey, '\n' + a.join(' ').grey);
-    })
-    return;
-  }
-
-  try {
-    appVersion = require(pwd + 'package.json').version;
-  } catch (err) {
-    return console.error(err.message.red);
-  }
-
-  console.log(t('matrix.deploy.reading') + ' ', pwd);
-  console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
-
-  var destinationZip = fs.createWriteStream(destinationFilePath);
-
-  destinationZip.on('open', function () {
-    debug('deploy zip start')
-  });
-
-  destinationZip.on('error', function (err) {
-    debug('deploy zip err', err)
-  });
-
-  destinationZip.on('finish', function () {
-    debug('deploy zip finish');
-    onEnd();
-  });
-
-  // zip up the files in the app directory
-  var archiver = require('archiver');
-  var zip = archiver.create('zip', {});
-
-  // zip.bulk([{
-  //   expand: true,
-  //   cwd: pwd
-  // }, ]);
-
-
-  var files = fs.readdirSync(pwd);
-  _.each(files, function (file) {
-    debug('Adding to zip', file)
-    //TODO need to properly validate filenames
-    if (_.isEmpty(file) || _.isUndefined(file) || file == ':') {
-      console.warn('Skipping invalid file: '.red, file);
-    } else {
-      zip.append(fs.createReadStream(pwd + file), {
-        name: file
-      });
+    if (JSHINT.errors.length > 0) {
+      console.log(t('matrix.deploy.cancel_deploy').red)
+      _.each(JSHINT.errors, function (e) {
+        if (_.isNull(e)) {
+          return;
+        }
+        var a = [];
+        if (e.hasOwnProperty('evidence')) {
+          a[e.character - 1] = '^';
+          // regular error
+        }
+        e.evidence = e.evidence || '';
+        console.log('\n' + '(error)'.red, e.raw, '[app.js]', e.line + ':' + e.character, '\n' + e.evidence.grey, '\n' + a.join(' ').grey);
+      })
+      return;
     }
-  });
 
-  zip.on('error', function (err) {
-    console.error(t('matrix.deploy.error') + ':', err)
+    try {
+      appVersion = require(pwd + 'package.json').version;
+    } catch (err) {
+      return console.error(err.message.red);
+    }
+
+    console.log(t('matrix.deploy.reading') + ' ', pwd);
+    console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
+
+    var destinationZip = fs.createWriteStream(destinationFilePath);
+
+    destinationZip.on('open', function () {
+      debug('deploy zip start')
+    });
+
+    destinationZip.on('error', function (err) {
+      debug('deploy zip err', err)
+    });
+
+    destinationZip.on('finish', function () {
+      debug('deploy zip finish');
+      onEnd();
+    });
+
+    // zip up the files in the app directory
+    var archiver = require('archiver');
+    var zip = archiver.create('zip', {});
+
+    // zip.bulk([{
+    //   expand: true,
+    //   cwd: pwd
+    // }, ]);
+
+
+    var files = fs.readdirSync(pwd);
+    _.each(files, function (file) {
+      debug('Adding to zip', file)
+      //TODO need to properly validate filenames
+      if (_.isEmpty(file) || _.isUndefined(file) || file == ':') {
+        console.warn('Skipping invalid file: '.red, file);
+      } else {
+        zip.append(fs.createReadStream(pwd + file), {
+          name: file
+        });
+      }
+    });
+
+    zip.on('error', function (err) {
+      console.error(t('matrix.deploy.error') + ':', err)
+    });
+    zip.finalize();
+    zip.pipe(destinationZip); // send zip to the file
   });
-  zip.finalize();
-  zip.pipe(destinationZip); // send zip to the file
 
   function onEnd() {
     console.log('Finished packaging ', appName);
@@ -149,9 +153,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             if (error) {
               return console.error("Error getting the upload URL: ", error);
             } else if (response.statusCode !== 200) {
-              return console.error(new Error("Error getting the upload URL (" + response.statusCode + ")" + response.status));
+              if (response.statusCode == 401){ 
+                console.log('Invalid user, logging in will possibly fix this'.yellow);
+              } else {
+                console.error(new Error("Error getting the upload URL (" + response.statusCode + ") " + response.status));
+              }
+              process.exit();
             } else if (!body || body === "") {
-              return console.error(new Error("Error processing the upload URL request " + response.status));
+              console.error(new Error("Error processing the upload URL request " + response.status));
+              process.exit();
             } else {
               if (!body.hasOwnProperty('status')) {
                 body = JSON.parse(body);
@@ -172,13 +182,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           'version': appVersion,
                           'file': downloadURL
                         },
-                        'config': configObject
+                        'config': configObject,
+                        'policy': policyObject
                       };
-                      console.log('Queuing app deployment for ' + appName + '-' + appVersion);
-                      console.log('URL: ' + downloadURL);
+                      debug('URL: ' + downloadURL);
+                      debug('The data sent for ' + appName + ' ( ' + appVersion + ' ) is: ', appData)
                       Matrix.firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, function (err, result) {
-                        console.log('App '.green + appName + ' deployment request successfully generated'.green);
-                        if (err) console.log('Error: ', err);
+                        if (err) console.error('Error deploying app '.red + appName.yellow + ': '.red, err);
                         if (result) console.log('Result: ', result);
                         endIt();
                       });
