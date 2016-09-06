@@ -8,7 +8,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   if (!Matrix.pkgs.length || showTheHelp) {
     return displayHelp();
   }
-  
+
   var cmd = Matrix.pkgs[0];
   var target = Matrix.pkgs[1];
 
@@ -56,7 +56,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       console.log(' ❌  ' + key.grey );
                     }
                   })
-                })
+                });
+
+                if ( _.isEmpty(policy)){
+                  policy = {};
+                }
 
                 console.log("\ninstalling to device... ")
                 Matrix.firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, function(err){

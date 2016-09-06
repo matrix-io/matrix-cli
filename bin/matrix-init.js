@@ -16,7 +16,7 @@ program.parse(process.argv);
 Matrix.pkgs = program.args;
 Matrix.localization = require('../lib/localization');
 Matrix.localesFolder = __dirname + '/../config/locales';
-Matrix.config.locale = 'en'; // set default locale 
+Matrix.config.locale = 'en'; // set default locale
 t = Matrix.localization.get; // international translator
 
 Matrix.helpers = require('../lib/helpers');
@@ -58,7 +58,7 @@ Matrix.api.setConfig( Matrix.config );
 
 Matrix.firebase = require('matrix-firebase');
 Matrix.firebaseInit = function (cb) {
-  var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier: '';  
+  var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier: '';
   Matrix.firebase.init(
     Matrix.config.user.id,
     currentDevice,
@@ -68,10 +68,11 @@ Matrix.firebaseInit = function (cb) {
       if (errorCode != 0) {
         if (errorCode == 1) {
           //TODO try to refresh token before failing
-          console.log('Invalid user, logging in will possibly fix this'.yellow);
+          console.log('Invalid user, log in again'.yellow);
+          Matrix.helpers.removeConfig();
         } else if (errorCode == 4) {
           console.log('Network timeout, please check your connection and try again'.yellow);
-        } else { 
+        } else {
           console.error('Error initializing Firebase: '.yellow, err.red);
         }
         process.exit();

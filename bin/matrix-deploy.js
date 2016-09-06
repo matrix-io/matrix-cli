@@ -20,9 +20,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   Matrix.validate.user(); //Make sure the user has logged in
-  Matrix.validate.device(); //Make sure the user has logged in  
+  Matrix.validate.device(); //Make sure the user has logged in
   var appName = Matrix.pkgs[0];
-  var pwd = process.cwd();  
+  var pwd = process.cwd();
 
   //TODO: make sure package.json is included
   if (_.isUndefined(appName)) {
@@ -37,7 +37,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   if (!fs.existsSync(pwd + detectFile)) {
     return console.error(t('matrix.deploy.app_not_found', { detect_file: detectFile, pwd: pwd }));
   }
-  
+
   //See if any files are a directory. #113583355 Add other checks here sometime?
   var files = fs.readdirSync(pwd);
   _.each(files, function (f) {
@@ -62,7 +62,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
   //TODO include actual config
   debug('included config', config);
-  
+
   var initialPolicy = Matrix.helpers.configHelper.config.parsePolicyFromConfig(config);
   Matrix.helpers.checkPolicy(initialPolicy, appName, function (err, policy) {
     if (err) return console.error('Invalid policy ', policy);
@@ -154,8 +154,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             if (error) {
               return console.error("Error getting the upload URL: ", error);
             } else if (response.statusCode !== 200) {
-              if (response.statusCode == 401){ 
-                console.log('Invalid user, logging in will possibly fix this'.yellow);
+              if (response.statusCode == 401){
+                console.log('Invalid user or expired token, please login again'.yellow);
+                // remove user from config
+                Matrix.helpers.removeConfig();
               } else {
                 console.error(new Error("Error getting the upload URL (" + response.statusCode + ") " + response.status));
               }
@@ -217,8 +219,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       })
     }, 1000)
   }
-  
-  function displayHelp() { 
+
+  function displayHelp() {
     console.log('\n> matrix deploy ¬\n');
     console.log('\t    matrix deploy <app> -', t('matrix.deploy.help', {app: '<app>'}).grey)
     console.log('\n')
