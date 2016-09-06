@@ -62,7 +62,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
   //TODO include actual config
   debug('included config', config);
-  Matrix.helpers.checkPolicy(config, appName, function (err, policy) {
+  
+  var initialPolicy = Matrix.helpers.configHelper.config.parsePolicyFromConfig(config);
+  Matrix.helpers.checkPolicy(initialPolicy, appName, function (err, policy) {
     if (err) return console.error('Invalid policy ', policy);
     policyObject = policy;
     // run JSHINT on the application
@@ -140,7 +142,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   });
 
   function onEnd() {
-    console.log('Finished packaging ', appName);
+    debug('Finished packaging ', appName);
     Matrix.firebaseInit(function () {
 
           var versionParam = appVersion + '.zip';
@@ -148,7 +150,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             + '?access_token=' + Matrix.config.user.token
             + '&appName=' + appName
             + '&version=' + versionParam;
-          console.log(url);
           request.get(url, function (error, response, body) { //Get the upload URL
             if (error) {
               return console.error("Error getting the upload URL: ", error);
@@ -172,9 +173,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     return console.log('Error uploading zipped file (' + destinationFilePath + '): \n', err);
                   })
                   .on('response', function (response) {
-                    console.log('Upload response (' + response.statusCode + ')');
+                    debug('Upload response (' + response.statusCode + ')');
                     if (response.statusCode == 200) {
-                      console.log(response.headers['content-type']);
                       var downloadURL = fileUrl + '/' + appName + '/' + versionParam;
                       var appData = {
                         'meta': {
