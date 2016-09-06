@@ -1,9 +1,12 @@
 es:
   matrix:
     already_login: 'Sesión ya iniciada como:'
+    Unknown_parameter: Parametro no encontrado
+    Downloading_latest_MatrixOS: Descargando ultima version de MatrixOS.
     api_title: API
     streaming_title: Streaming
     user_title: Usuario
+    no_user_message: No user selected
     device_title: Dispositivo
     locale_title: Localización
     help_login: Iniciar sesión en la plataforma del MatrixOS
@@ -28,6 +31,7 @@ es:
     help_trigger: Ejecuta una prueba de disparador
     help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
     please_login: 'No se ha iniciado sesión con un usuario, Por favor'
+    expired: Expired session > `matrix login`
     set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
     validate:
       no_device: No se ha selecionado un dispositivo
@@ -138,6 +142,8 @@ es:
       search_successfully: Resultados de búsqueda #
       no_results: No se encontraron coincidencias #
     install:
+      help_app: Instala la aplicacion %{app} to active MatrixOS device
+      help_sensor: Instala el sensor %{sensor} to active MatrixOS device
       installing: Instalando
       app_installed: Se instaló la aplicación
       sensor_installed: sensor instalado
@@ -178,6 +184,7 @@ es:
       version_update_successfully: 'Aplicación actualizada con éxito a' #
       error_updating: Error actualizando #
     start:
+      help: Inicia la aplicacion %{app}
       application_unspecified: 'especifique [ app(name) ] ' #
       app_undefined: 'esta aplicación no existe' #
       starting_app: 'Iniciando'
@@ -189,12 +196,14 @@ es:
       stopping_app: 'Deteniendo'
       stop_app_successfully: 'Detenida'
     restart:
+      help: Reinicia la aplicacion %{app}
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
       app_undefined: 'este dispositivo no existe' #
       restarting_app: 'Reiniciando'
       restart_app_successfully: 'Reiniciada'
       #DEVELOPMENT
     create:
+      help: Crea una estructura para la aplicacion %{app}
       name_undefined: 'Debe especificar un nombre de aplicación'
       new_folder: Nueva carpeta
       error_creating: Ha ocurrido un error
@@ -203,8 +212,9 @@ es:
       description_developer: información acerca de desarrollar aplicaciones MATRIX
       description_index: 'punto de entrada de la aplicación, no modificar'
       description_package: 'archivo de información de node.js, no modificarlo sin conocimiento'
-    deploy:
-      # command_usage: deploy use #
+    deploy: 
+      
+      help: Cargas y despliegué en una aplicacion activa del MatrixOS %{app}
       app_not_found: 'No se encontró el archivo %{detect_file}. Estás seguro que una aplicación MatrixOS reside en %{pwd}?'
       folders_not_supported: 'Culpa nuestra. Añun no se puede hacer despliegue de directorios'
       cancel_deploy: 'SE cancela el despliegue debido a errores y advertencias'
@@ -221,6 +231,8 @@ es:
       application_unspecified: 'especifique [ aplicacion ]' #?
       deploy_app_successfully: 'despliegue de la aplicacion satisfactoria' #?
       app_undefined: 'aplicacion indefinida' #?
+    publish: 
+      help: Publica la aplicación aprobada %{app} on the app store
     trigger:
       no_specified_test: 'prueba indefinida' #?
       defined_test_doesn`t_exist: 'la prueba especificada no existe' #?
@@ -257,4 +269,4 @@ es:
       device_apps:
         device: Dispositivo
         app_name: Nombre de aplicación
-        description: Descripción
+        description: Descripción 

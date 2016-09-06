@@ -13,363 +13,6 @@ describe('Matrix CLI Commands', function () {
     done();
   })
 
-  context('Not logged in', function (done) {
-    before(function (done) {
-      exec('matrix logout')
-      done();
-    })
-
-    context('matrix', function () {
-      it('should show a log in warning', function (done) {
-        var notloggedProc = run('matrix');
-        var outputs = new Array();
-        notloggedProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        notloggedProc.stderr.on('data', function (out) {
-          //console.log('stderr', out.toString());
-        })
-        notloggedProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.no_user_message')), 'stdout Fail, expecting "' + t('matrix.no_user_message') + '"')
-          done();
-        });
-
-      }) //finish matrix
-    });
-
-    context('login', function () {
-      it('should request user credentials...', function (done) {
-        this.timeout(15000);
-        var loginProc = run('matrix', ['login']);
-        var outputs = new Array();
-        loginProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-          if (out.indexOf('username') > -1) {
-            loginProc.stdin.write('demo.admobilize@gmail.com\n')
-            //outputs.push(out.toString());
-            //console.log('brayan111', outputs);
-          } else if (out.toString().indexOf('password') > -1) {
-            loginProc.stdin.write('admobdemo2016\n')
-            //console.log('brayan222--', outputs);
-          } else if (out.toString().indexOf('Login Successful') > -1) {
-            //console.log('brayannn--', outputs);
-            //console.log(out.toString().red);
-            if (readConfig().user.hasOwnProperty('token')) {
-              //console.log('brayannn--', outputs.push(out.toString()));
-              //console.log(outputs.toString().red);
-
-            }
-          }
-
-        });
-
-        loginProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.login.login_success')), 'stdout Fail, expecting "' + t('matrix.login.login_success') + '"')
-          done();
-        });
-
-      }); // Finish login
-    });
-
-    context('logout', function () {
-
-      it('should show a log in warning ', function (done) {
-        var logoutProc = run('matrix', ['logout']);
-        var outputs = new Array();
-
-        logoutProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        })
-        logoutProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        })
-        logoutProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.logout.logout_success')), 'stdout Fail, expecting "' + t('matrix.logout.logout_success') + '"')
-          done();
-        })
-      });
-    }); // Finish  Logout
-     context('use ', function () {
-      it('should show a in warning', function (done) {
-        var useProc = run('matrix', ['use']);
-        var outputs = new Array();
-
-        useProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-
-        });
-        useProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-
-        useProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); // Finish use
-
-    context('sim', function () {
-      it('should show a log in warning', function (done) {
-        var simProc = run('matrix', ['sim']);
-        var outputs = new Array();
-
-        simProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-
-        });
-        simProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-
-        simProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); // Finish sim
-
-    context('list', function () {
-      it('should show a log in warning', function (done) {
-        var listProc = run('matrix', ['list']);
-        var outputs = new Array();
-        listProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        listProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        listProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); // Finish 
-    context('set', function () {
-
-      it('should show a log in warning', function (done) {
-        var setProc = run('matrix', ['set']);
-        var outputs = new Array();
-        setProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        setProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        setProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); // Finish set
-    context('reboot', function () {
-      it('should show a log in warning', function (done) {
-        var rebootProc = run('matrix', ['reboot']);
-        var outputs = new Array();
-        rebootProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        rebootProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        rebootProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); // Finish reboot
-    context('install', function () {
-      it('should show a log in warning', function (done) {
-        var installProc = run('matrix', ['install']);
-        var outputs = new Array();
-        installProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        installProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        installProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-      });
-    }); //Finish install
-    context('config', function () {
-      it('should show a log in warning', function (done) {
-        var configProc = run('matrix', ['config']);
-        var outputs = new Array();
-
-        configProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        configProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        configProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish config
-    context('uninstall', function () {
-      it('should show a log in warning', function (done) {
-        var uninstallProc = run('matrix', ['uninstall']);
-        var outputs = new Array();
-
-        uninstallProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        uninstallProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        uninstallProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-      });
-    }); //Finish uninstall  
-    context('update', function () {
-      it('should show a log in warning', function (done) {
-        var updateProc = run('matrix', ['update']);
-        var outputs = new Array();
-        updateProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        updateProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        updateProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish update
-    context('start', function () {
-      it('should show a log in warning', function (done) {
-        var startProc = run('matrix', ['start']);
-        var outputs = new Array();
-        startProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        startProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        startProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish start
-    context('stop', function () {
-      it('should show a log in warning', function (done) {
-        var stopProc = run('matrix', ['stop']);
-        var outputs = new Array();
-        stopProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        stopProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        stopProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-
-      });
-    }); //Finish stop
-
-    context('restart', function () {
-      it('should show a log in warning', function (done) {
-        var restartProc = run('matrix', ['restart']);
-        var outputs = new Array();
-        restartProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        restartProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        restartProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-
-      });
-    }); //Finish restart 
-
-context('create', function () {
-      it('should show a log in warning', function (done) {
-        var createProc = run('matrix', ['create']);
-        var outputs = new Array();
-        createProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        createProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        createProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish create
-    context('deploy', function () {
-      it('should show a log in warning', function (done) {
-        var deployProc = run('matrix', ['deploy']);
-        var outputs = new Array();
-        deployProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        deployProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        deployProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-      });
-    }); //Finish deploy 
-
-    context('trigger', function () {
-      it('should show a log in warning', function (done) {
-        var triggerProc = run('matrix', ['trigger']);
-        var outputs = new Array();
-        triggerProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        triggerProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        triggerProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-      });
-    }); //Finish trigger 
-
-    context('log }', function () {
-      it('should show a log in warning Log', function (done) {
-        var logProc = run('matrix', ['log']);
-        var outputs = new Array();
-        logProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        logProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        logProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish log
-  }) // FINISH CONTEXT Not logged in 
-
   context('Logged in {', function () {
     before(function (done) {
       this.timeout(15000);
@@ -385,7 +28,7 @@ context('create', function () {
           //console.log('stdout', out.toString());
           if (readConfig().user.hasOwnProperty('token')) {
             //console.log('stdout', out.toString());
-           // console.log(out.toString().red);
+            // console.log(out.toString().red);
           }
         }
 
@@ -428,16 +71,16 @@ context('create', function () {
           var outputs = new Array();
           this.timeout(15000)
           loginProc.stdout.on('data', function (out) {
-           // console.log('stdout', out.toString())
+            // console.log('stdout', out.toString())
             outputs.push(out.toString());
             loginProc.kill('SIGINT');
           });
           loginProc.stderr.on('data', function (out) {
-           // console.log('stderr', out.toString());
+            // console.log('stderr', out.toString());
             outputs.push(out.toString());
           })
           loginProc.on('close', function (code) {
-           // console.log('stdout', outputs)
+            // console.log('stdout', outputs)
             outputs.should.matchAny(new RegExp(t('matrix.already_login')), 'stdout Fail, expecting "' + t('matrix.already_login') + '"')
             done();
           });
@@ -453,7 +96,7 @@ context('create', function () {
             outputs.push(out.toString());
           });
           logoutProc.stderr.on('data', function (out) {
-           // console.log('stderr', out.toString());
+            // console.log('stderr', out.toString());
           })
           logoutProc.on('close', function (code) {
             outputs.should.matchAny(new RegExp(t('matrix.logout.logout_success')), 'stdout Fail, expecting "' + t('matrix.logout.logout_success') + '"')
@@ -468,11 +111,11 @@ context('create', function () {
             var useProc = run('matrix', ['use']);
             var outputs = new Array();
             useProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString());
             });
             useProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString());
+              // console.log('stderr', out.toString());
             })
             useProc.on('close', function (code) {
               outputs.should.matchAny(new RegExp(t('matrix.use.command_help')), 'stdout Fail, expecting "' + t('matrix.use.command_help') + '"')
@@ -489,11 +132,11 @@ context('create', function () {
               var useDProc = run('matrix', ['use', 'xxxx']);
               var outputs = new Array();
               useDProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString());
               });
               useDProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString());
+                // console.log('stderr', out.toString());
               })
               useDProc.on('close', function (code) {
                 outputs.should.matchAny(new RegExp(t('matrix.use.device_not_found')), 'stdout Fail, expecting "' + t('matrix.use.device_not_found') + '"')
@@ -507,11 +150,11 @@ context('create', function () {
               var useProc = run('matrix', ['use', 'xxx']);
               var outputs = new Array();
               useProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString());
               });
               useProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString());
+                // console.log('stderr', out.toString());
               })
               useProc.on('close', function (code) {
                 outputs.should.matchAny(new RegExp(t('matrix.use.not_authorized')), 'stdout Fail, expecting "' + t('matrix.use.not_authorized') + '"')
@@ -524,11 +167,11 @@ context('create', function () {
               var useProc = run('matrix', ['use', 'matrixSimulator']);
               var outputs = new Array();
               useProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString());
               });
               useProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString());
+                // console.log('stderr', out.toString());
               })
               useProc.on('close', function (code) {
                 outputs.should.matchAny(new RegExp(t('matrix.use.using_device_by_name')), 'stdout Fail, expecting "' + t('matrix.use.using_device_by_name') + '"')
@@ -547,25 +190,25 @@ context('create', function () {
           var loginProc = run('matrix', ['login']);
           loginProc.stdout.on('data', function (out) {
             if (out.toString().indexOf('username') > -1) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               loginProc.stdin.write('demo.admobilize@gmail.com\n')
             } else if (out.toString().indexOf('password') > -1) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               loginProc.stdin.write('admobdemo2016\n')
             } else if (out.toString().indexOf('Login Successful') > -1) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               if (readConfig().user.hasOwnProperty('token')) {
-               // console.log('stdout', out.toString());
-               // console.log(out.toString().red);
+                // console.log('stdout', out.toString());
+                // console.log(out.toString().red);
               }
             }
 
           });
           loginProc.stderr.on('data', function (out) {
-           // console.log('stderr', out.toString())
+            // console.log('stderr', out.toString())
           })
           loginProc.on('close', function (code) {
-           // console.log('Inicia sesion'.magenta);
+            // console.log('Inicia sesion'.magenta);
             done();
           });
 
@@ -576,16 +219,16 @@ context('create', function () {
             var simProc = run('matrix', ['sim', '']);
             var outputs = new Array();
             simProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString());
             });
             simProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString());
+              // console.log('stderr', out.toString());
 
             })
 
             simProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.sim.command_help_sim')), 'stdout Fail, expecting "' + t('matrix.sim.command_help_sim') + '"')
               done();
             });
@@ -598,17 +241,17 @@ context('create', function () {
               var simProc = run('matrix', ['sim', 'init']);
               var outputs = new Array();
               simProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 //simProc.stdin.write('Examsssple\n');
                 simProc.kill('SIGINT');
                 outputs.push(out.toString());
               });
               simProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString());
+                // console.log('stderr', out.toString());
               })
 
               simProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.specify_data_for_init') + '"')
                 done();
               });
@@ -628,7 +271,7 @@ context('create', function () {
                   outputs.push(out.toString());
                 });
                 simProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                 })
                 simProc.on('close', function (code) {
                   outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
@@ -645,7 +288,7 @@ context('create', function () {
                   outputs.push(out.toString());
                 });
                 simProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                 })
                 simProc.on('close', function (code) {
                   outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
@@ -663,7 +306,7 @@ context('create', function () {
                   outputs.push(out.toString());
                 });
                 simProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                 })
                 simProc.on('close', function (code) {
                   outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
@@ -681,7 +324,7 @@ context('create', function () {
                   outputs.push(out.toString());
                 });
                 simProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                 })
                 simProc.on('close', function (code) {
                   outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
@@ -700,7 +343,7 @@ context('create', function () {
                   outputs.push(out.toString());
                 });
                 simProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                 })
                 simProc.on('close', function (code) {
                   outputs.should.matchAny(new RegExp(t('matrix.sim.init.warning_sim_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.warning_sim_init') + '"')
@@ -713,16 +356,16 @@ context('create', function () {
                 var simProc = run('matrix', ['sim', 'init']);
                 var outputs = new Array();
                 simProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString());
+                  // console.log('stdout', out.toString());
                   simProc.stdin.write('Examsssple\n');
                   outputs.push(out.toString());
                 });
                 simProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString());
+                  // console.log('stderr', out.toString());
                 })
 
                 simProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.sim.init.specify_data_for_init')), 'stdout Fail, expecting "' + t('matrix.sim.init.specify_data_for_init') + '"')
                   done();
                 });
@@ -760,11 +403,11 @@ context('create', function () {
                 var simProc = run('matrix', ['sim', 'restore']);
                 var outputs = new Array();
                 simProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString());
+                  // console.log('stdout', out.toString());
                   outputs.push(out.toString());
                 });
                 simProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                 })
                 simProc.on('close', function (code) {
                   outputs.should.matchAny(new RegExp(t('matrix.sim.restore.downloading_image')), 'stdout Fail, expecting "' + t('matrix.sim.restore.downloading_image') + '"')
@@ -778,14 +421,14 @@ context('create', function () {
                 var startProc = run('matrix', ['sim', 'start']);
                 var outputs = new Array();
                 startProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString());
+                  // console.log('stdout', out.toString());
                 })
                 startProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString());
+                  // console.log('stderr', out.toString());
                   outputs.push(out.toString());
                 })
                 startProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.sim.start.starting_sim')), 'stdout Fail, expecting "' + t('matrix.sim.start.starting_sim') + '"')
                   done();
                 })
@@ -797,16 +440,16 @@ context('create', function () {
                 var stopProc = run('matrix', ['sim', 'stop']);
                 var outputs = new Array();
                 stopProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 stopProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 stopProc.on('close', function (code) {
-                 // console,
-                    log('close', outputs)
+                  // console,
+                  log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.sim.stop.sim_stopped')), 'stdout Fail, expecting "' + t('matrix.sim.stop.sim_stopped') + '"')
                   done();
                 })
@@ -818,14 +461,14 @@ context('create', function () {
                 var saveProc = run('matrix', ['sim', 'save']);
                 var outputs = new Array();
                 saveProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                 })
                 saveProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 saveProc.on('close', function (code) {
-                 // console.log('closeeee', outputs);
+                  // console.log('closeeee', outputs);
                   outputs.should.matchAny(new RegExp(t('matrix.sim.save.state_saved')), 'stdout Fail, expecting "' + t('matrix.sim.save.state_saved') + '"')
                   done();
                 })
@@ -837,15 +480,15 @@ context('create', function () {
                 var clearProc = run('matrix', ['sim', 'clear']);
                 var outputs = new Array();
                 clearProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 clearProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 clearProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.sim.clear.simulation_cleared')), 'stdout Fail, expecting "' + t('matrix.sim.clear.simulation_cleared') + '"')
                   done();
                 })
@@ -862,7 +505,7 @@ context('create', function () {
                 outputs.push(out.toString());
               })
               unkProc.on('close', function (code) {
-               // console.log('close', outputs);
+                // console.log('close', outputs);
                 outputs.should.matchAny(new RegExp(t('matrix.sim.unknowm_parameter')), 'stdout Fail, expecting "' + t('matrix.sim.unknowm_parameter') + '"')
                 done();
               })
@@ -879,14 +522,14 @@ context('create', function () {
             var outputs = new Array();
             this.timeout(15000)
             listProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString());
             })
             listProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString());
+              // console.log('stderr', out.toString());
             })
             listProc.stdout.on('close', function (code) {
-             // console.log('Close', outputs);
+              // console.log('Close', outputs);
               outputs.should.matchAny(new RegExp(t('matrix.list.help_devices')), 'stdout Fail, expecting "' + t('matrix.list.help_devices') + '"')
               done();
             })
@@ -900,15 +543,15 @@ context('create', function () {
               var outputs = new Array();
               this.timeout(15000);
               listProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 outputs.push(out.toString());
               });
               listProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString());
               })
               listProc.on('close', function (code) {
-               // console.log('close', outputs);
+                // console.log('close', outputs);
                 outputs.should.matchAny(new RegExp(t('matrix.list.list_devices')), 'stdout Fail, expecting "' + t('matrix.list.list_devices') + '"')
                 done();
               });
@@ -923,15 +566,15 @@ context('create', function () {
               var groupsProc = run('matrix', ['list', 'groups'])
               var outputs = new Array();
               groupsProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 outputs.push(out.toString())
               })
               groupsProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               groupsProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.list.list_groups')), 'stdout Fail, expecting "' + t('matrix.list.list_groups') + '"')
                 done()
               })
@@ -944,15 +587,15 @@ context('create', function () {
               var outputs = new Array();
               this.timeout(15000)
               appsProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 outputs.push(out.toString())
               })
               appsProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               appsProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.list.list_apps')), 'stdout Fail, expecting "' + t('matrix.list.list_apps') + '"')
                 done()
               })
@@ -965,15 +608,15 @@ context('create', function () {
               var outputs = new Array();
               this.timeout(20000)
               allProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 outputs.push(out.toString())
               })
               allProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               allProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.list.list_all')), 'stdout Fail, expecting "' + t('matrix.list.list_all') + '"')
                 done()
               })
@@ -987,15 +630,15 @@ context('create', function () {
               var outputs = new Array();
               this.timeout(15000)
               unknownProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 outputs.push(out.toString())
               })
               unknownProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               unknownProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.list.no_results')), 'stdout Fail, expecting "' + t('matrix.list.no_results') + '"')
                 done()
               })
@@ -1011,15 +654,15 @@ context('create', function () {
           var setProc = run('matrix', ['set', '']);
           var outputs = new Array();
           setProc.stdout.on('data', function (out) {
-           // console.log('>>>>', out.toString());
+            // console.log('>>>>', out.toString());
             outputs.push(out.toString());
           });
           setProc.stderr.on('data', function (out) {
-           // console.log('stderr', out.toString())
+            // console.log('stderr', out.toString())
           })
           setProc.on('close', function (code) {
             outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
-           // console.log('close', outputs)
+            // console.log('close', outputs)
             done();
           });
         });
@@ -1031,15 +674,15 @@ context('create', function () {
           var rebootProc = run('matrix', ['reboot', '']);
           var outputs = new Array();
           rebootProc.stdout.on('data', function (out) {
-           // console.log('close', out.toString())
+            // console.log('close', out.toString())
             outputs.push(out.toString());
           })
           rebootProc.stderr.on('data', function (out) {
-           // console.log('stderr', out.toString())
+            // console.log('stderr', out.toString())
             outputs.push(out.toString());
           })
           rebootProc.on('close', function (code) {
-           // console.log('close', outputs);
+            // console.log('close', outputs);
             outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
             done();
           })
@@ -1051,16 +694,16 @@ context('create', function () {
           var searchProc = run('matrix', ['search']);
           var outputs = new Array();
           searchProc.stdout.on('data', function (out) {
-           // console.log('stdout', out.toString());
+            // console.log('stdout', out.toString());
             outputs.push(out.toString());
           });
           searchProc.stderr.on('data', function (out) {
-           // console.log('stderr', out.toString())
+            // console.log('stderr', out.toString())
             outputs.push(out.toString());
           })
           searchProc.on('close', function (code) {
             outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
-           // console.log('close', outputs)
+            // console.log('close', outputs)
             done();
           });
         });
@@ -1071,15 +714,15 @@ context('create', function () {
           var installProc = run('matrix', ['install']);
           var outputs = new Array();
           installProc.stdout.on('data', function (out) {
-           // console.log('stdout', out.toString());
+            // console.log('stdout', out.toString());
             outputs.push(out.toString())
           })
           installProc.stderr.on('data', function (out) {
             outputs.push(out.toString());
-           // console.log('stderr', out.toString())
+            // console.log('stderr', out.toString())
           });
           installProc.on('close', function (code) {
-           // console.log('close', outputs)
+            // console.log('close', outputs)
             outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
             done();
           });
@@ -1091,15 +734,15 @@ context('create', function () {
           var configProc = run('matrix', ['config']);
           var outputs = new Array();
           configProc.stdout.on('data', function (out) {
-           // console.log('stdout', out.toString());
+            // console.log('stdout', out.toString());
             outputs.push(out.toString())
           })
           configProc.stderr.on('data', function (out) {
             outputs.push(out.toString());
-           // console.log('stderr', out.toString())
+            // console.log('stderr', out.toString())
           });
           configProc.on('close', function (code) {
-           // console.log('close', outputs)
+            // console.log('close', outputs)
             outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
             done();
           });
@@ -1111,15 +754,15 @@ context('create', function () {
           var uninstallProc = run('matrix', ['uninstall']);
           var outputs = new Array();
           uninstallProc.stdout.on('data', function (out) {
-           // console.log('stdout', out.toString());
+            // console.log('stdout', out.toString());
             outputs.push(out.toString())
           })
           uninstallProc.stderr.on('data', function (out) {
             outputs.push(out.toString());
-           // console.log('stderr', out.toString())
+            // console.log('stderr', out.toString())
           });
           uninstallProc.on('close', function (code) {
-           // console.log('close', outputs)
+            // console.log('close', outputs)
             outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
             done();
           });
@@ -1131,15 +774,15 @@ context('create', function () {
           var updateProc = run('matrix', ['update']);
           var outputs = new Array();
           updateProc.stdout.on('data', function (out) {
-           // console.log('stdout', out.toString());
+            // console.log('stdout', out.toString());
             outputs.push(out.toString())
           })
           updateProc.stderr.on('data', function (out) {
             outputs.push(out.toString());
-           // console.log('stderr', out.toString())
+            // console.log('stderr', out.toString())
           });
           updateProc.on('close', function (code) {
-           // console.log('close', outputs)
+            // console.log('close', outputs)
             outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
             done();
           });
@@ -1151,15 +794,15 @@ context('create', function () {
             var startProc = run('matrix', ['start']);
             var outputs = new Array();
             startProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString())
             })
             startProc.stderr.on('data', function (out) {
               outputs.push(out.toString());
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
             });
             startProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
               done();
             });
@@ -1171,15 +814,15 @@ context('create', function () {
             var stopProc = run('matrix', ['stop']);
             var outputs = new Array();
             stopProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString())
             })
             stopProc.stderr.on('data', function (out) {
               outputs.push(out.toString());
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
             });
             stopProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
               done();
             });
@@ -1192,15 +835,15 @@ context('create', function () {
             var outputs = new Array();
 
             restartProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString())
             })
             restartProc.stderr.on('data', function (out) {
               outputs.push(out.toString());
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
             });
             restartProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
               done();
             });
@@ -1214,15 +857,15 @@ context('create', function () {
             var outputs = new Array();
 
             createProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString())
             })
             createProc.stderr.on('data', function (out) {
               outputs.push(out.toString());
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
             });
             createProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
               done();
             });
@@ -1235,15 +878,15 @@ context('create', function () {
             var outputs = new Array();
 
             deployProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString())
             })
             deployProc.stderr.on('data', function (out) {
               outputs.push(out.toString());
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
             });
             deployProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
               done();
             });
@@ -1255,15 +898,15 @@ context('create', function () {
             var triggerProc = run('matrix', ['trigger']);
             var outputs = new Array();
             triggerProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString())
             })
             triggerProc.stderr.on('data', function (out) {
               outputs.push(out.toString());
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
             });
             triggerProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
               done();
             });
@@ -1276,15 +919,15 @@ context('create', function () {
             var outputs = new Array();
 
             logProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString())
             })
             logProc.stderr.on('data', function (out) {
               outputs.push(out.toString());
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
             });
             logProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
               done();
             });
@@ -1302,7 +945,7 @@ context('create', function () {
             outputs.push(out.toString());
           });
           useProc.on('close', function (code) {
-           // console.log(outputs);
+            // console.log(outputs);
             done();
           });
         });
@@ -1312,15 +955,15 @@ context('create', function () {
               var setProc = run('matrix', ['set']);
               var outputs = new Array();
               setProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString());
               });
               setProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString());
               })
               setProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.set.help_device')), 'stdout Fail, expecting "' + t('matrix.set.help_device') + '"')
                 done();
               });
@@ -1335,16 +978,16 @@ context('create', function () {
                   var setProc = run('matrix', ['set', 'env']);
                   var outputs = new Array();
                   setProc.stdout.on('data', function (out) {
-                   // console.log('stdout', out.toString())
+                    // console.log('stdout', out.toString())
                     outputs.push(out.toString());
                   })
                   setProc.stderr.on('data', function (out) {
-                   // console.log('stderr', out.toString());
+                    // console.log('stderr', out.toString());
                     outputs.push(out.toString());
                   });
 
                   setProc.on('close', function (code) {
-                   // console.log('close', outputs)
+                    // console.log('close', outputs)
                     outputs.should.matchAny(new RegExp(t('matrix.set.env.valid_environments')), 'stdout Fail, expecting "' + t('matrix.set.env.valid_environments') + '"')
                     done();
                   });
@@ -1358,15 +1001,15 @@ context('create', function () {
                     var outputs = new Array();
 
                     setProc.stdout.on('data', function (out) {
-                     // console.log('stdout', out.toString())
+                      // console.log('stdout', out.toString())
                       outputs.push(out.toString());
                     });
                     setProc.stderr.on('data', function (out) {
-                     // console.log('stderr', out.toString())
+                      // console.log('stderr', out.toString())
                     })
 
                     setProc.on('close', function (code) {
-                     // console.log('close', outputs)
+                      // console.log('close', outputs)
                       outputs.should.matchAny(new RegExp(t('matrix.set.env.env')), 'stdout Fail, expecting "' + t('matrix.set.env.env') + '"')
                       done();
                     });
@@ -1378,15 +1021,15 @@ context('create', function () {
                     var setProc = run('matrix', ['set', 'env', 'production']);
                     var outputs = new Array();
                     setProc.stdout.on('data', function (out) {
-                     // console.log('stdout', out.toString())
+                      // console.log('stdout', out.toString())
                       outputs.push(out.toString());
                     });
                     setProc.stderr.on('data', function (out) {
-                     // console.log('stderr', out.toString())
+                      // console.log('stderr', out.toString())
                     })
 
                     setProc.on('close', function (code) {
-                     // console.log('close', outputs)
+                      // console.log('close', outputs)
                       outputs.should.matchAny(new RegExp(t('matrix.set.env.env')), 'stdout Fail, expecting "' + t('matrix.set.env.env') + '"')
                       done();
                     });
@@ -1400,17 +1043,17 @@ context('create', function () {
                   var setProc = run('matrix', ['set', 'config']);
                   var outputs = new Array();
                   setProc.stdout.on('data', function (out) {
-                   // console.log('stdout', out.toString())
+                    // console.log('stdout', out.toString())
                     outputs.push(out.toString());
                   })
                   setProc.stderr.on('data', function (out) {
-                   // console.log('>>>>', out.toString());
+                    // console.log('>>>>', out.toString());
                     outputs.push(out.toString());
                   });
 
                   setProc.on('close', function (code) {
                     outputs.should.matchAny(new RegExp(t('matrix.set.config.no_app')), 'stdout Fail, expecting "' + t('matrix.set.config.no_app') + '"')
-                   // console.log('close', outputs)
+                    // console.log('close', outputs)
                     done();
                   });
                 });
@@ -1422,15 +1065,15 @@ context('create', function () {
                     var outputs = new Array();
                     this.timeout(15000)
                     setProc.stdout.on('data', function (out) {
-                     // console.log('stdout', out.toString())
+                      // console.log('stdout', out.toString())
                       outputs.push(out.toString());
                     })
                     setProc.stderr.on('data', function (out) {
-                     // console.log('stderr', out.toString());
+                      // console.log('stderr', out.toString());
                       outputs.push(out.toString());
                     });
                     setProc.on('close', function (code) {
-                     // console.log('close', outputs)
+                      // console.log('close', outputs)
                       outputs.should.matchAny(new RegExp(t('matrix.set.config.invalid_key_value')), 'stdout Fail, expecting "' + t('matrix.set.config.invalid_key_value') + '"')
                       done();
                     });
@@ -1442,15 +1085,15 @@ context('create', function () {
                       var setProc = run('matrix', ['set', 'config', 'vehicle']);
                       var outputs = new Array();
                       setProc.stdout.on('data', function (out) {
-                       // console.log('stdout', out.toString())
+                        // console.log('stdout', out.toString())
                         outputs.push(out.toString());
                       })
                       setProc.stderr.on('data', function (out) {
-                       // console.log('stderr', out.toString());
+                        // console.log('stderr', out.toString());
                         outputs.push(out.toString());
                       });
                       setProc.on('close', function (code) {
-                       // console.log('close', outputs)
+                        // console.log('close', outputs)
                         outputs.should.matchAny(new RegExp(t('matrix.set.config.no_key_value')), 'stdout Fail, expecting "' + t('matrix.set.config.no_key_value') + '"')
                         done()
                       })
@@ -1462,15 +1105,15 @@ context('create', function () {
                       var outputs = new Array();
                       this.timeout(15000)
                       setProc.stdout.on('data', function (out) {
-                       // console.log('stdout', out.toString())
+                        // console.log('stdout', out.toString())
                         outputs.push(out.toString());
                       })
                       setProc.stderr.on('data', function (out) {
-                       // console.log('stderr', out.toString());
+                        // console.log('stderr', out.toString());
                         outputs.push(out.toString());
                       });
                       setProc.stdout.on('close', function (code) {
-                       // console.log('close', outputs)
+                        // console.log('close', outputs)
                         outputs.should.matchAny(new RegExp(t('matrix.set.config.use')), 'stdout Fail, expecting "' + t('matrix.set.config.use') + '"')
                         done();
                       })
@@ -1490,16 +1133,16 @@ context('create', function () {
             var outputs = new Array();
 
             rebootProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString());
             });
             rebootProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString());
             })
 
             rebootProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.reboot.device_offline')), 'stdout Fail, expecting "' + t('matrix.reboot.device_offline') + '"')
               done();
             });
@@ -1511,16 +1154,16 @@ context('create', function () {
             var outputs = new Array();
 
             rebootProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString());
             });
             rebootProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString());
             })
 
             rebootProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.reboot.rebooted')), 'stdout Fail, expecting "' + t('matrix.reboot.rebooted') + '"')
               done();
             });
@@ -1536,15 +1179,15 @@ context('create', function () {
             var outputs = new Array();
             this.timeout(15000)
             searchProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString());
             })
             searchProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString());
             })
             searchProc.on('close', function (code) {
-             // console.log('close', outputs);
+              // console.log('close', outputs);
               outputs.should.matchAny(new RegExp(t('matrix.search.help')), 'stdout Fail, expecting "' + t('matrix.search.help') + '"')
               done();
             })
@@ -1557,15 +1200,15 @@ context('create', function () {
               var searchProc = run('matrix', ['search', 'xx']);
               var outputs = new Array();
               searchProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 outputs.push(out.toString());
               })
               searchProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString());
               })
               searchProc.on('close', function (code) {
-               // console.log('close', outputs);
+                // console.log('close', outputs);
                 outputs.should.matchAny(new RegExp(t('matrix.search.small_needle')), 'stdout Fail, expecting "' + t('matrix.search.small_needle') + '"')
                 done();
               })
@@ -1579,15 +1222,15 @@ context('create', function () {
               var outputs = new Array();
 
               searchProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 outputs.push(out.toString());
               })
               searchProc.stderr.on('data', function (out) {
-               // console.log('stderr', out);
+                // console.log('stderr', out);
                 outputs.push(out.toString());
               })
               searchProc.on('close', function (code) {
-               // console.log('close', outputs);
+                // console.log('close', outputs);
                 outputs.should.matchAny(new RegExp(t('matrix.search.search_successfully')), 'stdout Fail, expecting "' + t('matrix.search.search_successfully') + '"')
                 done();
               })
@@ -1603,15 +1246,15 @@ context('create', function () {
             var installProc = run('matrix', ['install']);
             var outputs = new Array();
             installProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString());
+              // console.log('stdout', out.toString());
               outputs.push(out.toString());
             })
             installProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString());
             })
             installProc.on('close', function (code) {
-             // console.log('close', outputs);
+              // console.log('close', outputs);
               outputs.should.matchAny(new RegExp(t('matrix.install.command_help')), 'stdout Fail, expecting "' + t('matrix.install.command_help') + '"')
               done();
             })
@@ -1626,15 +1269,15 @@ context('create', function () {
               var installProc = run('matrix', ['install', 'XXXX'])
               var outputs = new Array();
               installProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString());
+                // console.log('stdout', out.toString());
                 outputs.push(out.toString());
               })
               installProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString());
               })
               installProc.on('close', function (code) {
-               // console.log('close', outputs);
+                // console.log('close', outputs);
                 outputs.should.matchAny(new RegExp(t('matrix.install.app_not_found')), 'stdout Fail, expecting "' + t('matrix.install.app_not_found') + '"')
                 done();
               })
@@ -1648,16 +1291,16 @@ context('create', function () {
                 var outputs = new Array();
                 this.timeout(15000);
                 installProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString());
+                  // console.log('stdout', out.toString());
                   installProc.kill('SIGINT');
                   outputs.push(out.toString());
                 })
                 installProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 installProc.on('close', function (code) {
-                 // console.log('close', outputs);
+                  // console.log('close', outputs);
                   outputs.should.matchAny(new RegExp(t('matrix.install.installing')), 'stdout Fail, expecting "' + t('matrix.install.installing') + '"')
                   done();
                 })
@@ -1669,15 +1312,15 @@ context('create', function () {
                 var outputs = new Array();
 
                 installProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 installProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 installProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.install.installing')), 'stdout Fail, expecting "' + t('matrix.install.installing') + '"')
                   done();
                 })
@@ -1691,22 +1334,22 @@ context('create', function () {
       }); // NO Finish install  
 
 
-      context('config', function () { //pending by error tokens 
+      context('config', function () { //pending by error tokens ***************************************************************
         context.skip('No parameters specified', function () {
           it('should show device configurations', function (done) {
             var configProc = run('matrix', ['config']);
             var outputs = new Array();
             this.timeout(15000)
             configProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString());
             })
             configProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString());
             })
             configProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.config.help')), 'stdout Fail, expecting "' + t('matrix.config.help') + '"')
               done();
             })
@@ -1721,15 +1364,15 @@ context('create', function () {
               var outputs = new Array();
 
               configProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString());
               })
               configProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString());
               })
               configProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.config.specified_application_does_not_exist')), 'stdout Fail, expecting "' + t('matrix.config.specified_application_does_not_exist') + '"')
                 done();
               })
@@ -1743,15 +1386,15 @@ context('create', function () {
                 var configProc = run('matrix', ['config', 'clock', '']);
                 var outputs = new Array();
                 configProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 configProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 configProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.config.specify_key')), 'stdout Fail, expecting "' + t('matrix.config.specify_key') + '"')
                   done();
                 })
@@ -1764,15 +1407,15 @@ context('create', function () {
                   var configProc = run('matrix', ['config', 'clock', 'XXXXX']);
                   var outputs = new Array();
                   configProc.stdout.on('data', function (out) {
-                   // console.log('stdout', out.toString())
+                    // console.log('stdout', out.toString())
                     outputs.push(out.toString());
                   })
                   configProc.stderr.on('data', function (out) {
-                   // console.log('stderr', out.toString())
+                    // console.log('stderr', out.toString())
                     outputs.push(out.toString());
                   })
                   configProc.on('close', function (code) {
-                   // console.log('close', outputs)
+                    // console.log('close', outputs)
                     outputs.should.matchAny(new RegExp(t('matrix.config.key_doesnt_exist')), 'stdout Fail, expecting "' + t('matrix.config.key_doesnt_exist') + '"')
                     done();
                   })
@@ -1785,15 +1428,15 @@ context('create', function () {
                   var outputs = new Array();
 
                   configProc.stdout.on('data', function (out) {
-                   // console.log('stdout', out.toString())
+                    // console.log('stdout', out.toString())
                     outputs.push(out.toString());
                   })
                   configProc.stderr.on('data', function (out) {
-                   // console.log('stderr', out.toString())
+                    // console.log('stderr', out.toString())
                     outputs.push(out.toString());
                   })
                   configProc.on('close', function (code) {
-                   // console.log('close', outputs)
+                    // console.log('close', outputs)
                     outputs.should.matchAny(new RegExp(t('matrix.config.help_app_key')), 'stdout Fail, expecting "' + t('matrix.config.help_app_key') + '"')
                     done();
                   })
@@ -1807,15 +1450,15 @@ context('create', function () {
                 var outputs = new Array();
 
                 configProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 configProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 configProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.config.key_value')), 'stdout Fail, expecting "' + t('matrix.config.key_value') + '"')
                   done();
                 })
@@ -1833,15 +1476,15 @@ context('create', function () {
             var outputs = new Array();
             this.timeout(15000)
             uninstallProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString());
             })
             uninstallProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString());
             })
             uninstallProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.uninstall.application_unspecified')), 'stdout Fail, expecting "' + t('matrix.uninstall.application_unspecified') + '"')
               done();
             })
@@ -1855,15 +1498,15 @@ context('create', function () {
               var uninstallProc = run('matrix', ['uninstall', 'XXXX']);
               var outputs = new Array();
               uninstallProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString());
               })
               uninstallProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString());
               })
               uninstallProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.uninstall.app_undefined')), 'stdout Fail, expecting "' + t('matrix.uninstall.app_undefined') + '"')
                 done();
               })
@@ -1877,15 +1520,15 @@ context('create', function () {
                 var uninstallProc = run('matrix', ['uninstall', 'myhealthapp']);
                 var outputs = new Array();
                 uninstallProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 uninstallProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 uninstallProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.uninstall.device_offline')), 'stdout Fail, expecting "' + t('matrix.uninstall.device_offline') + '"')
                   done();
                 })
@@ -1897,15 +1540,15 @@ context('create', function () {
                 var uninstallProc = run('matrix', ['uninstall', 'MyHealthApp']);
                 var outputs = new Array();
                 uninstallProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
-                uninstallProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                uninstallProc.stderr.on('data', function (out) {  
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 uninstallProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.uninstall.uninstalled')), 'stdout Fail, expecting "' + t('matrix.uninstall.uninstalled') + '"')
                   done();
                 })
@@ -1923,15 +1566,15 @@ context('create', function () {
             var outputs = new Array();
             this.timeout(15000)
             updateProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString());
             })
             updateProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString());
             })
             updateProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.update.help_update')), 'stdout Fail, expecting "' + t('matrix.update.help_update') + '"')
               done();
             })
@@ -1946,15 +1589,15 @@ context('create', function () {
                 var outputs = new Array();
 
                 updateProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 updateProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 updateProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.update.app_undefined')), 'stdout Fail, expecting "' + t('matrix.update.app_undefined') + '"')
                   done();
                 })
@@ -1966,15 +1609,15 @@ context('create', function () {
                 var updateProc = run('matrix', ['update', 'vehicle'])
                 var outputs = new Array();
                 updateProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 updateProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 updateProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.update.app_update_successfully')), 'stdout Fail, expecting "' + t('matrix.update.app_update_successfully') + '"')
                   done();
                 })
@@ -1987,15 +1630,15 @@ context('create', function () {
                   var updateProc = run('matrix', ['update', 'vehicle', 'versionFake']);
                   var outputs = new Array();
                   updateProc.stdout.on('data', function (out) {
-                   // console.log('stdout', out.toString())
+                    // console.log('stdout', out.toString())
                     outputs.push(out.toString());
                   })
                   updateProc.stderr.on('data', function (out) {
-                   // console.log('stderr', out.toString())
+                    // console.log('stderr', out.toString())
                     outputs.push(out.toString());
                   })
                   updateProc.on('close', function (code) {
-                   // console.log('close', outputs)
+                    // console.log('close', outputs)
                     outputs.should.matchAny(new RegExp(t('matrix.update.version_undefined')), 'stdout Fail, expecting "' + t('matrix.update.version_undefined') + '"')
                     done();
                   })
@@ -2008,15 +1651,15 @@ context('create', function () {
                   var outputs = new Array();
 
                   updateProc.stdout.on('data', function (out) {
-                   // console.log('stdout', out.toString())
+                    // console.log('stdout', out.toString())
                     outputs.push(out.toString());
                   })
                   updateProc.stderr.on('data', function (out) {
-                   // console.log('stderr', out.toString())
+                    // console.log('stderr', out.toString())
                     outputs.push(out.toString());
                   })
                   updateProc.on('close', function (code) {
-                   // console.log('close', outputs)
+                    // console.log('close', outputs)
                     outputs.should.matchAny(new RegExp(t('matrix.update.version_update_successfully')), 'stdout Fail, expecting "' + t('matrix.update.version_update_successfully') + '"')
                     done();
                   })
@@ -2029,15 +1672,15 @@ context('create', function () {
                 var updateProc = run('matrix', ['update', 'veryfirstapp', 'XXXXX'])
                 var outputs = new Array();
                 updateProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString());
                 })
                 updateProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString());
                 })
                 updateProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.update.version_doesnt_exist')), 'stdout Fail, expecting "' + t('matrix.update.version_doesnt_exist') + '"')
                   done();
                 })
@@ -2055,15 +1698,15 @@ context('create', function () {
             var outputs = new Array();
 
             startProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString());
             })
             startProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString());
             })
             startProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.start.application_unspecified')), 'stdout Fail, expecting "' + t('matrix.start.application_unspecified') + '"')
               done();
             })
@@ -2077,15 +1720,15 @@ context('create', function () {
               var outputs = new Array();
 
               startProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString());
               })
               startProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString());
               })
               startProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.start.starting_app')), 'stdout Fail, expecting "' + t('matrix.start.starting_app') + '"')
                 done();
               })
@@ -2096,15 +1739,15 @@ context('create', function () {
               var startProc = run('Matrix', ['start', 'XXXX'])
               var outputs = new Array();
               startProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString());
               })
               startProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString());
               })
               startProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.start.app_undefined')), 'stdout Fail, expecting "' + t('matrix.start.app_undefined') + '"')
                 done();
               })
@@ -2122,15 +1765,15 @@ context('create', function () {
             var outputs = new Array();
 
             stopProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString())
             })
             stopProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString())
             })
             stopProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.stop.application_unspecified')), 'stdout Fail, expecting"' + t('matrix.stop.application_unspecified') + '"')
               done()
             })
@@ -2144,15 +1787,15 @@ context('create', function () {
               var outputs = new Array();
 
               stopProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString())
               })
               stopProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               stopProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.stop.app_undefined')), 'stdout Fail, expecting"' + t('matrix.stop.app_undefined') + '"')
                 done()
               })
@@ -2163,15 +1806,15 @@ context('create', function () {
               var stopProc = run('Matrix', ['stop', 'vehicle'])
               var outputs = new Array();
               stopProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString())
               })
               stopProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               stopProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.stop.stopping_app')), 'stdout Fail, expecting"' + t('matrix.stop.stopping_app') + '"')
                 done()
               })
@@ -2188,15 +1831,15 @@ context('create', function () {
             var outputs = new Array();
 
             restartProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString())
             })
             restartProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString())
             })
             restartProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.restart.stopping_app')), 'stdout Fail, expecting"' + t('matrix.restart.stopping_app') + '"')
               done()
             })
@@ -2211,15 +1854,15 @@ context('create', function () {
 
 
               restartProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString())
               })
               restartProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               restartProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.restart.app_undefined')), 'stdout Fail, expecting"' + t('matrix.restart.app_undefined') + '"')
                 done()
               })
@@ -2233,15 +1876,15 @@ context('create', function () {
 
 
               restartProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString())
               })
               restartProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               restartProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.restart.stopping_app')), 'stdout Fail, expecting"' + t('matrix.restart.stopping_app') + '"')
                 done()
               })
@@ -2259,15 +1902,15 @@ context('create', function () {
             var outputs = new Array();
 
             createProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString())
             })
             createProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString())
             })
             createProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.create.name_undefined')), 'stdout Fail, expecting"' + t('matrix.create.name_undefined') + '"')
               done()
             })
@@ -2281,15 +1924,15 @@ context('create', function () {
             var outputs = new Array();
 
             createProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString())
             })
             createProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString())
             })
             createProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.create.new_folder')), 'stdout Fail, expecting"' + t('matrix.create.new_folder') + '"')
               done()
             })
@@ -2305,15 +1948,15 @@ context('create', function () {
             var outputs = new Array();
 
             deployProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString())
             })
             deployProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString())
             })
             deployProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.deploy.application_unspecified')), 'stdout Fail, expecting"' + t('matrix.deploy.application_unspecified') + '"')
               done()
             })
@@ -2328,15 +1971,15 @@ context('create', function () {
               var outputs = new Array();
 
               deployProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString())
               })
               deployProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               deployProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.deploy.app_undefined')), 'stdout Fail, expecting"' + t('matrix.deploy.app_undefined') + '"')
                 done()
               })
@@ -2349,15 +1992,15 @@ context('create', function () {
               var outputs = new Array();
 
               deployProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString())
               })
               deployProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               deployProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.deploy.deploy_app_successfully')), 'stdout Fail, expecting"' + t('matrix.deploy.deploy_app_successfully') + '"')
                 done()
               })
@@ -2374,15 +2017,15 @@ context('create', function () {
             var outputs = new Array();
 
             triggerProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString())
             })
             triggerProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString())
             })
             triggerProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.trigger.no_specified_test')), 'stdout Fail, expecting"' + t('matrix.trigger.no_specified_test') + '"')
               done()
             })
@@ -2396,15 +2039,15 @@ context('create', function () {
               var outputs = new Array();
 
               triggerProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString())
               })
               triggerProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               triggerProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.trigger.defined_test_doesn`t_exist')), 'stdout Fail, expecting"' + t('matrix.trigger.defined_test_doesn`t_exist') + '"')
                 done()
               })
@@ -2415,15 +2058,15 @@ context('create', function () {
               var triggerProc = run('matrix', ['trigger', 'test']);
               var outputs = new Array();
               triggerProc.stdout.on('data', function (out) {
-               // console.log('stdout', out.toString())
+                // console.log('stdout', out.toString())
                 outputs.push(out.toString())
               })
               triggerProc.stderr.on('data', function (out) {
-               // console.log('stderr', out.toString())
+                // console.log('stderr', out.toString())
                 outputs.push(out.toString())
               })
               triggerProc.on('close', function (code) {
-               // console.log('close', outputs)
+                // console.log('close', outputs)
                 outputs.should.matchAny(new RegExp(t('matrix.trigger.run_trigger_successfully')), 'stdout Fail, expecting"' + t('matrix.trigger.run_trigger_successfully') + '"')
                 done()
               })
@@ -2443,15 +2086,15 @@ context('create', function () {
             var outputs = new Array();
 
             logProc.stdout.on('data', function (out) {
-             // console.log('stdout', out.toString())
+              // console.log('stdout', out.toString())
               outputs.push(out.toString())
             })
             logProc.stderr.on('data', function (out) {
-             // console.log('stderr', out.toString())
+              // console.log('stderr', out.toString())
               outputs.push(out.toString())
             })
             logProc.on('close', function (code) {
-             // console.log('close', outputs)
+              // console.log('close', outputs)
               outputs.should.matchAny(new RegExp(t('matrix.log.app_not_select')), 'stdout Fail, expecting"' + t('matrix.log.app_not_select') + '"')
               done()
             })
@@ -2466,15 +2109,15 @@ context('create', function () {
                 var logProc = run('matrix', ['log', 'XXXXXXX', 'XXXXXXX']);
                 var outputs = new Array();
                 logProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString())
                 })
                 logProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString())
                 })
                 logProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.log.app_undefined')), 'stdout Fail, expecting"' + t('matrix.log.app_undefined') + '"')
                   done()
                 })
@@ -2486,15 +2129,15 @@ context('create', function () {
                 var outputs = new Array();
 
                 logProc.stdout.on('data', function (out) {
-                 // console.log('stdout', out.toString())
+                  // console.log('stdout', out.toString())
                   outputs.push(out.toString())
                 })
                 logProc.stderr.on('data', function (out) {
-                 // console.log('stderr', out.toString())
+                  // console.log('stderr', out.toString())
                   outputs.push(out.toString())
                 })
                 logProc.on('close', function (code) {
-                 // console.log('close', outputs)
+                  // console.log('close', outputs)
                   outputs.should.matchAny(new RegExp(t('matrix.log.logs_show')), 'stdout Fail, expecting"' + t('matrix.log.logs_show') + '"')
                   done()
                 })

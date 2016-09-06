@@ -1,6 +1,8 @@
 en:
   matrix:
     already_login: 'Already logged as:'
+    Unknown_parameter: Unknown parameter
+    Downloading_latest_MatrixOS: Downloading latest MatrixOS image.
     api_title: API
     streaming_title: Streaming
     user_title: User
@@ -48,10 +50,9 @@ en:
       device_not_found: Device doesn`t exist #
       invalid_token: 'Your token is invalid'
       try: 'Try'
-      command_help: 'set active device to device id'
-      
+      command_help: 'set active device to device id'     
     set:
-      warning_device_required: no device Indicated # 
+      warning_device_required: No Device Indicated 
       help_device: 'set device environment'
       help_config: 'configures application variables'
       help_locale: 'set current locale for the cli'
@@ -148,7 +149,7 @@ en:
       command_help: install # [ app / sensor ] <name> #
       app_install_error: Application installation failed #
       sensor_install_error: Sensor installation failed #
-      app_not_found: Application doesn't exists #
+      app_not_found: App XXXXXX not found #
       sensor_not_found: Sensor doesn't exists #
     config:
       config_usage_command: 'warnings' # 
@@ -268,3 +269,4 @@ en:
         device: Device
         app_name: App Name
         description: Description
+        

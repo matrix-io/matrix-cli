@@ -144,7 +144,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   } else if (cmd.match(/restore|upgrade/)) {
     checkDocker();
 
-    console.log('Downloading latest MatrixOS image.')
+    console.log(t('matrix.Downloading_latest_MatrixOS').yellow)
 
     var cmd = 'docker pull admobilize/matrix-os:latest';
 
@@ -193,7 +193,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.log(t('matrix.sim.stop.sim_stopped'))
     })
   } else {
-    showHelp();
+    displayHelp();
   }
 
 

@@ -70,7 +70,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       process.exit();
     });
   } else {
-    console.log('Unknown parameter'.yellow + ' ' + target);
+      t('matrix.already_login').yellow
+    console.log(t('matrix.Unknown_parameter').yellow + ' ' + target);
     displayHelp();
   }
 
