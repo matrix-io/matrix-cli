@@ -71,7 +71,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           process.exit();
         });
       });
-    }
   } else if (target.match(/group/)) {
     Matrix.validate.user(); //Make sure the user has logged in
     /** do nothing if not device **/

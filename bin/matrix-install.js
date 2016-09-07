@@ -58,11 +58,24 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   })
                 });
 
-                console.log("\ninstalling to device... ")
-                Matrix.firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, function(err){
-                  console.log('Install Complete')
-                  process.exit();
-                });
+                var events = {
+                  error: function (err) {
+                    console.log('App installation request: ', err);
+                    process.exit();
+                  },
+                  finished: function () {
+                    console.log('App installation request generated succesfuly');
+                    process.exit();
+                  },
+                  start: function () {
+                    console.log('App installation request generated...');
+                  },
+                  progress: function () {
+                    console.log('Processing app installation request...');
+                  } 
+                };
+
+                Matrix.firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, events);
               });
             }
           });

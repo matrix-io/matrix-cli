@@ -63,12 +63,38 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         description: inputs.description,
         hardwareId: deviceId
       };
-      
+
       Matrix.firebaseInit(function () {
-        Matrix.firebase.device.add(deviceObj, function (err) {
-          if (err) console.error('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
-          process.exit();
-        });
+        debug('Firebase init passed');
+
+        var events = {
+          error: function (err) {
+            console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
+            process.exit();
+          },
+          finished: function () {
+            console.log('Device registered succesfuly');
+
+            Matrix.config.sim = {
+              token: results,
+              id: deviceId
+            }
+            Matrix.helpers.saveConfig();
+
+            console.log(t('matrix.sim.init.success').green)
+            console.log('\n' + t('matrix.sim.init.to_target_device') + ':\n');
+            console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
+            process.exit();
+          },
+          start: function () {
+            console.log('Device registration request formed...');
+          },
+          progress: function () {
+            console.log('Registering device...');
+          }
+        };
+
+        Matrix.firebase.device.add(deviceObj, events);
       });
 
       /*
