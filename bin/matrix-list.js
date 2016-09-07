@@ -2,6 +2,7 @@
 
 require('./matrix-init');
 var debug = debugLog('list');
+var async = require('async')
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
@@ -11,31 +12,29 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   var target = Matrix.pkgs[0];
 
+  Matrix.firebaseInit(function () {
+
   if (target.match(/all/)) {
     Matrix.validate.user(); //Make sure the user has logged in
-    Matrix.firebaseInit(function () {
-      Matrix.firebase.user.getAllApps(function (resp) {
-        if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
-        debug('Device List>', resp);
-        console.log(Matrix.helpers.displayDeviceApps(resp));
+    Matrix.firebase.user.getAllApps(function (resp) {
+      if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
+      debug('Device List>', resp);
+      console.log(Matrix.helpers.displayDeviceApps(resp));
 
-        // save for later
-        Matrix.config.appMap = resp;
-        Matrix.helpers.saveConfig(function(){
-          process.exit();
-        })
-      });
+      // save for later
+      Matrix.config.appMap = resp;
+      Matrix.helpers.saveConfig(function(){
+        process.exit();
+      })
     });
   } else if (target.match(/app/)) {
     Matrix.validate.user(); //Make sure the user has logged in
     Matrix.validate.device(); //Make sure the user has selected a device
-    Matrix.firebaseInit(function () {
-      Matrix.firebase.app.list(function (err, data) {
-        if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
-        if (_.isUndefined(data)) data = {};
-        console.log(Matrix.helpers.displayApps(data));
-        process.exit();
-      });
+    Matrix.firebase.app.list(function (err, data) {
+      if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
+      if (_.isUndefined(data)) data = {};
+      console.log(Matrix.helpers.displayApps(data));
+      process.exit();
     });
   } else if (target.match(/device/)) {
     Matrix.validate.user(); //Make sure the user has logged in
@@ -44,35 +43,30 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       var deviceIds = _.keys(devices);
 
       var deviceMap = {};
-      async.each(devices, function( userDevice, deviceId, cb ){
+      async.eachOf(devices, function( userDevice, deviceId, cb ){
         Matrix.firebase.device.lookup( deviceId, function(device){
-          if ( _.isEmpty(device) ) return cb('No Device Found in `devices`. Server Error.');
-          deviceMap[deviceId] = {
-            name: device.meta.name,
-            online: device.runtime.online,
-            lastSeen: device.runtime.lastConnectionEvent,
-            defaultApps : device.config.init
+          debug(device)
+          if ( !_.isEmpty(device) ) {
+            deviceMap[deviceId] = {
+              name: device.meta.name,
+              online: device.runtime.online,
+              lastSeen: device.runtime.lastConnectionEvent,
+              defaultApps : device.config.init
+            }
           }
           cb();
         })
       }, function(err){
         if (err) return console.error(err.red);
-
-
-      })
-
-
-        console.log(Matrix.helpers.displayDevices(body));
-        // save device map to config
-        Matrix.config.deviceMap = _.map(JSON.parse(body).results, function (d) {
-          return { name: d.name, id: d.deviceId }
-        });
+        console.log(Matrix.helpers.displayDevices(deviceMap));
+        Matrix.config.deviceMap = deviceMap;
         Matrix.helpers.saveConfig(function () {
           process.exit();
         });
-      });
-    }
+      })
+    });
   } else if (target.match(/group/)) {
+    console.warn('groups not in yet')
     Matrix.validate.user(); //Make sure the user has logged in
     /** do nothing if not device **/
     Matrix.api.group.list(function (body) {
@@ -84,6 +78,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log('Unknown parameter'.yellow + ' ' + target);
     displayHelp();
   }
+
+});
 
 function displayHelp() {
   console.log('\n> matrix list ¬\n');
