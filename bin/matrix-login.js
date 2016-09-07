@@ -5,7 +5,7 @@ var prompt = require('prompt');
 var debug = debugLog('login');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   var schema = {
     properties: {
       username: {
@@ -29,7 +29,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       if (err.toString().indexOf('canceled') > 0) {
         console.log('');
         process.exit();
-      } else { 
+      } else {
         console.log("Error: ", err);
         process.exit();
       }
@@ -61,17 +61,23 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         /** token stores, delete extra stuff **/
         // delete Matrix.config.user.username;
         delete Matrix.config.user.password;
-        Matrix.helpers.saveConfig(function () {
-          console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
-          process.exit();
+
+        // download apps and devices belonging to user
+        // from `users` in firebase
+        Matrix.firebaseInit(function(){
+          Matrix.firebase.user.getAllApps(function (resp) {
+            debug('Device List>', resp);
+
+            // save for later
+            Matrix.config.appMap = resp;
+            Matrix.helpers.saveConfig(function(){
+              /** save the creds if it's good **/
+              console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
+              process.exit();
+            })
+          });
         });
-
-
-        // set user token
       });
     });
-    /** save the creds if it's good **/
-
   });
-
 });

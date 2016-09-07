@@ -39,21 +39,28 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
   } else if (target.match(/device/)) {
     Matrix.validate.user(); //Make sure the user has logged in
-    var group = Matrix.pkgs[1];
-    /** do nothing if not device **/
-    if (group !== undefined) {
-      // Matrix.api.user.setToken(Matrix.config.user.token);
-      var options = {
-        group: group
-      };
-      Matrix.api.device.list(options, function (body) {
-        //print device
-        console.log(Matrix.helpers.displayDevices(body));
-        process.exit();
-      });
-    } else {
-      Matrix.api.device.list({}, function (body) {
-        //print device
+
+    Matrix.firebase.device.list(function (devices) {
+      var deviceIds = _.keys(devices);
+
+      var deviceMap = {};
+      async.each(devices, function( userDevice, deviceId, cb ){
+        Matrix.firebase.device.lookup( deviceId, function(device){
+          if ( _.isEmpty(device) ) return cb('No Device Found in `devices`. Server Error.');
+          deviceMap[deviceId] = {
+            name: device.meta.name,
+            online: device.runtime.online,
+            lastSeen: device.runtime.lastConnectionEvent,
+            defaultApps : device.config.init
+          }
+          cb();
+        })
+      }, function(err){
+        if (err) return console.error(err.red);
+
+
+      })
+
 
         console.log(Matrix.helpers.displayDevices(body));
         // save device map to config
