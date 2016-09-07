@@ -189,11 +189,26 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       };
                       debug('URL: ' + downloadURL);
                       debug('The data sent for ' + appName + ' ( ' + appVersion + ' ) is: ', appData)
-                      Matrix.firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, function (err, result) {
-                        if (err) console.error('Error deploying app '.red + appName.yellow + ': '.red, err);
-                        if (result) console.log('Result: ', result);
-                        endIt();
-                      });
+
+                      var events = {
+                        error: function (err) { //error 
+                          console.log('App registration failed: ', err);
+                          process.exit();
+                        },
+                        finished: function () { //finished
+                          console.log('App deployment finished succesfuly!');
+                          endIt();
+                        },
+                        start: function () { //start
+                          console.log('App registration formed...');
+                        },
+                        progress: function () { //progress
+                          console.log('App registration in progress...');    
+                        }
+                      }; 
+
+                      Matrix.firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, events);
+                      
                     } else {
                       return console.warn("Error uploading file");
                     }
