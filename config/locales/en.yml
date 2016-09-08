@@ -32,7 +32,7 @@ en:
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:
-      no_device: No Device Indicated
+      no_device: No Device Selected
       select_device_id: select a device id'
     #SETUP:
     login:
@@ -50,8 +50,7 @@ en:
       try: 'Try'
       command_help: 'set active device to device id'
       
-    set:
-      warning_device_required: no device Indicated # 
+    set: 
       help_device: 'set device environment'
       help_config: 'configures application variables'
       help_locale: 'set current locale for the cli'
