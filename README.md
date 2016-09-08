@@ -11,16 +11,6 @@ Comprehensive documentation can be found at http://github.io/matrix-io/matrix-do
 ```
 npm install matrix-cli -g
 ```
-OR
-```
-git clone https://github.com/matrix-io/matrix-cli
-cd matrix-cli
-npm install
-# makes global `matrix` available
-npm link
-
-```
-
 ```
 > matrix
 
@@ -40,7 +30,7 @@ logout - Log out of the MATRIX platform
  sim - manage local MatrixOS simulator using docker
      ↳ [ init, restore, start, stop, save, clear ]
 list - information about your devices, applications and installations
-     ↳ [ apps, devices, all, groups ]
+     ↳ [ apps, devices, all ]
 reboot - Reboots the MATRIX.
 
 ----- APPS -----
@@ -228,6 +218,7 @@ matrix.on('event', function(data){});
 
 ## For Matrix-Console Developers
 
+
 ### Globalize Master Command
 Use `sudo npm link` after `git clone` to make `matrix` available globally.
 
@@ -236,3 +227,6 @@ Use `sudo npm link` after `git clone` to make `matrix` available globally.
 #dont gzip, not supported
 tar vcf baseapp.tar baseapp
 ```
+
+### Just for you Debug command
+See the local configuration easy with `matrix debug`

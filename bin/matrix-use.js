@@ -12,6 +12,24 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var target = Matrix.pkgs[0];
   //TODO: store device list locally
 
+  // Matrix.firebaseInit(function () {
+  //
+  //   Matrix.firebase.user.checkDevice( target, function (err, deviceapps) {
+  //     if (err) return console.error(err);
+  //     if ( _.isNull(deviceapps)){
+  //       return console.log('Device Not Attached to User Record');
+  //     } else {
+  //       Matrix.firebase.device.lookup( target, function(device){
+  //         if (_.isNull(device)){
+  //           return console.log('Device not in Devices Record, Exists in User Record')
+  //         }
+  //         console.log(device);
+  //       })
+  //     }
+  //   })
+  //
+  // })
+
   // still API dependent, TODO: depreciate to firebase
   Matrix.api.device.register(target, function(err, state) {
 
@@ -41,10 +59,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
 
   });
+});
 
   function displayHelp() {
     console.log('\n> matrix use ¬ \n');
     console.log('\t                 matrix use <deviceid> -', t('matrix.use.command_help').grey)
     console.log('\n')
   }
-});

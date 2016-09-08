@@ -16,7 +16,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   if (target.match(/all/)) {
     Matrix.validate.user(); //Make sure the user has logged in
-    Matrix.firebase.user.getAllApps(function (resp) {
+    Matrix.firebase.user.getAllApps(function (err, resp) {
       if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
       debug('Device List>', resp);
       console.log(Matrix.helpers.displayDeviceApps(resp));
@@ -44,7 +44,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       var deviceMap = {};
       async.eachOf(devices, function( userDevice, deviceId, cb ){
-        Matrix.firebase.device.lookup( deviceId, function(device){
+        Matrix.firebase.device.lookup( deviceId, function(err, device){
+          if (err) return cb(err);
           debug(device)
           if ( !_.isEmpty(device) ) {
             deviceMap[deviceId] = {
@@ -84,7 +85,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 function displayHelp() {
   console.log('\n> matrix list ¬\n');
   console.log('\t    matrix list devices -', t('matrix.list.help_devices').grey)
-  console.log('\t     matrix list groups -', t('matrix.list.help_groups').grey)
+  // console.log('\t     matrix list groups -', t('matrix.list.help_groups').grey)
   console.log('\t       matrix list apps -', t('matrix.list.help_apps').grey)
   console.log('\t        matrix list all -', t('matrix.list.help_all').grey)
   console.log('\n')

@@ -65,7 +65,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         // download apps and devices belonging to user
         // from `users` in firebase
         Matrix.firebaseInit(function(){
-          Matrix.firebase.user.getAllApps(function (resp) {
+          Matrix.firebase.user.getAllApps(function (err, resp) {
             debug('Device List>', resp);
 
             // save for later

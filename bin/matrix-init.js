@@ -59,7 +59,7 @@ Matrix.api.setConfig( Matrix.config );
 Matrix.firebase = require('matrix-firebase');
 Matrix.firebaseInit = function (cb) {
   var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier: '';
-  Matrix.firebase.init(
+  Matrix.firebase.util.init(
     Matrix.config.user.id,
     currentDevice,
     Matrix.config.user.token,
