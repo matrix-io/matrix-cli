@@ -64,17 +64,20 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
         // download apps and devices belonging to user
         // from `users` in firebase
-        Matrix.firebase.user.getAllApps(function (err, resp) {
-          debug('Device List>', resp);
+        Matrix.firebaseInit( function(){
 
-          // save for later
-          Matrix.config.appMap = resp;
-          Matrix.helpers.saveConfig(function(){
-            /** save the creds if it's good **/
-            console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
-            process.exit();
-          })
-        });
+          Matrix.firebase.user.getAllApps(function (err, resp) {
+            debug('Device List>', resp);
+
+            // save for later
+            Matrix.config.appMap = resp;
+            Matrix.helpers.saveConfig(function(){
+              /** save the creds if it's good **/
+              console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
+              process.exit();
+            })
+          });
+        })
       });
     });
   });

@@ -29,6 +29,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   //   })
   //
   // })
+  //
+  // 
+  Matrix.validate.user();
 
   // still API dependent, TODO: depreciate to firebase
   Matrix.api.device.register(target, function(err, state) {
