@@ -76,7 +76,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             console.log('Device registered succesfuly');
 
             Matrix.config.sim = {
-              token: results,
+              token: Matrix.config.user.token,
               id: deviceId
             }
             Matrix.helpers.saveConfig();

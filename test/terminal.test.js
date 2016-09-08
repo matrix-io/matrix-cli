@@ -1018,7 +1018,7 @@ context('create', function () {
            // console.log('stderr', out.toString())
           })
           setProc.on('close', function (code) {
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
            // console.log('close', outputs)
             done();
           });
@@ -1040,7 +1040,7 @@ context('create', function () {
           })
           rebootProc.on('close', function (code) {
            // console.log('close', outputs);
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           })
         });
@@ -1059,7 +1059,7 @@ context('create', function () {
             outputs.push(out.toString());
           })
           searchProc.on('close', function (code) {
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
            // console.log('close', outputs)
             done();
           });
@@ -1080,7 +1080,7 @@ context('create', function () {
           });
           installProc.on('close', function (code) {
            // console.log('close', outputs)
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           });
         });
@@ -1100,7 +1100,7 @@ context('create', function () {
           });
           configProc.on('close', function (code) {
            // console.log('close', outputs)
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           });
         });
@@ -1120,7 +1120,7 @@ context('create', function () {
           });
           uninstallProc.on('close', function (code) {
            // console.log('close', outputs)
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           });
         });
@@ -1140,7 +1140,7 @@ context('create', function () {
           });
           updateProc.on('close', function (code) {
            // console.log('close', outputs)
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           });
         }); // Finish update
@@ -1160,7 +1160,7 @@ context('create', function () {
             });
             startProc.on('close', function (code) {
              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -1180,7 +1180,7 @@ context('create', function () {
             });
             stopProc.on('close', function (code) {
              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -1201,7 +1201,7 @@ context('create', function () {
             });
             restartProc.on('close', function (code) {
              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -1223,7 +1223,7 @@ context('create', function () {
             });
             createProc.on('close', function (code) {
              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -1244,7 +1244,7 @@ context('create', function () {
             });
             deployProc.on('close', function (code) {
              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -1264,7 +1264,7 @@ context('create', function () {
             });
             triggerProc.on('close', function (code) {
              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -1285,7 +1285,7 @@ context('create', function () {
             });
             logProc.on('close', function (code) {
              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
 

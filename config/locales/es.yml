@@ -47,8 +47,7 @@ es:
       invalid_token: 'Tu token es invalido'
       try: 'Intenta'
       command_help: 'establece como dispositivo activo el dispositivo con id'
-    set:
-      warning_device_required: Dispositivo no indicado # 
+    set: 
       help_device: 'configurar el ambiente del dispositivo'
       help_config: 'configurar las variables de aplicacion'
       help_locale: 'establecer la localización actual de cli'
