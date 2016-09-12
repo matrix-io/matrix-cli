@@ -53,8 +53,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var configFile = fs.readFileSync(pwd + detectFile).toString();
   var configObject = {};
   var policyObject = {};
-  var appVersion;
-
+  var appDetails = {};
   try {
     var config = yaml.safeLoad(fs.readFileSync(pwd + detectFile));
   } catch (e) {
@@ -87,8 +86,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       return;
     }
 
+    var packageContent;
     try {
-      appVersion = require(pwd + 'package.json').version;
+      packageContent = require(pwd + 'package.json');
+      appDetails = {
+        name: appName,
+        version: packageContent.version || '1.0.0',
+        description: packageContent.description || '',
+        categories: packageContent.categories || ['Development'],
+        shortname : packageContent.shortname || appName.toLowerCase().replace(" ", "_"),
+        keywords : packageContent.keywords || ['development']
+      }
+      debug('Package.json data extracted: ', appDetails);
     } catch (err) {
       return console.error(err.message.red);
     }
@@ -145,7 +154,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     debug('Finished packaging ', appName);
     Matrix.firebaseInit(function () {
 
-          var versionParam = appVersion + '.zip';
+          var versionParam = appDetails.version + '.zip';
           var url = Matrix.config.environment.api + '/' + uploadEndpoint
             + '?access_token=' + Matrix.config.user.token
             + '&appName=' + appName
@@ -179,16 +188,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     if (response.statusCode == 200) {
                       var downloadURL = fileUrl + '/' + appName + '/' + versionParam;
                       var appData = {
-                        'meta': {
-                          'name': appName,
-                          'file': downloadURL
-                        },
-                        'version': appVersion,
+                        'meta': _.pick(appDetails, ['name', 'description', 'shortname', 'keywords', 'categories']),
+                        'file': downloadURL,
+                        'version': appDetails.version,
                         'config': configObject,
                         'policy': policyObject
                       };
                       debug('URL: ' + downloadURL);
-                      debug('The data sent for ' + appName + ' ( ' + appVersion + ' ) is: ', appData)
+                      debug('The data sent for ' + appName + ' ( ' + appDetails.version + ' ) is: ', appData)
 
                       var events = {
                         error: function (err) { //error 
