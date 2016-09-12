@@ -42,23 +42,31 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
         var deviceMap = {};
         async.eachOf(devices, function( userDevice, deviceId, cb ){
-          Matrix.firebase.device.lookup( deviceId, function(err, device){
-            if (err) return cb(err);
+          Matrix.firebase.device.lookup(deviceId, function (err, device) {
             debug(device)
-            if ( !_.isEmpty(device) ) {
-              //TODO temporary defaults until device creation includes this 
-              if (!device.hasOwnProperty('runtime')) device.runtime = {online: false, lastConnectionEvent: 0};
-              if (!device.hasOwnProperty('config')) device.config = {init: ['monitor']};
-              deviceMap[deviceId] = {
-                name: device.meta.name,
-                online: device.runtime.online,
-                lastSeen: device.runtime.lastConnectionEvent,
-                defaultApps : device.config.init
+            if (err) {
+              if (err.code == 'PERMISSION_DENIED') {
+                console.error('Permission denied, skipping device: ', deviceId);
+                return cb();
+              } else {
+                return cb(err)
               }
+            } else {
+              if ( !_.isEmpty(device) ) {
+                //TODO temporary defaults until device creation includes this 
+                if (!device.hasOwnProperty('runtime')) device.runtime = {online: false, lastConnectionEvent: 0};
+                if (!device.hasOwnProperty('config')) device.config = {init: ['monitor']};
+                deviceMap[deviceId] = {
+                  name: device.meta.name,
+                  online: device.runtime.online,
+                  lastSeen: device.runtime.lastConnectionEvent,
+                  defaultApps : device.config.init
+                }
+              }
+              cb();
             }
-            cb();
           })
-        }, function(err){
+        }, function (err) {
           if (err) return console.error(err.red);
           console.log(Matrix.helpers.displayDevices(deviceMap));
           Matrix.config.deviceMap = deviceMap;
