@@ -181,9 +181,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       var appData = {
                         'meta': {
                           'name': appName,
-                          'version': appVersion,
                           'file': downloadURL
                         },
+                        'version': appVersion,
                         'config': configObject,
                         'policy': policyObject
                       };
