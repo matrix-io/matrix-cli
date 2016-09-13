@@ -79,12 +79,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               token: Matrix.config.user.token,
               id: deviceId
             }
-            Matrix.helpers.saveConfig();
 
-            console.log(t('matrix.sim.init.success').green)
-            console.log('\n' + t('matrix.sim.init.to_target_device') + ':\n');
-            console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
-            process.exit();
+            Matrix.helpers.saveConfig(function () { 
+              console.log(t('matrix.sim.init.success').green)
+              console.log('\n' + t('matrix.sim.init.to_target_device') + ':\n');
+              console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
+              process.exit();
+            });
           },
           start: function () {
             console.log('Device registration request formed...');
