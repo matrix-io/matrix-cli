@@ -59,6 +59,25 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 });
 
 
+                Matrix.firebase.user.watchForNewApps(Matrix.config.device.identifier, function (installedAppId, app) {
+                  console.log(installedAppId, app)
+                  Matrix.firebase.app.watchStatus( installedAppId, function( status ){
+                    console.log('status>', status)
+                    if ( status === 'error' ){
+                      console.error('Error installing', app);
+                      process.exit();
+                    } else if (
+                      status === 'inactive'
+                    ) {
+                      console.log('App install SUCCESS'.green)
+                      process.exit();
+                    } else {
+                      console.log('invalid status', status);
+                    }
+                  })
+                });
+
+
                 console.log("\ninstalling to device... ")
                 Matrix.firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, {
                   error: function(err){
@@ -66,8 +85,24 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     process.exit(1);
                   },
                   finished: function(){
-                    console.log('Install Done'.green)
-                    process.exit();
+                    console.log('Finalizing on Device...'.green)
+                    Matrix.firebase.user.watchForNewApps(Matrix.config.device.identifier, function (installedAppId, app) {
+                      console.log(installedAppId, app)
+                      Matrix.firebase.app.watchRuntime( installedAppId, function( install ){
+                        console.log('install>', install)
+                        if ( status === 'error' ){
+                          console.error('Error installing', app);
+                          process.exit();
+                        } else if (
+                          status === 'inactive'
+                        ) {
+                          console.log('App install SUCCESS'.green)
+                          process.exit();
+                        } else {
+                          console.log('invalid status', status);
+                        }
+                      })
+                    });
                   },
                   start: _.once(function(){
                     console.log('Install Started')

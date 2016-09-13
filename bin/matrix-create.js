@@ -19,11 +19,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function onEnd() {
     console.log(t('matrix.create.new_folder') + ':>'.grey, app.green + '/'.grey);
-    console.log('        app.js'.grey, '-', t('matrix.create.description_app'))
-    console.log('   config.json'.grey, '-', t('matrix.create.description_config'))
-    console.log('  DEVELOPER.MD'.grey, '-', t('matrix.create.description_developer'))
-    console.log('      index.js'.grey, '-', t('matrix.create.description_index'))
-    console.log('  package.json'.grey, '-', t('matrix.create.description_package'))
+    console.log('         app.js'.grey, '-', t('matrix.create.description_app'))
+    console.log('    config.json'.grey, '-', t('matrix.create.description_config'))
+    console.log('config-big.json'.grey, '-', t('matrix.create.description_config_big'))
+    console.log('   DEVELOPER.MD'.grey, '-', t('matrix.create.description_developer'))
+    console.log('       index.js'.grey, '-', t('matrix.create.description_index'))
+    console.log('   package.json'.grey, '-', t('matrix.create.description_package'))
   }
 
   //TODO check if path already exists, refuse if so
@@ -39,6 +40,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     .on('error', onError)
     .pipe(extractor);
   // unzip baseApp.zip to named folder
+  //
+
 
   function displayHelp() {
     console.log('\n> matrix create ¬\n');
