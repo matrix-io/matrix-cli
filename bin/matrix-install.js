@@ -59,10 +59,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 });
 
 
-                Matrix.firebase.user.watchForNewApps(Matrix.config.device.identifier, function (installedAppId, app) {
-                  console.log(installedAppId, app)
+                Matrix.firebase.user.watchForNewApps(Matrix.config.device.identifier, function (app) {
+                  debug('new app>', app)
+                  var installedAppId = _.keys(app)[0];
                   Matrix.firebase.app.watchStatus( installedAppId, function( status ){
-                    console.log('status>', status)
+                    console.log('status>', installedAppId, status)
                     if ( status === 'error' ){
                       console.error('Error installing', app);
                       process.exit();
@@ -86,23 +87,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   },
                   finished: function(){
                     console.log('Finalizing on Device...'.green)
-                    Matrix.firebase.user.watchForNewApps(Matrix.config.device.identifier, function (installedAppId, app) {
-                      console.log(installedAppId, app)
-                      Matrix.firebase.app.watchRuntime( installedAppId, function( install ){
-                        console.log('install>', install)
-                        if ( status === 'error' ){
-                          console.error('Error installing', app);
-                          process.exit();
-                        } else if (
-                          status === 'inactive'
-                        ) {
-                          console.log('App install SUCCESS'.green)
-                          process.exit();
-                        } else {
-                          console.log('invalid status', status);
-                        }
-                      })
-                    });
+
                   },
                   start: _.once(function(){
                     console.log('Install Started')
