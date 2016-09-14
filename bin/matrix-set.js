@@ -29,7 +29,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     },
     dev: {
       api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://dev-mxss.admobilize.com'
+      mxss: 'http://dev-mxss.admobilize.com',
+      appsBucket: 'dev-admobilize-matrix-apps'
     },
     rc: {
       api: 'http://dev-demo.admobilize.com',
@@ -41,7 +42,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     },
     production: {
       api: 'http://demo.admobilize.com',
-      mxss: 'http://mxss.admobilize.com'
+      mxss: 'http://mxss.admobilize.com',
+      appsBucket: 'admobilize-matrix-apps'
     },
     hardcode: {
       api: 'http://dev-demo.admobilize.com',
