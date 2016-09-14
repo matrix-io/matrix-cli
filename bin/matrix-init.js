@@ -29,8 +29,10 @@ Matrix.validate = require('./matrix-validate');
 var options = {
   clientId: 'AdMobilizeAPIDev',
   clientSecret: 'AdMobilizeAPIDevSecret',
-  apiUrl: process.env[ 'MATRIX_API_SERVER' ] || 'http://dev-demo.admobilize.com',
-  mxssUrl: process.env[ 'MATRIX_STREAMING_SERVER' ] || 'http://dev-mxss.admobilize.com:80',
+
+  //TODO: Defaults to Production.
+  apiUrl: process.env[ 'MATRIX_API_SERVER' ] || 'http://api.admobilize.com',
+  mxssUrl: process.env[ 'MATRIX_STREAMING_SERVER' ] || 'http://mxss.admobilize.com',
 };
 
 
