@@ -31,6 +31,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       api: 'http://dev-demo.admobilize.com',
       mxss: 'http://dev-mxss.admobilize.com'
     },
+    rc: {
+      api: 'http://dev-demo.admobilize.com',
+      mxss: 'http://rc-mxss.admobilize.com'
+    },
     stage: {
       api: 'http://stage-api.admobilize.com',
       mxss: 'http://stage-mxss.admobilize.com'
