@@ -163,7 +163,9 @@ en:
       key_doesnt_exist: this key specified doesn´t exist # 
       key_value: 'value:'
     uninstall:
+      help_app: Uninstall the app %{app} from active MatrixOS device
       uninstalled: 'Uninstalled'
+      uninstalling: Uninstalling
       application_unspecified: 'error: missing required argument' #
       app_undefined: 'this app doesn`t exist' #
       device_offline: Device offline, reconect the device please #
