@@ -10,7 +10,7 @@ var yaml = require('js-yaml')
 var request = require('request');
 
 var uploadEndpoint = 'v2/app/resources/uploadurl';
-var fileUrl = 'https://storage.cloud.google.com/admobilize-data-training/apps';
+var fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps';// /<AppName>/<version>.zip
 var detectFile = 'config.yaml';
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
@@ -154,11 +154,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     debug('Finished packaging ', appName);
     Matrix.firebaseInit(function () {
 
-          var versionParam = appDetails.version + '.zip';
           var url = Matrix.config.environment.api + '/' + uploadEndpoint
             + '?access_token=' + Matrix.config.user.token
             + '&appName=' + appName
-            + '&version=' + versionParam;
+            + '&version=' + appDetails.version + '.zip';
           request.get(url, function (error, response, body) { //Get the upload URL
             if (error) {
               return console.error("Error getting the upload URL: ", error);
@@ -179,6 +178,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 body = JSON.parse(body);
               }
               if (!body.error && body.hasOwnProperty('status') && body.status == 'OK' && body.hasOwnProperty('results') && body.results.hasOwnProperty('uploadurl')) {
+                debug('Uploading to ', body.results.uploadurl)
                 var stream = fs.createReadStream(destinationFilePath).pipe(request.put(body.results.uploadurl))
                   .on('error', function (err) {
                     return console.log('Error uploading zipped file (' + destinationFilePath + '): \n', err);
@@ -186,7 +186,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   .on('response', function (response) {
                     debug('Upload response (' + response.statusCode + ')');
                     if (response.statusCode == 200) {
-                      var downloadURL = fileUrl + '/' + appName + '/' + versionParam;
+                      var downloadURL = fileUrl + '/' + appName + '/' + appDetails.version + '.zip';
                       var appData = {
                         'meta': _.pick(appDetails, ['name', 'description', 'shortname', 'keywords', 'categories']),
                         'file': downloadURL,
@@ -194,7 +194,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                         'config': configObject,
                         'policy': policyObject
                       };
-                      debug('URL: ' + downloadURL);
+                      debug('DOWNLOAD URL: ' + downloadURL);
                       debug('The data sent for ' + appName + ' ( ' + appDetails.version + ' ) is: ', appData)
 
                       var events = {
@@ -212,7 +212,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                         progress: function () { //progress
                           console.log('App registration in progress...');    
                         }
-                      }; 
+                      };
 
                       Matrix.firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, events);
                       

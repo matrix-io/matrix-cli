@@ -30,7 +30,8 @@ var options = {
   clientId: 'AdMobilizeAPIDev',
   clientSecret: 'AdMobilizeAPIDevSecret',
   apiUrl: process.env[ 'MATRIX_API_SERVER' ] || 'http://dev-demo.admobilize.com',
-  mxssUrl: process.env[ 'MATRIX_STREAMING_SERVER' ] || 'http://dev-mxss.admobilize.com:80',
+  mxssUrl: process.env['MATRIX_STREAMING_SERVER'] || 'http://dev-mxss.admobilize.com:80',
+  appsBucket: process.env['MATRIX_APPS_BUCKET'] || 'dev-admobilize-matrix-apps'
 };
 
 
@@ -39,11 +40,13 @@ if ( _.has( Matrix.config.environment, 'name' ) ) {
   debug( 'Env: ', Matrix.config.environment.name );
   options.apiUrl = Matrix.config.environment.api;
   options.mxssUrl = Matrix.config.environment.mxss;
+  options.appsBucket = Matrix.config.environment.appsBucket;
 } else {
   debug('No env set, using default');
   Matrix.config.environment = {
     api: options.apiUrl,
-    mxss: options.mxssUrl
+    mxss: options.mxssUrl,
+    appsBucket: options.appsBucket
   };
 }
 
