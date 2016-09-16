@@ -80,20 +80,30 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
 
                 console.log("\ninstalling to device... ")
+                var progress;
                 Matrix.firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, {
                   error: function(err){
-                    console.error('Install Error'.red, err);
+                    if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) {
+                      console.error('\nInstall Error'.red, err.details.error);
+                    } else {
+                      console.error('\nInstall Error'.red, err);
+                    }
                     process.exit(1);
                   },
                   finished: function(){
-                    console.log('Finalizing on Device...'.green)
+                    console.log('\nFinalizing on Device...'.green)
 
                   },
                   start: _.once(function(){
                     console.log('Install Started')
                   }),
-                  progress: function(msg){
-                    console.log('Install Progress:', msg)
+                  progress: function (msg) {
+                    if (!progress) {
+                      progress = true;
+                      process.stdout.write('Install Progress:', msg) 
+                    } else {                      
+                      process.stdout.write('.');
+                    }
                   }
                 });
               });
@@ -114,8 +124,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function displayHelp() {
     console.log('\n> matrix install ¬\n');
-    console.log('\t    matrix install app -', t('matrix.install.help_app', {app: '<app>'}).grey)
-    console.log('\t    matrix install sensor -', t('matrix.install.help_sensor', {sensor: '<sensor>'}).grey)
+    console.log('\t    matrix install app <app> -', t('matrix.install.help_app', {app: '<app>'}).grey)
+    console.log('\t    matrix install sensor <sensor> -', t('matrix.install.help_sensor', {sensor: '<sensor>'}).grey)
     console.log('\n')
     process.exit(1);
   }
