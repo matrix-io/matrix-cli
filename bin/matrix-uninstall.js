@@ -51,20 +51,30 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });*/
 
         console.log("\nApp found in device... ")
+        var progress;
         Matrix.firebase.app.uninstall(Matrix.config.user.token, Matrix.config.device.identifier, appId, {
           error: function (err) {
-            console.error('Uninstall Error'.red, err);
+            if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) {
+              console.error('\nUninstall Error'.red, err.details.error);
+            } else {
+              console.error('\nUninstall Error'.red, err);
+            }
             process.exit(1);
           },
           finished: function () {
             console.log('Uninstall sent to device...'.green);
-            //process.exit(0);
+            process.exit(0);
           },
           start: _.once(function () {
             console.log('Uninstall request created');
           }),
           progress: function (msg) {
-            console.log('Uninstall in progress:', msg);
+            if (!progress) {
+              progress = true;
+              process.stdout.write('Uninstall Progress:' + msg) 
+            } else {                      
+              process.stdout.write('.');
+            }
           }
         });
       }

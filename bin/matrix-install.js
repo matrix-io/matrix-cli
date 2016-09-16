@@ -2,6 +2,8 @@
 
 require('./matrix-init');
 var debug = debugLog('install');
+var installTimeoutSeconds = 30; //seconds to get a install response from device
+var installTimer;
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
@@ -64,22 +66,25 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   var installedAppId = _.keys(app)[0];
                   Matrix.firebase.app.watchStatus( installedAppId, function( status ){
                     console.log('status>', installedAppId, status)
+                    clearTimeout(installTimer); //Remove timeout timer
                     if ( status === 'error' ){
                       console.error('Error installing', app);
-                      process.exit();
+                      process.exit(1);
                     } else if (
                       status === 'inactive'
                     ) {
                       console.log('App install SUCCESS'.green)
-                      process.exit();
+                      process.exit(0);
                     } else {
                       console.log('invalid status', status);
+                      process.exit(1);
                     }
                   })
                 });
 
-
-                console.log("\ninstalling to device... ")
+                
+                console.log("\nInstalling to device... ")
+                
                 var progress;
                 Matrix.firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, {
                   error: function(err){
@@ -91,8 +96,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     process.exit(1);
                   },
                   finished: function(){
-                    console.log('\nFinalizing on Device...'.green)
-
+                    console.log('\nFinalizing on Device...'.green);
+                    installTimer = setTimeout(function() {
+                      console.log('Unable to reach device, the application will be installed as soon as your device is available'.yellow);
+                      process.exit(1);
+                    }, installTimeoutSeconds * 1000);                    
                   },
                   start: _.once(function(){
                     console.log('Install Started')
@@ -100,7 +108,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   progress: function (msg) {
                     if (!progress) {
                       progress = true;
-                      process.stdout.write('Install Progress:', msg) 
+                      process.stdout.write('Install Progress:' + msg); 
                     } else {                      
                       process.stdout.write('.');
                     }
