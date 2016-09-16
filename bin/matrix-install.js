@@ -39,14 +39,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 });
 
                 if(_.isUndefined(appId)){
-                  console.log('App ' + target.red + ' not found');
+                  console.log(t('matrix.install.app_x_not_found', {app: target.yellow}));
                   return process.exit();
                 }
                 var versionId = result[appId].meta.currentVersion;
                 debug('VERSION: '.blue, versionId, 'APP: '.blue, appId);
 
               Matrix.helpers.checkPolicy(result[appId].versions[versionId].policy, target, function (err, policy) {
-                console.warn('\n⇒ Installing %s with policy:', target.yellow);
+                console.warn('\n⇒ ' + t('matrix.install.installing_x_with_policy', {app: target.yellow}) + ':');
                 debug(policy);
                 _.each(policy, function(v, k){
                   console.log('\n', k+':')
@@ -60,55 +60,53 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   })
                 });
 
-
                 Matrix.firebase.user.watchForNewApps(Matrix.config.device.identifier, function (app) {
                   debug('new app>', app)
                   var installedAppId = _.keys(app)[0];
                   Matrix.firebase.app.watchStatus( installedAppId, function( status ){
-                    console.log('status>', installedAppId, status)
+                    debug('status>', installedAppId, status)
                     clearTimeout(installTimer); //Remove timeout timer
                     if ( status === 'error' ){
-                      console.error('Error installing', app);
+                      console.error(t('matrix.install.app_install_error'), ' ', app);
                       process.exit(1);
                     } else if (
                       status === 'inactive'
                     ) {
-                      console.log('App install SUCCESS'.green)
+                      console.log(t('matrix.install.app_install_success').green);
                       process.exit(0);
                     } else {
-                      console.log('invalid status', status);
+                      console.log(t('matrix.install.invalid_app_status'), status);
                       process.exit(1);
                     }
                   })
                 });
-
                 
-                console.log("\nInstalling to device... ")
+                debug("\nInstalling to device... ")
                 
                 var progress;
                 Matrix.firebase.app.install(Matrix.config.user.token, Matrix.config.device.identifier, appId, versionId, policy, {
                   error: function(err){
                     if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) {
-                      console.error('\nInstall Error'.red, err.details.error);
+                      console.error('\n' + t('matrix.install.app_install_error').red + ': ', err.details.error);
                     } else {
-                      console.error('\nInstall Error'.red, err);
+                      console.error('\n' + t('matrix.install.app_install_error').red + ': ', err);
                     }
                     process.exit(1);
                   },
                   finished: function(){
-                    console.log('\nFinalizing on Device...'.green);
+                    console.log('\n' + t('matrix.install.waiting_for_device_install').green + '...'.green);
                     installTimer = setTimeout(function() {
-                      console.log('Unable to reach device, the application will be installed as soon as your device is available'.yellow);
+                      console.log(t('matrix.install.device_install_timeout').yellow);
                       process.exit(1);
                     }, installTimeoutSeconds * 1000);                    
                   },
                   start: _.once(function(){
-                    console.log('Install Started')
+                    console.log(t('matrix.install.start') + '...')
                   }),
                   progress: function (msg) {
                     if (!progress) {
                       progress = true;
-                      process.stdout.write('Install Progress:' + msg); 
+                      process.stdout.write(t('matrix.install.progress') + ':' + msg); 
                     } else {                      
                       process.stdout.write('.');
                     }

@@ -145,10 +145,18 @@ en:
       app_installed:  Installed app
       sensor_installed: sensor installed
       command_help: install # [ app / sensor ] <name> #
+      app_install_success: Application installation SUCCESS #
       app_install_error: Application installation failed #
       sensor_install_error: Sensor installation failed #
-      app_not_found: Application doesn't exists #
-      sensor_not_found: Sensor doesn't exists #
+      app_not_found: Application doesn't exist #
+      sensor_not_found: Sensor doesn't exist #
+      app_x_not_found: Application %{app} not found
+      installing_x_with_policy: Installing %{app} with policy 
+      invalid_app_status: Invalid application status
+      waiting_for_device_install: Awaiting installation on Device
+      device_install_timeout: Unable to reach device, the application will be installed as soon as your device is available
+      start: Preparing installation
+      progress: Installation progress
     config:
       config_usage_command: 'warnings' # 
       device_config: Config for device
