@@ -13,7 +13,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   Matrix.validate.user(); //Make sure the user has logged in
   Matrix.validate.device(); //Make sure the user has logged in
 
-  console.log('____ | ' + t('matrix.uninstall.uninstalling') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier);
+  console.log('____ | ' + t('matrix.uninstall.uninstalling') + ' ', target.green, ' ==> '.yellow, Matrix.config.device.identifier);
   Matrix.firebaseInit(function () {
     var options = {
       name: target,
@@ -23,32 +23,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     //If the device has the app    
     Matrix.helpers.lookupAppId(target, function (err, appId) { 
       if (err) {
-        console.log('err: ', err);
+        console.log('Error: '.red, err.message);
         process.exit();
       }
       if (!appId) { 
         console.log("\nApp not installed in device... ")
         process.exit(1);
       } else {
-
-        /*Matrix.firebase.user.watchForAppRemoval(Matrix.config.device.identifier, function (app) {
-          debug('removed app>', app)
-          var installedAppId = _.keys(app)[0];
-          Matrix.firebase.app.watchStatus(installedAppId, function (status) {
-            console.log('status>', installedAppId, status)
-            if (status === 'error') {
-              console.error('Error installing', app);
-              process.exit();
-            } else if (
-              status === 'inactive'
-            ) {
-              console.log('App install SUCCESS'.green)
-              process.exit();
-            } else {
-              console.log('invalid status', status);
-            }
-          })
-        });*/
 
         console.log("\nApp found in device... ")
         var progress;
@@ -69,11 +50,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             console.log('Uninstall request created');
           }),
           progress: function (msg) {
+            if (_.isUndefined(msg)) msg = ''; else msg = ' ' + msg + ' ';
             if (!progress) {
               progress = true;
               process.stdout.write('Uninstall Progress:' + msg) 
             } else {                      
-              process.stdout.write('.');
+              process.stdout.write('.' + msg);
             }
           }
         });

@@ -104,11 +104,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     console.log(t('matrix.install.start') + '...')
                   }),
                   progress: function (msg) {
+                    if (_.isUndefined(msg)) msg = ''; else msg = ' ' + msg + ' ';
                     if (!progress) {
                       progress = true;
                       process.stdout.write(t('matrix.install.progress') + ':' + msg); 
                     } else {                      
-                      process.stdout.write('.');
+                      process.stdout.write('.'+msg);
                     }
                   }
                 });
