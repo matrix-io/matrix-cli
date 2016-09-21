@@ -1,10 +1,11 @@
 ## Welcome to your MatrixOS Console Line Interface
 
-## NOTICE: This is not yet ready for public use. Check back Sept 2016.
+###### Bugs
+https://github.com/matrix-io/matrix-firebase/issues
 
-# Documentation
+###### Questions
+http://community.matrix.one
 
-Comprehensive documentation can be found at http://github.io/matrix-io/matrix-documentation/CLI.
 
 # Installation
 

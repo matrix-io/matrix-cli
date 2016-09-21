@@ -47,7 +47,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     },
     hardcode: {
       api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://104.196.123.3:80'
+      mxss: 'http://104.197.139.81'
     }
   };
 
