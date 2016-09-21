@@ -51,6 +51,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   var appFile = fs.readFileSync(pwd + 'app.js').toString();
   var configFile = fs.readFileSync(pwd + detectFile).toString();
+  var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png'; 
+  if (configFile.hasOwnProperty('icon')){
+    //Upload icon?
+  }
+    
   var configObject = {};
   var policyObject = {};
   var appDetails = {};
@@ -190,6 +195,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       var appData = {
                         'meta': _.pick(appDetails, ['name', 'description', 'shortname', 'keywords', 'categories']),
                         'file': downloadURL,
+                        'assets': {
+                          'icon': iconURL
+                        },
                         'version': appDetails.version,
                         'config': configObject,
                         'policy': policyObject
@@ -198,8 +206,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       debug('The data sent for ' + appName + ' ( ' + appDetails.version + ' ) is: ', appData)
 
                       var events = {
-                        error: function (err) { //error 
-                          console.log('App registration failed: ', err);
+                        error: function (err) { //error
+                          if (err.hasOwnProperty('details')) {
+                            console.log('App registration failed: '.red, err.details.error); 
+                          } else {
+                            console.log('App registration failed: '.red, err.message);
+                          }
+                          debug(err);
                           process.exit();
                         },
                         finished: function () { //finished

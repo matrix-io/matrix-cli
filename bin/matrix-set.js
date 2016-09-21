@@ -57,10 +57,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     if (value && value.match(/sandbox|dev|stage|local|production|hardcode/)) {
       Matrix.config.environment = _.assign(environments[value], { name: value });
-      Matrix.helpers.saveConfig();
-      console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
-      // TODO: set-env [value] sets a environment on the Matrix
-      Matrix.validate.device(); //Make sure the user has logged in
+      Matrix.helpers.saveConfig(function () {
+        console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
+        // TODO: set-env [value] sets a environment on the Matrix
+        //Matrix.validate.device(); //Make sure the user has logged in
+      });
     } else {
       console.error(t('matrix.set.env.valid_environments') + ' = [ sandbox, production ]')
     }
@@ -113,11 +114,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       if (locale && locale.match(localesRegExp)) {
         Matrix.config.locale = _.assign(locale, { "name": locale });
-        Matrix.helpers.saveConfig();
-        console.log(t('matrix.set.locale.locale').grey + ':'.grey, Matrix.config.locale.green);
+        Matrix.helpers.saveConfig(function () {
+          console.log(t('matrix.set.locale.locale').grey + ':'.grey, Matrix.config.locale.green);
+          process.exit(0);
+        }); 
       } else {
         var validLocales = Object.keys(locales).join(', ');
         console.error(t('matrix.set.locale.valid_locales') + ' = [ ' + validLocales + ' ]');
+        process.exit(0);
       }
     }
 
