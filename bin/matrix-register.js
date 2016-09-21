@@ -11,6 +11,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.warn('matrix register', command, 'is not a valid command');
       process.exit(1);
     } else {
+
+      console.log(t('matrix.register.creating_device'))
+
+
       // do device Registration
       var deviceSchema = {
         properties: {
@@ -18,6 +22,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             required: true,
             description: 'device name'
           },
+          description: {
+            description: 'device description'
+          }
           // for when this is ready
           // serial: {
           //   required: true
@@ -30,14 +37,68 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       prompt.start();
       prompt.get(deviceSchema, function (err, result) {
 
-        // Matrix.helper.registerDevice()....
+
 
         // all of the below is untested - next line = matrix use
-        Matrix.config.device.identifier = result.deviceId;
+        // Matrix.config.device.identifier = result.deviceId;
 
 
         Matrix.helpers.saveConfig(function () {
-          process.exit();
+
+          Matrix.firebaseInit(function () {
+            debug('Firebase init passed');
+
+
+            Matrix.firebase.user.getAllDevices(function (devices) {
+              var deviceIds = _.keys(devices);
+
+
+              var events = {
+                error: function (err) {
+                  console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
+                  process.exit();
+                },
+                finished: function () {
+                  console.log('Device registered succesfully');
+
+                },
+                start: function () {
+                  console.log('Device registration request formed...');
+                },
+                progress: function () {
+                  console.log('Registering device...');
+                }
+              };
+
+              var deviceObj = {
+                type: 'matrix',
+                osVersion: '0',
+                version: require(__dirname + '/../package.json').version,
+                name: result.name,
+                description: result.description,
+              };
+
+              // fire off worker
+              Matrix.firebase.device.add(deviceObj, events)
+
+              // wrap this up
+              Matrix.firebase.user.watchForDeviceAdd(function(d){
+                var deviceId = _.keys(d);
+
+                if (deviceIds.indexOf(deviceId) === -1 ){
+                  debug('new device on user record!');
+                  console.log('New Device', d.val());;
+
+                  // add to local ref
+                  _.merge(Matrix.config.device.appMap, d.val() );
+                  Matrix.helpers.saveConfig();
+
+                  process.exit();
+                }
+              });
+            })
+
+          });
         });
 
         // this part will be automated in the future. idk how.
