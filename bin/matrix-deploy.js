@@ -165,6 +165,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             + '?access_token=' + Matrix.config.user.token
             + '&appName=' + appName
             + '&version=' + appDetails.version + '.zip';
+
           request.get(url, function (error, response, body) { //Get the upload URL
             if (error) {
               return console.error("Error getting the upload URL: ", error);
@@ -209,21 +210,20 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
                       //Listen for the app creation in appStore
                       Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
-                        debug('App created>', app);
-                        process.exit();
+
+                        if (waitForRegistrationToFinish) {
+                          var deploymentTimer = setInterval(function () {
+                            if (deployFinished) {
+                              clearTimeout(deploymentTimer);
+                              debug('App deployed > ' + JSON.stringify(app));
+                              triggerInstall(app);
+                            }
+                          }, 400);
+
+                        } else {
+                          triggerInstall(app);
+                        }
                       });
-
-                      /*var options = {
-                        policy: result[appId].versions[versionId].policy,
-                        name: appName,
-                        id: appId,
-                        versionId: versionId
-                      }
-                      
-                      Matrix.helpers.installApp(options, function () { 
-                        endIt();
-                      });*/
-
 
                       //Send the app creation request
                       var events = {
