@@ -235,7 +235,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           var deploymentTimer = setInterval(function () {
                             if (deployFinished) { 
                               clearTimeout(deploymentTimer);
-                              debug('App created > ' + JSON.stringify(app));
+                              debug('App deployed > ' + JSON.stringify(app));
                               triggerInstall(app);
                             }  
                           }, 400);
@@ -244,15 +244,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           triggerInstall(app);
                         }
                       });
-
-                      /*Matrix.firebase.appstore.watchForAppUpdated(appName, function (app) {
-                        debug('App updated > ' + JSON.stringify(app));
-                        setTimeout(function () {
-                          process.nextTick(function () {
-                            triggerInstall(app);
-                          });
-                        }, 500);
-                      });*/
 
                       //Send the app creation request
                       var events = {
