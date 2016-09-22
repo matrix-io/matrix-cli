@@ -35,13 +35,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       prompt.delimiter = '';
       prompt.message = 'Device Registration -- ';
       prompt.start();
+
+      //TODO: Async this cascade
       prompt.get(deviceSchema, function (err, result) {
-
-
 
         // all of the below is untested - next line = matrix use
         // Matrix.config.device.identifier = result.deviceId;
-
 
         Matrix.helpers.saveConfig(function () {
 
@@ -50,13 +49,16 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
 
             Matrix.firebase.user.getAllDevices(function (devices) {
+
               var deviceIds = _.keys(devices);
+
+              debug('Existing Device Ids', deviceIds)
 
 
               var events = {
                 error: function (err) {
                   console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
-                  process.exit();
+                  // process.exit();
                 },
                 finished: function () {
                   console.log('Device registered succesfully');
@@ -83,31 +85,45 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
               // wrap this up
               Matrix.firebase.user.watchForDeviceAdd(function(d){
-                var deviceId = _.keys(d);
+                var deviceId = d.key;
 
-                if (deviceIds.indexOf(deviceId) === -1 ){
+                if ( !_.isEmpty(deviceId) && deviceIds.indexOf(deviceId) === -1 ){
                   debug('new device on user record!');
-                  console.log('New Device', d.val());;
+                  console.log('New Device'.green, deviceId);
 
-                  // add to local ref
-                  _.merge(Matrix.config.device.appMap, d.val() );
-                  Matrix.helpers.saveConfig();
+                  // // add to local ref
+                  // Matrix.config.device.appMap = _.merge({}, Matrix.config.device.appMap, d.val() );
+                  // Matrix.helpers.saveConfig();
 
-                  process.exit();
+
+                  // fetch secret
+                  // this part will be automated in the future. idk how.
+                  Matrix.api.device.getSecret( deviceId, function(err, secret){
+                    if (err) console.error('Secret Error:', err);
+                    // return the secret
+                    console.log('\nSet the following environment variables on your rpi before running MATRIX OS\n'.grey)
+                    console.log('MATRIX_DEVICE_ID='+ deviceId);
+                    console.log('MATRIX_DEVICE_SECRET='+ secret.results.deviceSecret )
+                    console.log();
+                    process.exit();
+                  })
                 }
-              });
-            })
 
-          });
+
+              })
+              // #watchDeviceAdd
+              //
+            });
+            // #getAllDevices
+            //
+          })
+          // ##firebaseInit
+
         });
 
-        // this part will be automated in the future. idk how.
-        console.log('Set the following environment variables on your rpi.')
-        console.log('MATRIX_DEVICE_ID=', result.deviceId);
 
-        // return the secret
-        console.log('MATRIX_DEVICE_SECRET=', result.secret)
       })
+      // # prompt
     }
   } else {
 

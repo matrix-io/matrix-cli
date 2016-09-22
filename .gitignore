@@ -3,4 +3,3 @@ node_modules
 *.zip
 store.json
 .DS_Store
-store.json
