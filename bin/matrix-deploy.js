@@ -207,6 +207,25 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       debug('DOWNLOAD URL: ' + downloadURL);
                       debug('The data sent for ' + appName + ' ( ' + appDetails.version + ' ) is: ', appData)
 
+                      //Listen for the app creation in appStore
+                      Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
+                        debug('App created>', app);
+                        process.exit();
+                      });
+
+                      /*var options = {
+                        policy: result[appId].versions[versionId].policy,
+                        name: appName,
+                        id: appId,
+                        versionId: versionId
+                      }
+                      
+                      Matrix.helpers.installApp(options, function () { 
+                        endIt();
+                      });*/
+
+
+                      //Send the app creation request
                       var events = {
                         error: function (err) { //error
                           if (err.hasOwnProperty('details')) {
@@ -218,8 +237,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           process.exit();
                         },
                         finished: function () { //finished
-                          console.log('App deployment finished succesfuly!');
-                          endIt();
+                          console.log('App registered in appstore');
                         },
                         start: function () { //start
                           console.log('App registration formed...');
