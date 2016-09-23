@@ -55,7 +55,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               if ( !_.isEmpty(device) ) {
                 //TODO temporary defaults until device creation includes this 
                 if (!device.hasOwnProperty('runtime')) device.runtime = {online: false, lastConnectionEvent: 0};
-                if (!device.hasOwnProperty('config')) device.config = {init: ['monitor']};
+                if (!device.hasOwnProperty('config')) device.config = {init: []};
                 deviceMap[deviceId] = {
                   name: device.meta.name,
                   online: device.runtime.online,

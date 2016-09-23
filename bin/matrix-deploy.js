@@ -13,6 +13,9 @@ var uploadEndpoint = 'v2/app/resources/uploadurl';
 var fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps';// /<AppName>/<version>.zip
 var detectFile = 'config.yaml';
 
+var waitForRegistrationToFinish = true;
+var deployFinished = false;
+
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
   if (showTheHelp) {
@@ -70,6 +73,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   debug('included config', config);
 
   var initialPolicy = Matrix.helpers.configHelper.config.parsePolicyFromConfig(config);
+
+  console.log('Please specify your application requirements:'.yellow);
   Matrix.helpers.checkPolicy(initialPolicy, appName, function (err, policy) {
     if (err) return console.error('Invalid policy ', policy);
     policyObject = policy;
@@ -165,6 +170,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             + '?access_token=' + Matrix.config.user.token
             + '&appName=' + appName
             + '&version=' + appDetails.version + '.zip';
+
           request.get(url, function (error, response, body) { //Get the upload URL
             if (error) {
               return console.error("Error getting the upload URL: ", error);
@@ -207,6 +213,42 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       debug('DOWNLOAD URL: ' + downloadURL);
                       debug('The data sent for ' + appName + ' ( ' + appDetails.version + ' ) is: ', appData)
 
+                      function triggerInstall(app) {
+                        //TODO validate content of app
+                        if (!app.hasOwnProperty('key') || !app.hasOwnProperty('data') || !app.data.hasOwnProperty('meta') || !app.data.meta.hasOwnProperty('currentVersion')) {
+                          console.error('Trying to install app missing parameters'.red);
+                          process.exit(1);
+                        }
+                        var options = {
+                          policy: policyObject,
+                          name: appName,
+                          id: app.key,
+                          versionId: app.data.meta.currentVersion
+                        }
+
+                        Matrix.helpers.installApp(options, function () {
+                          endIt();
+                        });
+                      };
+
+                      //Listen for the app creation in appStore
+                      Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
+                        if (waitForRegistrationToFinish) {
+                          var deploymentTimer = setInterval(function () {
+                            if (deployFinished) {
+                              clearTimeout(deploymentTimer);
+                              debug('App deployed > Triggering install for: ' + JSON.stringify(app));
+                              triggerInstall(app);
+                            }
+                          }, 400);
+
+                        } else {
+                          debug('Not waiting, triggering install');
+                          triggerInstall(app);
+                        }
+                      });
+
+                      //Send the app creation request
                       var events = {
                         error: function (err) { //error
                           if (err.hasOwnProperty('details')) {
@@ -218,8 +260,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           process.exit();
                         },
                         finished: function () { //finished
-                          console.log('App deployment finished succesfuly!');
-                          endIt();
+                          console.log('App registered in appstore');
+                          deployFinished = true;
                         },
                         start: function () { //start
                           console.log('App registration formed...');
