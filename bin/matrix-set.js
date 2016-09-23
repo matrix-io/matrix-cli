@@ -55,7 +55,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     var value = Matrix.pkgs[1];
 
-    if (value && value.match(/sandbox|dev|stage|local|production|hardcode/)) {
+    if (value && value.match(/sandbox|dev|stage|local|production|rc|hardcode/)) {
       Matrix.config.environment = _.assign(environments[value], { name: value });
       Matrix.helpers.saveConfig(function () {
         console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
@@ -117,7 +117,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         Matrix.helpers.saveConfig(function () {
           console.log(t('matrix.set.locale.locale').grey + ':'.grey, Matrix.config.locale.green);
           process.exit(0);
-        }); 
+        });
       } else {
         var validLocales = Object.keys(locales).join(', ');
         console.error(t('matrix.set.locale.valid_locales') + ' = [ ' + validLocales + ' ]');

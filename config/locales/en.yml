@@ -12,8 +12,8 @@ en:
     help_logout: Log out of the MatrixOS platform
     help_use: Indicate active device
     help_set: 'Set environment settings, update application configuration, change cli locale'
-    help_sim: Manage local MatrixOS simulator using Docker
-    help_list: 'Information about your devices, applications and installations'
+    help_sim: Manage local MatrixOS simulator with Docker
+    help_list: 'Information about your devices, applications and installs'
     help_reboot: Reboots the active MatrixOS device
     help_search: Search for apps
     help_install: Install an app or sensor to active MatrixOS device

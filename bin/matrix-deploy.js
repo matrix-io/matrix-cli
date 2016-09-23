@@ -15,7 +15,7 @@ var detectFile = 'config.yaml';
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
-  if (!Matrix.pkgs.length || showTheHelp) {
+  if (showTheHelp) {
     return displayHelp();
   }
 
@@ -26,8 +26,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   //TODO: make sure package.json is included
   if (_.isUndefined(appName)) {
-    // infer name from current directory
-    appName = require('path').basename(pwd);
+    // infer name from current directory + strip out suffix jic
+    appName = require('path').basename(pwd).replace('.matrix','');
+    // step out one level so we can target this dir
+    pwd += '/';
   } else {
     pwd += '/' + appName + '/';
   }
@@ -51,11 +53,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   var appFile = fs.readFileSync(pwd + 'app.js').toString();
   var configFile = fs.readFileSync(pwd + detectFile).toString();
-  var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png'; 
+  var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png';
   if (configFile.hasOwnProperty('icon')){
     //Upload icon?
   }
-    
+
   var configObject = {};
   var policyObject = {};
   var appDetails = {};
@@ -208,7 +210,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       var events = {
                         error: function (err) { //error
                           if (err.hasOwnProperty('details')) {
-                            console.log('App registration failed: '.red, err.details.error); 
+                            console.log('App registration failed: '.red, err.details.error);
                           } else {
                             console.log('App registration failed: '.red, err.message);
                           }
@@ -223,12 +225,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           console.log('App registration formed...');
                         },
                         progress: function () { //progress
-                          console.log('App registration in progress...');    
+                          console.log('App registration in progress...');
                         }
                       };
 
                       Matrix.firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, events);
-                      
+
                     } else {
                       return console.warn("Error uploading file");
                     }
