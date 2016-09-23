@@ -105,6 +105,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     console.log('MATRIX_DEVICE_ID='+ deviceId);
                     console.log('MATRIX_DEVICE_SECRET='+ secret.results.deviceSecret )
                     console.log();
+                    console.log('Set up `matrix` CLI to target this device\n'.grey);
+                    console.log('matrix use', deviceId);
+
                     process.exit();
                   })
                 }
