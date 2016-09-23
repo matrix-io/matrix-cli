@@ -235,12 +235,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           var deploymentTimer = setInterval(function () {
                             if (deployFinished) { 
                               clearTimeout(deploymentTimer);
-                              debug('App deployed > ' + JSON.stringify(app));
+                              debug('App deployed > Triggering install for: ' + JSON.stringify(app));
                               triggerInstall(app);
                             }  
                           }, 400);
                           
                         } else {
+                          debug('Not waiting, triggering install');
                           triggerInstall(app);
                         }
                       });
