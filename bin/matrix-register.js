@@ -11,7 +11,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.warn('matrix register', command, 'is not a valid command');
       process.exit(1);
     } else {
-
+      Matrix.validate.user(); //Make sure the user has logged in
       console.log(t('matrix.register.creating_device'))
 
 
