@@ -33,7 +33,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       appsBucket: 'dev-admobilize-matrix-apps'
     },
     rc: {
-      api: 'http://dev-demo.admobilize.com',
+      api: 'http://admobilize-api-production.herokuapp.com',
       mxss: 'http://rc-mxss.admobilize.com'
     },
     stage: {
