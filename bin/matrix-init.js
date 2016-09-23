@@ -67,6 +67,7 @@ Matrix.firebaseInit = function (cb) {
     Matrix.config.user.id,
     currentDevice,
     Matrix.config.user.token,
+    Matrix.environment.name,
     function (err) {
       var errorCode = Matrix.validate.firebaseError(err);
       if (errorCode != 0) {
