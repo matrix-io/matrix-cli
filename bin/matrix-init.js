@@ -26,6 +26,7 @@ Matrix.config = _.assign(Matrix.config, Matrix.helpers.getConfig());
 //Use this to validate for user and display messages accordingly
 Matrix.validate = require('./matrix-validate');
 
+// These are used to override if there is no environment set in config
 var options = {
   clientId: 'AdMobilizeAPIDev',
   clientSecret: 'AdMobilizeAPIDevSecret',
