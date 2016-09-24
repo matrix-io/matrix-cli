@@ -116,6 +116,30 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       return console.error(err.message.red);
     }
 
+    //TODO check version, get prompt    
+    var inAppstore = true; //appDetails.version not in appstore
+    
+    if (!inAppstore){
+      continue;
+    } else {
+      var Rx = require('rx');
+      var prompts = new Rx.Subject();
+      prompts.onNext({
+        type: 'confirm',
+        name: 'override',
+        message: 'Do you want to override version'.white + appDetails.version + '? Y/N'.white,
+        default: true
+      });
+      var newVersion = 1; //currentVersion + 1 
+      var prompts = ['Y to override version' + appDetails.version + ', N to deploy as version ' + newVersion]; 
+      require('inquirer').prompt(prompts).ui.process.subscribe(function (ans) {
+        if (ans.name === 'quick' && ans.answer === true) {
+          
+        }
+      });
+    } 
+
+    //ZIP    
     console.log(t('matrix.deploy.reading') + ' ', pwd);
     console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
 
