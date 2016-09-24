@@ -56,11 +56,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     var value = Matrix.pkgs[1];
 
     if (value && value.match(/sandbox|dev|stage|local|production|rc|hardcode/)) {
-      Matrix.config.environment = _.assign(environments[value], { name: value });
-      Matrix.helpers.saveConfig(function () {
-        console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
-        // TODO: set-env [value] sets a environment on the Matrix
-        //Matrix.validate.device(); //Make sure the user has logged in
+      Matrix.helpers.logout(function () { 
+        Matrix.config.environment = _.assign(environments[value], { name: value });
+        Matrix.helpers.saveConfig(function () {
+          console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
+          // TODO: set-env [value] sets a environment on the Matrix
+          //Matrix.validate.device(); //Make sure the user has logged in
+        });
       });
     } else {
       console.error(t('matrix.set.env.valid_environments') + ' = [ sandbox, production ]')
