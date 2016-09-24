@@ -164,13 +164,16 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function onEnd() {
     debug('Finished packaging ', appName);
-    Matrix.firebaseInit(function () {
+    Matrix.firebaseInit(function (err, deviceId) {
+
+      debug('firebase init done', deviceId);
 
           var url = Matrix.config.environment.api + '/' + uploadEndpoint
             + '?access_token=' + Matrix.config.user.token
             + '&appName=' + appName
             + '&version=' + appDetails.version + '.zip';
 
+            debug('get', url);
           request.get(url, function (error, response, body) { //Get the upload URL
             if (error) {
               return console.error("Error getting the upload URL: ", error);
@@ -190,7 +193,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               if (!body.hasOwnProperty('status')) {
                 body = JSON.parse(body);
               }
-              if (!body.error && body.hasOwnProperty('status') && body.status == 'OK' && body.hasOwnProperty('results') && body.results.hasOwnProperty('uploadurl')) {
+              if (!body.hasOwnProperty(error) && body.hasOwnProperty('status') &&
+              body.status == 'OK' && body.hasOwnProperty('results') &&
+              body.results.hasOwnProperty('uploadurl')) {
+
                 debug('Uploading to ', body.results.uploadurl)
                 var stream = fs.createReadStream(destinationFilePath).pipe(request.put(body.results.uploadurl))
                   .on('error', function (err) {
@@ -284,7 +290,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
                 });*/
               } else {
-                return console.error(t('matrix.deploy.app_install_failed').red);
+                return console.error(t('matrix.deploy.app_install_failed').red, body);
               }
             }
           });

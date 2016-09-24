@@ -35,7 +35,6 @@ var options = {
   appsBucket: process.env['MATRIX_APPS_BUCKET'] || 'dev-admobilize-matrix-apps'
 };
 
-
 //override defaults with config
 if ( _.has( Matrix.config.environment, 'name' ) ) {
   debug( 'Env: ', Matrix.config.environment.name );
@@ -43,14 +42,21 @@ if ( _.has( Matrix.config.environment, 'name' ) ) {
   options.mxssUrl = Matrix.config.environment.mxss;
   options.appsBucket = Matrix.config.environment.appsBucket;
 } else {
-  debug('No env set, using default');
+  debug('No env set, using rc default');
   Matrix.config.environment = {
+    name: process.env.NODE_ENV || 'rc',
     api: options.apiUrl,
     mxss: options.mxssUrl,
     appsBucket: options.appsBucket
   };
 }
 
+if ( Matrix.config.environment.name === 'rc' || Matrix.config.environment.name === 'production' ){
+  options.clientId = 'AdMobilizeClientID'
+  options.clientSecret = 'AdMobilizeClientSecret'
+}
+
+// strip out
 Matrix.options = options;
 
 Matrix.api.makeUrls( options.apiUrl, options.mxssUrl );
@@ -67,7 +73,7 @@ Matrix.firebaseInit = function (cb) {
     Matrix.config.user.id,
     currentDevice,
     Matrix.config.user.token,
-    Matrix.environment.name,
+    Matrix.config.environment.name,
     function (err) {
       var errorCode = Matrix.validate.firebaseError(err);
       if (errorCode != 0) {
