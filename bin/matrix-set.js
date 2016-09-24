@@ -34,7 +34,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     },
     rc: {
       api: 'http://admobilize-api-production.herokuapp.com',
-      mxss: 'http://rc-mxss.admobilize.com'
+      mxss: 'http://rc-mxss.admobilize.com',
+      appsBucket: 'admobilize-matrix-apps'
     },
     stage: {
       api: 'http://stage-api.admobilize.com',
@@ -56,7 +57,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     var value = Matrix.pkgs[1];
 
     if (value && value.match(/sandbox|dev|stage|local|production|rc|hardcode/)) {
-      Matrix.helpers.logout(function () { 
+      Matrix.helpers.logout(function () {
         Matrix.config.environment = _.assign(environments[value], { name: value });
         Matrix.helpers.saveConfig(function () {
           console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
