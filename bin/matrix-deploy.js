@@ -77,6 +77,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   console.log('Please specify your application requirements:'.yellow);
   Matrix.helpers.checkPolicy(initialPolicy, appName, function (err, policy) {
     if (err) return console.error('Invalid policy ', policy);
+
+    debug('Policy:>', policy)
     policyObject = policy;
     // run JSHINT on the application
     JSHINT(appFile);
