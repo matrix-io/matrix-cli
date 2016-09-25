@@ -241,10 +241,22 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
                       //Listen for the app creation in appStore
                       Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
-
-                              debug('App in store > Triggering install for: ', app);
+                        debug('app created>', app);
+                        if (waitForRegistrationToFinish) {
+                          var deploymentTimer = setInterval(function () {
+                            if (deployFinished) {
+                              clearTimeout(deploymentTimer);
+                              debug('App deployed > Triggering install for: ', app);
                               triggerInstall(app);
+                            } else {
+                              debug('Deploy not finished')
+                            }
+                          }, 400);
 
+                        } else {
+                          debug('Not waiting, triggering install');
+                          triggerInstall(app);
+                        }
                       });
 
                       //Send the app creation request
