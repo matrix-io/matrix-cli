@@ -115,77 +115,94 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     } catch (err) {
       return console.error(err.message.red);
     }
-
-    //TODO check version, get prompt    
-    var inAppstore = true; //appDetails.version not in appstore
+    var newVersion = Matrix.helpers.patchVersion(appDetails.version);
     
-    if (!inAppstore){
-      continue;
-    } else {
-      var Rx = require('rx');
-      var prompts = new Rx.Subject();
-      prompts.onNext({
-        type: 'confirm',
-        name: 'override',
-        message: 'Do you want to override version'.white + appDetails.version + '? Y/N'.white,
-        default: true
-      });
-      var newVersion = 1; //currentVersion + 1 
-      var prompts = ['Y to override version' + appDetails.version + ', N to deploy as version ' + newVersion]; 
-      require('inquirer').prompt(prompts).ui.process.subscribe(function (ans) {
-        if (ans.name === 'quick' && ans.answer === true) {
-          
-        }
-      });
-    } 
+    
+    var Rx = require('rx');
+    var promptHandler = new Rx.Subject();
+    
+    require('inquirer').prompt(promptHandler).ui.process.subscribe(function (answer) {
+      if (answer.name === 'current' && answer.answer === true) {
+        promptHandler.onCompleted();
+      }
 
-    //ZIP    
-    console.log(t('matrix.deploy.reading') + ' ', pwd);
-    console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
-
-    var destinationZip = fs.createWriteStream(destinationFilePath);
-
-    destinationZip.on('open', function () {
-      debug('deploy zip start')
-    });
-
-    destinationZip.on('error', function (err) {
-      debug('deploy zip err', err)
-    });
-
-    destinationZip.on('finish', function () {
-      debug('deploy zip finish');
-      onEnd();
-    });
-
-    // zip up the files in the app directory
-    var archiver = require('archiver');
-    var zip = archiver.create('zip', {});
-
-    // zip.bulk([{
-    //   expand: true,
-    //   cwd: pwd
-    // }, ]);
-
-
-    var files = fs.readdirSync(pwd);
-    _.each(files, function (file) {
-      debug('Adding to zip', file)
-      //TODO need to properly validate filenames
-      if (_.isEmpty(file) || _.isUndefined(file) || file == ':') {
-        console.warn('Skipping invalid file: '.red, file);
-      } else {
-        zip.append(fs.createReadStream(pwd + file), {
-          name: file
+      if (answer.name === 'version') {
+        //TODO validate version input
+        appDetails.version = answer.answer;
+        packageContent.version = appDetails.version; 
+        Matrix.helpers.updateFile(packageContent, pwd + '/package.json', function (err) { 
+          if (err) {
+            console.log(1);
+            process.exit(1);
+          }
+          promptHandler.onCompleted();
         });
       }
+
+    }, function (e) { console.error(e) }, function () {
+      //ZIP
+      console.log(t('matrix.deploy.reading') + ' ', pwd);
+      console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
+
+      var destinationZip = fs.createWriteStream(destinationFilePath);
+
+      destinationZip.on('open', function () {
+        debug('deploy zip start')
+      });
+
+      destinationZip.on('error', function (err) {
+        debug('deploy zip err', err)
+      });
+
+      destinationZip.on('finish', function () {
+        debug('deploy zip finish');
+        onEnd();
+      });
+
+      // zip up the files in the app directory
+      var archiver = require('archiver');
+      var zip = archiver.create('zip', {});
+      var files = fs.readdirSync(pwd);
+
+      _.each(files, function (file) {
+        debug('Adding to zip', file)
+        //TODO need to properly validate filenames
+        if (_.isEmpty(file) || _.isUndefined(file) || file == ':') {
+          console.warn('Skipping invalid file: '.red, file);
+        } else {
+          zip.append(fs.createReadStream(pwd + file), {
+            name: file
+          });
+        }
+      });
+
+      zip.on('error', function (err) {
+        console.error(t('matrix.deploy.error') + ':', err)
+      });
+      zip.finalize();
+      zip.pipe(destinationZip); // send zip to the file
+    });
+    
+    //Confirm deployment to current version
+    promptHandler.onNext({
+      type: 'confirm',
+      name: 'current',
+      message: 'Deploy version '.white + appDetails.version.yellow + '?'.white,
+      default: true
     });
 
-    zip.on('error', function (err) {
-      console.error(t('matrix.deploy.error') + ':', err)
+    //Ask for new version to deploy
+    promptHandler.onNext({
+      type: 'input',
+      name: 'version',
+      message: 'Select new version to use:'.white,
+      default: newVersion,
+      when: function (answers) {
+        console.log(answers);
+        return !answers.current;
+      }
     });
-    zip.finalize();
-    zip.pipe(destinationZip); // send zip to the file
+    
   });
 
   function onEnd() {
@@ -240,7 +257,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                         },
                         'version': appDetails.version,
                         'config': configObject,
-                        'policy': policyObject
+                        'policy': policyObject,
+                        'override': true
                       };
                       debug('DOWNLOAD URL: ' + downloadURL);
                       debug('The data sent for ' + appName + ' ( ' + appDetails.version + ' ) is: ', appData)
@@ -255,7 +273,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           policy: policyObject,
                           name: appName,
                           id: app.key,
-                          versionId: app.data.meta.currentVersion
+                          versionId: app.data.meta.currentVersion,
+                          skipPolicyCheck: true
                         }
 
                         Matrix.helpers.installApp(options, function () {
@@ -266,8 +285,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       //Listen for the app creation in appStore
                       Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
 
-                              debug('App in store > Triggering install for: ', app);
-                              triggerInstall(app);
+                        debug('App in store > Triggering install for: ', app);
+                        triggerInstall(app);
 
                       });
 
@@ -328,5 +347,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log('\n')
     process.exit(1);
   }
-
+  
 });
