@@ -58,7 +58,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var configFile = fs.readFileSync(pwd + detectFile).toString();
   var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png';
   if (configFile.hasOwnProperty('icon')){
-    //Upload icon?
+    //TODO Upload icon?
   }
 
   var configObject = {};
@@ -72,50 +72,70 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   //TODO include actual config
   debug('included config', config);
 
-  var initialPolicy = Matrix.helpers.configHelper.config.parsePolicyFromConfig(config);
-
-  console.log('Please specify your application requirements:'.yellow);
-  Matrix.helpers.checkPolicy(initialPolicy, appName, function (err, policy) {
-    if (err) return console.error('Invalid policy ', policy);
-
-    debug('Policy:>', policy)
-    policyObject = policy;
-    // run JSHINT on the application
-    JSHINT(appFile);
-
-    if (JSHINT.errors.length > 0) {
-      console.log(t('matrix.deploy.cancel_deploy').red)
-      _.each(JSHINT.errors, function (e) {
-        if (_.isNull(e)) {
-          return;
-        }
-        var a = [];
-        if (e.hasOwnProperty('evidence')) {
-          a[e.character - 1] = '^';
-          // regular error
-        }
-        e.evidence = e.evidence || '';
-        console.log('\n' + '(error)'.red, e.raw, '[app.js]', e.line + ':' + e.character, '\n' + e.evidence.grey, '\n' + a.join(' ').grey);
-      })
-      return;
-    }
-
-    var packageContent;
-    try {
-      packageContent = require(pwd + 'package.json');
-      appDetails = {
-        name: appName,
-        version: packageContent.version || '1.0.0',
-        description: packageContent.description || '',
-        categories: packageContent.categories || ['Development'],
-        shortname : packageContent.shortname || appName.toLowerCase().replace(" ", "_"),
-        keywords : packageContent.keywords || ['development']
+  var policy = Matrix.helpers.configHelper.config.parsePolicyFromConfig(config);
+  var policyObject = Matrix.helpers.allowAllPolicy(policy);
+  debug('Policy:>', policyObject);
+  
+  // run JSHINT on the application
+  JSHINT(appFile);
+  if (JSHINT.errors.length > 0) {
+    console.log(t('matrix.deploy.cancel_deploy').red)
+    _.each(JSHINT.errors, function (e) {
+      if (_.isNull(e)) {
+        return;
       }
-      debug('Package.json data extracted: ', appDetails);
-    } catch (err) {
-      return console.error(err.message.red);
+      var a = [];
+      if (e.hasOwnProperty('evidence')) {
+        a[e.character - 1] = '^';
+        // regular error
+      }
+      e.evidence = e.evidence || '';
+      console.log('\n' + '(error)'.red, e.raw, '[app.js]', e.line + ':' + e.character, '\n' + e.evidence.grey, '\n' + a.join(' ').grey);
+    })
+    return;
+  }
+
+  var packageContent;
+  try {
+    packageContent = require(pwd + 'package.json');
+    debug('App package.json:' + JSON.stringify(packageContent));
+    appDetails = {
+      name: appName,
+      version: packageContent.version || '1.0.0',
+      description: packageContent.description || '',
+      categories: packageContent.categories || ['Development'],
+      shortname : packageContent.shortname || appName.toLowerCase().replace(" ", "_"),
+      keywords : packageContent.keywords || ['development']
+    }
+    debug('Package.json data extracted: ', appDetails);
+  } catch (err) {
+    return console.error(err.message.red);
+  }
+  debug('Using app details: ' + JSON.stringify(appDetails));
+  var newVersion = Matrix.helpers.patchVersion(appDetails.version);
+  
+  var Rx = require('rx');
+  var promptHandler = new Rx.Subject();
+  
+  require('inquirer').prompt(promptHandler).ui.process.subscribe(function (answer) {
+    if (answer.name === 'current' && answer.answer === true) {
+      promptHandler.onCompleted();
     }
 
+    if (answer.name === 'version') {
+      //TODO validate version input
+      appDetails.version = answer.answer;
+      packageContent.version = appDetails.version; 
+      Matrix.helpers.updateFile(packageContent, pwd + '/package.json', function (err) { 
+        if (err) {
+          process.exit(1);
+        }
+        promptHandler.onCompleted();
+      });
+    }
+
+  }, function (e) { console.error(e) }, function () {
+    //ZIP
     console.log(t('matrix.deploy.reading') + ' ', pwd);
     console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
 
@@ -137,14 +157,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     // zip up the files in the app directory
     var archiver = require('archiver');
     var zip = archiver.create('zip', {});
-
-    // zip.bulk([{
-    //   expand: true,
-    //   cwd: pwd
-    // }, ]);
-
-
     var files = fs.readdirSync(pwd);
+
     _.each(files, function (file) {
       debug('Adding to zip', file)
       //TODO need to properly validate filenames
@@ -162,6 +176,32 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
     zip.finalize();
     zip.pipe(destinationZip); // send zip to the file
+  });
+  
+  //Confirm deployment to current version
+  promptHandler.onNext({
+    type: 'confirm',
+    name: 'current',
+    message: 'Deploy version '.white + appDetails.version.yellow + '?'.white,
+    default: true
+  });
+
+  //Ask for new version to deploy
+  promptHandler.onNext({
+    type: 'input',
+    name: 'version',
+    message: 'Select new version to use:'.white,
+    default: newVersion,
+    validate: function (versionInput) {
+      if (versionInput.match('^(?:(\\d+)\.)(?:(\\d+)\.)(\\d+)$')) {
+        return true;
+      } else {
+        return versionInput + ' is not a valid version';
+      }
+    },
+    when: function (answers) {
+      return !answers.current;
+    }
   });
 
   function onEnd() {
@@ -216,7 +256,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                         },
                         'version': appDetails.version,
                         'config': configObject,
-                        'policy': policyObject
+                        'policy': policyObject,
+                        'override': true
                       };
                       debug('DOWNLOAD URL: ' + downloadURL);
                       debug('The data sent for ' + appName + ' ( ' + appDetails.version + ' ) is: ', appData)
@@ -231,7 +272,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           policy: policyObject,
                           name: appName,
                           id: app.key,
-                          versionId: app.data.meta.currentVersion
+                          versionId: app.data.meta.currentVersion,
+                          skipPolicyCheck: true
                         }
 
                         Matrix.helpers.installApp(options, function () {
@@ -316,5 +358,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log('\n')
     process.exit(1);
   }
-
+  
 });

@@ -2,7 +2,7 @@
 
 require('./matrix-init');
 var debug = debugLog('install');
-var installTimer;
+
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
