@@ -58,7 +58,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var configFile = fs.readFileSync(pwd + detectFile).toString();
   var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png';
   if (configFile.hasOwnProperty('icon')){
-    //Upload icon?
+    //TODO Upload icon?
   }
 
   var configObject = {};
@@ -72,137 +72,127 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   //TODO include actual config
   debug('included config', config);
 
-  var initialPolicy = Matrix.helpers.configHelper.config.parsePolicyFromConfig(config);
-
-  console.log('Please specify your application requirements:'.yellow);
-  Matrix.helpers.checkPolicy(initialPolicy, appName, function (err, policy) {
-    if (err) return console.error('Invalid policy ', policy);
-
-    debug('Policy:>', policy)
-    policyObject = policy;
-    // run JSHINT on the application
-    JSHINT(appFile);
-
-    if (JSHINT.errors.length > 0) {
-      console.log(t('matrix.deploy.cancel_deploy').red)
-      _.each(JSHINT.errors, function (e) {
-        if (_.isNull(e)) {
-          return;
-        }
-        var a = [];
-        if (e.hasOwnProperty('evidence')) {
-          a[e.character - 1] = '^';
-          // regular error
-        }
-        e.evidence = e.evidence || '';
-        console.log('\n' + '(error)'.red, e.raw, '[app.js]', e.line + ':' + e.character, '\n' + e.evidence.grey, '\n' + a.join(' ').grey);
-      })
-      return;
-    }
-
-    var packageContent;
-    try {
-      packageContent = require(pwd + 'package.json');
-      appDetails = {
-        name: appName,
-        version: packageContent.version || '1.0.0',
-        description: packageContent.description || '',
-        categories: packageContent.categories || ['Development'],
-        shortname : packageContent.shortname || appName.toLowerCase().replace(" ", "_"),
-        keywords : packageContent.keywords || ['development']
+  var policy = Matrix.helpers.configHelper.config.parsePolicyFromConfig(config);
+  var policyObject = Matrix.helpers.allowAllPolicy(policy);
+  debug('Policy:>', policyObject);
+  
+  // run JSHINT on the application
+  JSHINT(appFile);
+  if (JSHINT.errors.length > 0) {
+    console.log(t('matrix.deploy.cancel_deploy').red)
+    _.each(JSHINT.errors, function (e) {
+      if (_.isNull(e)) {
+        return;
       }
-      debug('Package.json data extracted: ', appDetails);
-    } catch (err) {
-      return console.error(err.message.red);
+      var a = [];
+      if (e.hasOwnProperty('evidence')) {
+        a[e.character - 1] = '^';
+        // regular error
+      }
+      e.evidence = e.evidence || '';
+      console.log('\n' + '(error)'.red, e.raw, '[app.js]', e.line + ':' + e.character, '\n' + e.evidence.grey, '\n' + a.join(' ').grey);
+    })
+    return;
+  }
+
+  var packageContent;
+  try {
+    packageContent = require(pwd + 'package.json');
+    appDetails = {
+      name: appName,
+      version: packageContent.version || '1.0.0',
+      description: packageContent.description || '',
+      categories: packageContent.categories || ['Development'],
+      shortname : packageContent.shortname || appName.toLowerCase().replace(" ", "_"),
+      keywords : packageContent.keywords || ['development']
     }
-    var newVersion = Matrix.helpers.patchVersion(appDetails.version);
-    
-    
-    var Rx = require('rx');
-    var promptHandler = new Rx.Subject();
-    
-    require('inquirer').prompt(promptHandler).ui.process.subscribe(function (answer) {
-      if (answer.name === 'current' && answer.answer === true) {
+    debug('Package.json data extracted: ', appDetails);
+  } catch (err) {
+    return console.error(err.message.red);
+  }
+  var newVersion = Matrix.helpers.patchVersion(appDetails.version);
+  
+  var Rx = require('rx');
+  var promptHandler = new Rx.Subject();
+  
+  require('inquirer').prompt(promptHandler).ui.process.subscribe(function (answer) {
+    if (answer.name === 'current' && answer.answer === true) {
+      promptHandler.onCompleted();
+    }
+
+    if (answer.name === 'version') {
+      //TODO validate version input
+      appDetails.version = answer.answer;
+      packageContent.version = appDetails.version; 
+      Matrix.helpers.updateFile(packageContent, pwd + '/package.json', function (err) { 
+        if (err) {
+          process.exit(1);
+        }
         promptHandler.onCompleted();
-      }
+      });
+    }
 
-      if (answer.name === 'version') {
-        //TODO validate version input
-        appDetails.version = answer.answer;
-        packageContent.version = appDetails.version; 
-        Matrix.helpers.updateFile(packageContent, pwd + '/package.json', function (err) { 
-          if (err) {
-            console.log(1);
-            process.exit(1);
-          }
-          promptHandler.onCompleted();
+  }, function (e) { console.error(e) }, function () {
+    //ZIP
+    console.log(t('matrix.deploy.reading') + ' ', pwd);
+    console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
+
+    var destinationZip = fs.createWriteStream(destinationFilePath);
+
+    destinationZip.on('open', function () {
+      debug('deploy zip start')
+    });
+
+    destinationZip.on('error', function (err) {
+      debug('deploy zip err', err)
+    });
+
+    destinationZip.on('finish', function () {
+      debug('deploy zip finish');
+      onEnd();
+    });
+
+    // zip up the files in the app directory
+    var archiver = require('archiver');
+    var zip = archiver.create('zip', {});
+    var files = fs.readdirSync(pwd);
+
+    _.each(files, function (file) {
+      debug('Adding to zip', file)
+      //TODO need to properly validate filenames
+      if (_.isEmpty(file) || _.isUndefined(file) || file == ':') {
+        console.warn('Skipping invalid file: '.red, file);
+      } else {
+        zip.append(fs.createReadStream(pwd + file), {
+          name: file
         });
       }
-
-    }, function (e) { console.error(e) }, function () {
-      //ZIP
-      console.log(t('matrix.deploy.reading') + ' ', pwd);
-      console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
-
-      var destinationZip = fs.createWriteStream(destinationFilePath);
-
-      destinationZip.on('open', function () {
-        debug('deploy zip start')
-      });
-
-      destinationZip.on('error', function (err) {
-        debug('deploy zip err', err)
-      });
-
-      destinationZip.on('finish', function () {
-        debug('deploy zip finish');
-        onEnd();
-      });
-
-      // zip up the files in the app directory
-      var archiver = require('archiver');
-      var zip = archiver.create('zip', {});
-      var files = fs.readdirSync(pwd);
-
-      _.each(files, function (file) {
-        debug('Adding to zip', file)
-        //TODO need to properly validate filenames
-        if (_.isEmpty(file) || _.isUndefined(file) || file == ':') {
-          console.warn('Skipping invalid file: '.red, file);
-        } else {
-          zip.append(fs.createReadStream(pwd + file), {
-            name: file
-          });
-        }
-      });
-
-      zip.on('error', function (err) {
-        console.error(t('matrix.deploy.error') + ':', err)
-      });
-      zip.finalize();
-      zip.pipe(destinationZip); // send zip to the file
-    });
-    
-    //Confirm deployment to current version
-    promptHandler.onNext({
-      type: 'confirm',
-      name: 'current',
-      message: 'Deploy version '.white + appDetails.version.yellow + '?'.white,
-      default: true
     });
 
-    //Ask for new version to deploy
-    promptHandler.onNext({
-      type: 'input',
-      name: 'version',
-      message: 'Select new version to use:'.white,
-      default: newVersion,
-      when: function (answers) {
-        console.log(answers);
-        return !answers.current;
-      }
+    zip.on('error', function (err) {
+      console.error(t('matrix.deploy.error') + ':', err)
     });
-    
+    zip.finalize();
+    zip.pipe(destinationZip); // send zip to the file
+  });
+  
+  //Confirm deployment to current version
+  promptHandler.onNext({
+    type: 'confirm',
+    name: 'current',
+    message: 'Deploy version '.white + appDetails.version.yellow + '?'.white,
+    default: true
+  });
+
+  //Ask for new version to deploy
+  promptHandler.onNext({
+    type: 'input',
+    name: 'version',
+    message: 'Select new version to use:'.white,
+    default: newVersion,
+    when: function (answers) {
+      return !answers.current;
+    }
   });
 
   function onEnd() {
