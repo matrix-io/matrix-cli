@@ -98,6 +98,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var packageContent;
   try {
     packageContent = require(pwd + 'package.json');
+    debug('App package.json:' + JSON.stringify(packageContent));
     appDetails = {
       name: appName,
       version: packageContent.version || '1.0.0',
@@ -110,6 +111,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   } catch (err) {
     return console.error(err.message.red);
   }
+  debug('Using app details: ' + JSON.stringify(appDetails));
   var newVersion = Matrix.helpers.patchVersion(appDetails.version);
   
   var Rx = require('rx');
@@ -190,6 +192,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     name: 'version',
     message: 'Select new version to use:'.white,
     default: newVersion,
+    validate: function (versionInput) {
+      if (versionInput.match('^(?:(\\d+)\.)(?:(\\d+)\.)(\\d+)$')) {
+        return true;
+      } else {
+        return versionInput + ' is not a valid version';
+      }
+    },
     when: function (answers) {
       return !answers.current;
     }
