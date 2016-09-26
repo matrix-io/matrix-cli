@@ -263,6 +263,7 @@ en:
         device_id: Device ID
         name: Name
         ok: ok
+        description: Description
         last_online: Last Online
       groups:
         name: Name

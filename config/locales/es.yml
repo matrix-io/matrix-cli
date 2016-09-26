@@ -33,7 +33,7 @@ es:
       no_device: No se ha selecionado un dispositivo
       select_device_id: selecciona el id de un dispositivo'
     #SETUP:
-    login: 
+    login:
       already_login_warning: 'Ya hay una cuenta registrada' #
       user_auth_error: 'Error en la autenticación'
       login_success: 'Sesión iniciada correctamente'
@@ -47,7 +47,7 @@ es:
       invalid_token: 'Tu token es invalido'
       try: 'Intenta'
       command_help: 'establece como dispositivo activo el dispositivo con id'
-    set: 
+    set:
       help_device: 'configurar el ambiente del dispositivo'
       help_config: 'configurar las variables de aplicacion'
       help_locale: 'establecer la localización actual de cli'
@@ -69,33 +69,33 @@ es:
       command_help_sim: matrix sim #
       please: 'Por favor'
       before_using: 'antes de que intente utilizar el simulador'
-      init: 
+      init:
         specify_data_for_init: Por favor ingrese la información para este dispositivo virtual #
         warning_sim_init: please use ´matrix sim init´ #
         device_already_initialized: Ya se inicio un dispositivo virtual
         target_device: Referencia a este dispositivo
         device_is_already_used: Ya esta en uso
         creating_device: Creando
-        error_creating_device: Error al crear 
+        error_creating_device: Error al crear
         invalid_session: Sesión invalida
         please: Por favor
-        and: 'y' 
+        and: 'y'
         register_error: Error de registro
-        success: exito 
+        success: exito
         to_target_device: Referencia a este dispositivo
-      start:  
+      start:
         before_message: Primero por favor
         device: Dispositivo
-        not_a_virtual_device: No es un MatrixOS virtual. Por favor 
+        not_a_virtual_device: No es un MatrixOS virtual. Por favor
         and: 'y'
         custom_image_detected: Simulador de imagen personalizada detecta
-        debug_on: Modo de depuracion 
+        debug_on: Modo de depuracion
         error: ERROR
         please: Por favor
         then: Entonces
         if_different_name: "Si usted tiene un nombre de maquina diferente, use"
         starting_sim: MatrixOS Simulador iniciado
-        stop_with: Detenga con  Ctrl + C 
+        stop_with: Detenga con  Ctrl + C
       restore:
         downloading_image: Descargando ultima imagen de MatrixOS
       save:
@@ -106,19 +106,19 @@ es:
         sim_stopped: Simulador matrix detenido
       docker:
         docker_not_found: Docker no encontrado
-        install_from: Por favor instale docker de 
+        install_from: Por favor instale docker de
         then: Entonces
       help_upgrade: Actualizando la imagen de su simulador
       help_restore: Reinciando su simulador
       help_init: Iniciar su simulador
-      help_start:  Ambiente Virtual MatrixOS 
+      help_start:  Ambiente Virtual MatrixOS
       help_save: "Estado guardado de MatrixOS, use despues deploy / install"
       help_clear: Eliminar la simulacion de datos local
     list:
-      list_devices: Lista de dispositivos # 
-      list_groups: Lista de grupos  # 
-      list_apps: Lista de aplicaciones # 
-      list_all: Lista de todo #  
+      list_devices: Lista de dispositivos #
+      list_groups: Lista de grupos  #
+      list_apps: Lista de aplicaciones #
+      list_all: Lista de todo #
       app_list_error: 'Error en la lista de apps'
       no_results: 'No se encontraron resultados'
       help_devices: 'mostrar dispositivos disponibles'
@@ -126,10 +126,10 @@ es:
       help_apps: 'mostrar aplicaciones en el dispositivo actual'
       help_all: 'mostrar todos los dispositivos con aplicaciones instaladas'
     reboot:
-      device_offline: Dispositivo no esta online #  
+      device_offline: Dispositivo no esta online # 
       rebooting: 'Reinciando dispositivo'
       rebooted: 'Dispositivo reinciando' #
-      
+
     #APPS:
     search:
       help: busca aplicaciones de MATRIX
@@ -146,7 +146,7 @@ es:
       app_not_found: La aplicación no existe #
       sensor_not_found: El sensor no existe #
     config:
-      config_usage_command: 'advertencias' # 
+      config_usage_command: 'advertencias' #
       device_config: 'Configuración para el dispositivo'
       show_config_app1: 'configuration the apliccation' #
       help: traer las configuraciones del dispositivo
@@ -155,15 +155,15 @@ es:
       help_app_key_value: configurar el valor y la llave a la aplicación
       show_config_app: 'configuracion de aplicacion ' #
       specified_application_does_not_exist: 'la aplicacion especificada no existe' #
-      specify_key: Especifique una llave  # 
-      key_doesnt_exist: La llave especificada no existe  # 
+      specify_key: Especifique una llave  #
+      key_doesnt_exist: La llave especificada no existe  #
       key_value: 'Valor:' #
     uninstall:
       uninstalled: 'Se desinstaló'
       application_unspecified: 'especifique [ aplicacion ] <Nombre>' #
       app_undefined: 'esta aplicacion no existe' #
       device_offline: Dispositivo desconectado, Por favor reconecte el dispositivo  #
-    update: 
+    update:
       upgrading_to: 'Actualizando a'
       latest_version: 'versión mas reciente'
       of: 'de'
@@ -173,7 +173,7 @@ es:
       app_undefined: 'La aplicación no existe' #
       app_update_successfully: 'Aplicación actualizada a la versión mas reciente' #
       version_undefined: 'Versión de aplicación no soportada' #
-      version_doesnt_exist: Esta version no existe # 
+      version_doesnt_exist: Esta version no existe #
       version_update_successfully: 'Aplicación actualizada con éxito a' #
       error_updating: Error actualizando #
     start:
@@ -242,6 +242,7 @@ es:
         device_id: ID de dispositivo
         name: Nombre
         ok: ok
+        description: Descripción
         last_online: Última sesión
       groups:
         name: Nombre

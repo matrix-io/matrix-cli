@@ -12,7 +12,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   Matrix.validate.user(); //Make sure the user has logged in
   var target = Matrix.pkgs[0];
-  
+
   Matrix.firebaseInit(function () {
     if (target.match(/all/)) {
       Matrix.firebase.user.getAllApps(function (err, resp) {
@@ -53,12 +53,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               }
             } else {
               if ( !_.isEmpty(device) ) {
-                //TODO temporary defaults until device creation includes this 
+                //TODO temporary defaults until device creation includes this
                 if (!device.hasOwnProperty('runtime')) device.runtime = {online: false, lastConnectionEvent: 0};
                 if (!device.hasOwnProperty('config')) device.config = {init: []};
                 deviceMap[deviceId] = {
                   name: device.meta.name,
                   online: device.runtime.online,
+                  description: device.meta.description,
                   lastSeen: device.runtime.lastConnectionEvent,
                   defaultApps : device.config.init
                 }
