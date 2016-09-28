@@ -58,7 +58,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 error: function (err) {
                   if (err.hasOwnProperty('state') && err.state == 'device-provisioning-in-progress') {
                     debug('Provisioning device step... ignore this')
-                    //Provisioning step, ignore this
                   } else {
                     console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
                     process.exit();
