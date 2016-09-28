@@ -14,6 +14,14 @@ function device() {
   } 
 }
 
+function isCurrentDevice(deviceId) {
+  return (!_.isEmpty(Matrix.config.device) && Matrix.config.device.identifier == deviceId);
+}
+
+function version() {
+  
+}
+
 // 1 Invalid token
 // 2 Unlisted error
 // 3 Unknown error
@@ -42,5 +50,6 @@ function firebaseError(err) {
 module.exports = {
   device: device,
   user: user,
+  isCurrentDevice: isCurrentDevice,
   firebaseError: firebaseError
 };
