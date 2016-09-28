@@ -14,7 +14,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.validate.user(); //Make sure the user has logged in
       console.log(t('matrix.register.creating_device'))
 
-
       // do device Registration
       var deviceSchema = {
         properties: {
@@ -57,8 +56,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
               var events = {
                 error: function (err) {
-                  console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
-                  // process.exit();
+                  if (err.hasOwnProperty('state') && err.state == 'device-provisioning-in-progress') {
+                    debug('Provisioning device step... ignore this')
+                  } else {
+                    console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
+                    process.exit();
+                  }
                 },
                 finished: function () {
                   console.log('Device registered succesfully');
