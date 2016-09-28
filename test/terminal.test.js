@@ -4,7 +4,7 @@ var exec = require('child_process').exec;
 var colors = require('colors');
 var should = require('should');
 var sinon = require('sinon');
-var Table = require('cli-table');
+var Table = require('cli-table2');
 
 
 describe('Matrix CLI Commands', function () {
