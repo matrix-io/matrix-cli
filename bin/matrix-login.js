@@ -25,9 +25,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   prompt.message = 'Login -- ';
   prompt.start();
   prompt.get(schema, function (err, result) {
-    Matrix.startLoader();
+    Matrix.loader.start();
     if (err) {
-      Matrix.stopLoader();
+      Matrix.loader.stop();
       if (err.toString().indexOf('canceled') > 0) {
         console.log('');
         process.exit();
@@ -55,7 +55,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       debug('User', Matrix.config.user, out);
       Matrix.api.auth.user(Matrix.config.user, function (err, state) {
         if (err) {
-          Matrix.stopLoader();
+          Matrix.loader.stop();
           console.error('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
           process.exit(1);
         }
@@ -78,7 +78,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             Matrix.config.appMap = resp;
             Matrix.helpers.saveConfig(function(){
               /** save the creds if it's good **/
-              Matrix.stopLoader();
+              Matrix.loader.stop();
               console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
               process.exit();
             })

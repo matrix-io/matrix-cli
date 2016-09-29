@@ -24,7 +24,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
       process.exit();
     }
-    Matrix.startLoader();
+    Matrix.loader.start();
     // make sure device name, device id and userId are available
     var deviceId = 'sim-' + _.times(24, function () {
       return Math.round(Math.random() * 16).toString(16)
@@ -34,7 +34,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     prompt.delimiter = '';
     prompt.message = [t('matrix.sim.init.specify_data_for_init') + '\n'];
-    Matrix.stopLoader();
+    Matrix.loader.stop();
     prompt.start();
     prompt.get(['name', 'description'], function (err, inputs) {
       if (err) {
@@ -57,7 +57,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       });
 
       console.log(t('matrix.sim.init.creating_device') + ' ', inputs, '[' + deviceId + ']')
-      Matrix.startLoader();
+      Matrix.loader.start();
       var deviceObj = {
         type: 'matrix',
         osVersion: 'sim',
@@ -72,12 +72,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
         var events = {
           error: function (err) {
-            Matrix.stopLoader();
+            Matrix.loader.stop();
             console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
             process.exit();
           },
           finished: function () {
-            Matrix.stopLoader();
+            Matrix.loader.stop();
             console.log('Device registered succesfuly');
 
             Matrix.config.sim = {
@@ -93,14 +93,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             });
           },
           start: function () {
-            Matrix.stopLoader();
+            Matrix.loader.stop();
             console.log('Device registration request formed...');
-            Matrix.startLoader();
+            Matrix.loader.start();
           },
           progress: function () {
-            Matrix.stopLoader();
+            Matrix.loader.stop();
             console.log('Registering device...');
-            Matrix.startLoader();
+            Matrix.loader.start();
           }
         };
 

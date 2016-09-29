@@ -64,10 +64,9 @@ Matrix.api.makeUrls( options.apiUrl, options.mxssUrl );
 // to make user / device / etc available to sdk
 Matrix.api.setConfig( Matrix.config );
 
-// debug(Matrix.config);
-
-Matrix.startLoader = Matrix.helpers.startLoader;
-Matrix.stopLoader = Matrix.helpers.stopLoader;
+//Loader, currently using the default braille spinner
+Matrix.loader = require('../lib/loader');
+Matrix.loader.type('braille'); //Types: braille, matrix
 
 Matrix.firebase = require('matrix-firebase');
 Matrix.firebaseInit = function (cb) {
@@ -82,7 +81,7 @@ Matrix.firebaseInit = function (cb) {
       if (errorCode != 0) {
         if (errorCode == 1) {
           //TODO try to refresh token before failing
-          Matrix.stopLoader();
+          Matrix.loader.stop();
           console.log('Invalid user, log in again'.yellow);
           Matrix.helpers.removeConfig();
         } else if (errorCode == 4) {

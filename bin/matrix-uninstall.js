@@ -14,7 +14,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   Matrix.validate.device(); //Make sure the user has logged in
 
   console.log('____ | ' + t('matrix.uninstall.uninstalling') + ' ', target.green, ' ==> '.yellow, Matrix.config.device.identifier);
-  Matrix.startLoader();
+  Matrix.loader.start();
   Matrix.firebaseInit(function () {
     var options = {
       name: target,
@@ -23,7 +23,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     //If the device has the app    
     Matrix.helpers.lookupAppId(target, function (err, appId) {
-      Matrix.stopLoader();
+      Matrix.loader.stop();
       if (err) {
         console.log('Error: '.red, err.message);
         process.exit();
@@ -35,10 +35,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
         console.log("\nApp found in device... ")
         var progress;
-        Matrix.startLoader();
+        Matrix.loader.start();
         Matrix.firebase.app.uninstall(Matrix.config.user.token, Matrix.config.device.identifier, appId, {
           error: function (err) {
-            Matrix.stopLoader();
+            Matrix.loader.stop();
             if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) {
               console.error('\nUninstall Error'.red, err.details.error);
             } else {
@@ -47,20 +47,20 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             process.exit(1);
           },
           finished: function () {
-            Matrix.stopLoader();
+            Matrix.loader.stop();
             console.log('Uninstall sent to device...'.green);
             process.exit(0);
           },
           start: _.once(function () {
-            Matrix.stopLoader();
+            Matrix.loader.stop();
             console.log('Uninstall request created');
-            Matrix.startLoader();
+            Matrix.loader.start();
           }),
           progress: function (msg) {
             if (_.isUndefined(msg)) msg = ''; else msg = ' ' + msg + ' ';
             if (!progress) {
               progress = true;
-              Matrix.stopLoader();
+              Matrix.loader.stop();
               process.stdout.write('Uninstall Progress:' + msg) 
             } else {                      
               process.stdout.write('.' + msg);

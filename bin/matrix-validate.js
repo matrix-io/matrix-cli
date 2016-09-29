@@ -1,7 +1,7 @@
 //Check if a user is logged in
 function user() { 
   if (_.isEmpty(Matrix.config.user)) {
-    Matrix.stopLoader();
+    Matrix.loader.stop();
     console.error(t('matrix.please_login').yellow);
     process.exit();
   } 
@@ -10,7 +10,7 @@ function user() {
 //Check if a device is selected
 function device() {
   if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
-    Matrix.stopLoader();
+    Matrix.loader.stop();
     console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey,' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     process.exit();
   } 

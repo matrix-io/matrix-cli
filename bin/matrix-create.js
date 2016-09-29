@@ -8,21 +8,21 @@ var tar = require('tar');
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
   if (!Matrix.pkgs.length || showTheHelp) {
-    Matrix.stopLoader();
+    Matrix.loader.stop();
     return displayHelp();
   }
-  Matrix.startLoader();
+  Matrix.loader.start();
   var app = Matrix.pkgs[0];
 
   function onError(err) {
-    Matrix.stopLoader();
+    Matrix.loader.stop();
     console.error(t('matrix.create.error_creating') + ':', err);
     process.exit(1);
   }
 
 
   function onEnd() {
-    Matrix.stopLoader();
+    Matrix.loader.stop();
     console.log(t('matrix.create.new_folder') + ':>'.grey, app.green + '/'.grey);
     console.log('         app.js'.grey, '-', t('matrix.create.description_app'))
     console.log('    config.json'.grey, '-', t('matrix.create.description_config'))
