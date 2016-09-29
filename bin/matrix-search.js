@@ -17,10 +17,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     return console.error(t('matrix.search.small_needle') + '.')
   }
 
-  // console.warn('Search not implemented yet')
+  Matrix.startLoader();
   Matrix.firebaseInit(function () {
 
     Matrix.firebase.app.search(needle, function (data) {
+      Matrix.stopLoader();
       if (!_.isNull(data)) {
         debug(data)
         // get rid of non matches

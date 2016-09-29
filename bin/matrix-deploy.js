@@ -27,6 +27,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var appName = Matrix.pkgs[0];
   var pwd = process.cwd();
 
+  Matrix.startLoader();
   //TODO: make sure package.json is included
   if (_.isUndefined(appName)) {
     // infer name from current directory + strip out suffix jic
@@ -40,7 +41,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   //TODO: IMPORTANT Make sure config file exists
   if (!fs.existsSync(pwd + detectFile)) {
-    return console.error(t('matrix.deploy.app_not_found', { detect_file: detectFile, pwd: pwd }));
+    Matrix.stopLoader();
+    console.error(t('matrix.deploy.app_not_found', { detect_file: detectFile, pwd: pwd }));
+    process.exit(1);
   }
 
   //See if any files are a directory. #113583355 Add other checks here sometime?
@@ -48,7 +51,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   _.each(files, function (f) {
     var s = fs.statSync(pwd + f);
     if (s.isDirectory()) {
-      return console.error(f, ' <-- ' + t('matrix.deploy.folders_not_supported'));
+      Matrix.stopLoader();
+      console.error(f, ' <-- ' + t('matrix.deploy.folders_not_supported'));
+      process.exit(1);
     } else {
       debug('zipping up %s!', f);
     }
@@ -67,18 +72,23 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   try {
     var config = yaml.safeLoad(fs.readFileSync(pwd + detectFile));
   } catch (e) {
-    return console.error(e.message.red);
+    Matrix.stopLoader();
+    console.error(e.message.red);
+    process.exit(1);
   }
   //TODO include actual config
   debug('included config', config);
 
+  Matrix.stopLoader();
   var policy = Matrix.helpers.configHelper.config.parsePolicyFromConfig(config);
+  Matrix.startLoader();
   var policyObject = Matrix.helpers.allowAllPolicy(policy);
   debug('Policy:>', policyObject);
   
   // run JSHINT on the application
   JSHINT(appFile);
   if (JSHINT.errors.length > 0) {
+    Matrix.stopLoader();
     console.log(t('matrix.deploy.cancel_deploy').red)
     _.each(JSHINT.errors, function (e) {
       if (_.isNull(e)) {
@@ -109,7 +119,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
     debug('Package.json data extracted: ', appDetails);
   } catch (err) {
-    return console.error(err.message.red);
+    Matrix.stopLoader();
+    console.error(err.message.red);
+    process.exit(1);
   }
   debug('Using app details: ' + JSON.stringify(appDetails));
   var newVersion = Matrix.helpers.patchVersion(appDetails.version);
@@ -117,6 +129,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var Rx = require('rx');
   var promptHandler = new Rx.Subject();
   
+  Matrix.stopLoader();
   require('inquirer').prompt(promptHandler).ui.process.subscribe(function (answer) {
     if (answer.name === 'current' && answer.answer === true) {
       promptHandler.onCompleted();
@@ -138,7 +151,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     //ZIP
     console.log(t('matrix.deploy.reading') + ' ', pwd);
     console.log(t('matrix.deploy.writing') + ' ', destinationFilePath);
-
+    Matrix.startLoader();
     var destinationZip = fs.createWriteStream(destinationFilePath);
 
     destinationZip.on('open', function () {
@@ -146,6 +159,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
 
     destinationZip.on('error', function (err) {
+      Matrix.stopLoader();
       debug('deploy zip err', err)
     });
 
@@ -163,7 +177,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       debug('Adding to zip', file)
       //TODO need to properly validate filenames
       if (_.isEmpty(file) || _.isUndefined(file) || file == ':') {
+        Matrix.stopLoader();
         console.warn('Skipping invalid file: '.red, file);
+        Matrix.startLoader();
       } else {
         zip.append(fs.createReadStream(pwd + file), {
           name: file
@@ -172,7 +188,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
 
     zip.on('error', function (err) {
+      Matrix.stopLoader();
       console.error(t('matrix.deploy.error') + ':', err)
+      process.exit(1);
     });
     zip.finalize();
     zip.pipe(destinationZip); // send zip to the file
@@ -218,8 +236,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             debug('get', url);
           request.get(url, function (error, response, body) { //Get the upload URL
             if (error) {
+              Matrix.stopLoader();
               return console.error("Error getting the upload URL: ", error);
             } else if (response.statusCode !== 200) {
+              Matrix.stopLoader();
               if (response.statusCode == 401){
                 console.log('Invalid user or expired token, please login again'.yellow);
                 // remove user from config
@@ -242,6 +262,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 debug('Uploading to ', body.results.uploadurl)
                 var stream = fs.createReadStream(destinationFilePath).pipe(request.put(body.results.uploadurl))
                   .on('error', function (err) {
+                    Matrix.stopLoader();
                     return console.log('Error uploading zipped file (' + destinationFilePath + '): \n', err);
                   })
                   .on('response', function (response) {
@@ -263,8 +284,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       debug('The data sent for ' + appName + ' ( ' + appDetails.version + ' ) is: ', appData)
 
                       function triggerInstall(app) {
+                        Matrix.startLoader();
                         //TODO validate content of app
                         if (!app.hasOwnProperty('key') || !app.hasOwnProperty('data') || !app.data.hasOwnProperty('meta') || !app.data.meta.hasOwnProperty('currentVersion')) {
+                          Matrix.stopLoader();
                           console.error('Trying to install app missing parameters'.red);
                           process.exit(1);
                         }
@@ -313,14 +336,19 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           process.exit();
                         },
                         finished: function () { //finished
+                          Matrix.stopLoader();
                           console.log('App registered in appstore');
                           deployFinished = true;
                         },
                         start: function () { //start
+                          Matrix.stopLoader();
                           console.log('App registration formed...');
+                          Matrix.startLoader();
                         },
                         progress: function () { //progress
+                          Matrix.stopLoader();
                           console.log('App registration in progress...');
+                          Matrix.startLoader();
                         }
                       };
 

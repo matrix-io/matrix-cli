@@ -82,6 +82,7 @@ Matrix.firebaseInit = function (cb) {
       if (errorCode != 0) {
         if (errorCode == 1) {
           //TODO try to refresh token before failing
+          Matrix.stopLoader();
           console.log('Invalid user, log in again'.yellow);
           Matrix.helpers.removeConfig();
         } else if (errorCode == 4) {
