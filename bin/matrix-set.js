@@ -33,8 +33,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       appsBucket: 'dev-admobilize-matrix-apps'
     },
     rc: {
-      api: 'http://admobilize-api-production.herokuapp.com',
-      mxss: 'http://rc-mxss.admobilize.com',
+      api: 'https://rc-api.admobilize.com',
+      mxss: 'https://rc-mxss.admobilize.com',
       appsBucket: 'admobilize-matrix-apps'
     },
     stage: {
@@ -66,7 +66,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });
       });
     } else {
-      console.error(t('matrix.set.env.valid_environments') + ' = [ sandbox, production ]')
+      console.error(t('matrix.set.env.valid_environments') + ' = [ dev, rc, production ]')
     }
 
   } else if (Matrix.pkgs.indexOf('config') === 0) {

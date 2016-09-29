@@ -65,7 +65,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 },
                 finished: function () {
                   console.log('Device registered succesfully');
-
                 },
                 start: function () {
                   console.log('Device registration request formed...');
@@ -104,13 +103,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   Matrix.api.device.getSecret( deviceId, function(err, secret){
                     if (err) console.error('Secret Error:', err);
                     // return the secret
-                    console.log('\nSet the following environment variables on your rpi before running MATRIX OS\n'.grey)
-                    console.log('MATRIX_DEVICE_ID='+ deviceId);
-                    console.log('MATRIX_DEVICE_SECRET='+ secret.results.deviceSecret )
-                    console.log();
-                    console.log('Set up `matrix` CLI to target this device\n'.grey);
-                    console.log('matrix use', deviceId);
+                    console.log('\nSave your *device id* and *device secret*'.green)
+                    console.log('You will not be able to see the secret for this device again'.grey)
+                    
+                    console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
+                    console.log('export MATRIX_DEVICE_ID='+ deviceId);
+                    console.log('export MATRIX_DEVICE_SECRET='+ secret.results.deviceSecret )
 
+                    console.log();
+                    console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey );
+                    console.log('\nSet up `matrix` CLI to target this device\n'.grey);
+                    console.log('matrix use', deviceId);
+                    console.log();
                     process.exit();
                   })
                 }
