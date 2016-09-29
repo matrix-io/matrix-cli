@@ -12,12 +12,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   Matrix.validate.user(); //Make sure the user has logged in
   var target = Matrix.pkgs[0];
-
+  Matrix.loader.start();
   Matrix.firebaseInit(function () {
+
     if (target.match(/all/)) {
       Matrix.firebase.user.getAllApps(function (err, resp) {
         if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
         debug('Device List>', resp);
+        Matrix.loader.stop();
         console.log(Matrix.helpers.displayDeviceApps(resp));
 
         // save for later
@@ -29,6 +31,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     } else if (target.match(/app/)) {
       Matrix.validate.device(); //Make sure the user has selected a device
       Matrix.firebase.app.list(function (err, data) {
+        Matrix.loader.stop();
         if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
         if (_.isUndefined(data)) data = {};
         console.log(Matrix.helpers.displayApps(data));
@@ -41,6 +44,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         var deviceIds = _.keys(devices);
 
         var deviceMap = {};
+        Matrix.loader.stop();
         async.eachOf(devices, function( userDevice, deviceId, cb ){
           Matrix.firebase.device.lookup(deviceId, function (err, device) {
             debug(device)
@@ -77,6 +81,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         })
       });
     } else if (target.match(/group/)) {
+      Matrix.loader.stop();
       console.warn('groups not in yet')
       /** do nothing if not device **/
       Matrix.api.group.list(function (body) {
@@ -85,6 +90,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         process.exit();
       });
     } else {
+      Matrix.loader.stop();
       console.log('Unknown parameter'.yellow + ' ' + target);
       displayHelp();
     }

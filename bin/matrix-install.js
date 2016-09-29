@@ -26,6 +26,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
 
     console.log('____ | ' + t('matrix.install.installing') + ' ', target, ' ==> '.yellow, Matrix.config.device.identifier)
+    Matrix.loader.start();
     Matrix.firebaseInit(function () {
       Matrix.firebase.app.search(target, function (result) {
         if (!_.isNull(result)) {
@@ -38,6 +39,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           });
 
           if (_.isUndefined(appId)) {
+            Matrix.loader.stop();
             console.log(t('matrix.install.app_x_not_found', { app: target.yellow }));
             return process.exit();
           }
@@ -52,6 +54,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           }
 
           Matrix.helpers.installApp(options, function (err) {
+            Matrix.loader.stop();
             if (err) {
               console.log(err);
               process.exit(1);
@@ -67,7 +70,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   } else if (cmd.match(/s|se|sen|sens|senso|sensor|sensors|-s|--sensors/)) {
     Matrix.validate.user(); //Make sure the user has logged in
     Matrix.validate.device(); //Make sure a device has been selected
+    Matrix.loader.start();
     Matrix.api.sensor.install(t, Matrix.config.device.identifier, function (err, resp) {
+      Matrix.loader.stop();
       if (err) return console.error(err);
       debug(resp);
       console.log(t, ' ' + t('matrix.install.sensor_installed') + '.')
