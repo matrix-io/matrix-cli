@@ -66,6 +66,9 @@ Matrix.api.setConfig( Matrix.config );
 
 // debug(Matrix.config);
 
+Matrix.startLoader = Matrix.helpers.startLoader;
+Matrix.stopLoader = Matrix.helpers.stopLoader;
+
 Matrix.firebase = require('matrix-firebase');
 Matrix.firebaseInit = function (cb) {
   var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier: '';
