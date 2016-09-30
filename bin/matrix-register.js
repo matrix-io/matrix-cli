@@ -13,7 +13,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     } else {
       Matrix.validate.user(); //Make sure the user has logged in
       console.log(t('matrix.register.creating_device'))
-
+      Matrix.loader.start();
       // do device Registration
       var deviceSchema = {
         properties: {
@@ -31,13 +31,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           // }
         }
       };
+      Matrix.loader.stop();
       prompt.delimiter = '';
       prompt.message = 'Device Registration -- ';
       prompt.start();
 
       //TODO: Async this cascade
       prompt.get(deviceSchema, function (err, result) {
-
+        Matrix.loader.start();
         // all of the below is untested - next line = matrix use
         // Matrix.config.device.identifier = result.deviceId;
 
@@ -59,18 +60,24 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   if (err.hasOwnProperty('state') && err.state == 'device-provisioning-in-progress') {
                     debug('Provisioning device step... ignore this')
                   } else {
+                    Matrix.loader.stop();
                     console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
                     process.exit();
                   }
                 },
                 finished: function () {
-                  console.log('Device registered succesfully');
+                  Matrix.loader.stop();
+                  console.log('Device registered successfully');
                 },
                 start: function () {
+                  Matrix.loader.stop();
                   console.log('Device registration request formed...');
+                  Matrix.loader.start();
                 },
                 progress: function () {
+                  Matrix.loader.stop();
                   console.log('Registering device...');
+                  Matrix.loader.start();
                 }
               };
 
@@ -91,6 +98,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
                 if ( !_.isEmpty(deviceId) && deviceIds.indexOf(deviceId) === -1 ){
                   debug('new device on user record!');
+                  Matrix.loader.stop();
                   console.log('New Device'.green, deviceId);
 
                   // // add to local ref
@@ -100,8 +108,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
                   // fetch secret
                   // this part will be automated in the future. idk how.
-                  Matrix.api.device.getSecret( deviceId, function(err, secret){
-                    if (err) console.error('Secret Error:', err);
+                  Matrix.loader.start();
+                  Matrix.api.device.getSecret(deviceId, function (err, secret) {
+                    Matrix.loader.stop();
+                    if (err) {
+                      console.error('Secret Error: ', err);
+                      process.exit(1);
+                    } else if (_.isUndefined(secret)) {
+                      console.error('No secret found: ', secret);
+                      process.exit(1);
+                    }
+
                     // return the secret
                     console.log('\nSave your *device id* and *device secret*'.green)
                     console.log('You will not be able to see the secret for this device again'.grey)
@@ -190,8 +207,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       /*request.post(params, function(error, response, body) {
       };*/
 
-
+      Matrix.loader.start();
       Matrix.api.register.user(result.username, result.password, Matrix.options.clientId, function (err, out) {
+        Matrix.loader.stop();
         /*500 server died
         400 bad request
           user exists
