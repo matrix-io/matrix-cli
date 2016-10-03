@@ -3,12 +3,15 @@
 require('./matrix-init');
 var debug = debugLog('publish');
 
+console.warn('Publish is not yet functional. Do NOT use.')
+process.exit(1);
+
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
   if (!Matrix.pkgs.length || showTheHelp) {
     return displayHelp();
-  }  
-  
+  }
+
   Matrix.validate.user();
   var app = Matrix.pkgs[0];
 
@@ -20,7 +23,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     //or
 
-    //TODO Change app state from approved to published    
+    //TODO Change app state from approved to published
   });
 
   function displayHelp() {
@@ -29,5 +32,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log('\n')
     process.exit(1);
   }
-  
+
 });

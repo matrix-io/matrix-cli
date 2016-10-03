@@ -3,6 +3,9 @@
 require('./matrix-init');
 var debug = debugLog('update');
 
+console.warn('Update is not yet functional. Do NOT use.')
+process.exit(1);
+
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
   if (!Matrix.pkgs.length || showTheHelp) {
@@ -10,8 +13,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   Matrix.validate.user(); //Make sure the user has logged in
-  Matrix.validate.device(); //Make sure the user has logged in  
-  
+  Matrix.validate.device(); //Make sure the user has logged in
+
   var appName = Matrix.pkgs[0];
   var appVersion = Matrix.pkgs[1];
 
