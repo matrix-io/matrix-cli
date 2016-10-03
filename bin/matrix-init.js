@@ -32,7 +32,7 @@ var options = {
   clientSecret: 'AdMobilizeAPIDevSecret',
   apiUrl: process.env[ 'MATRIX_API_SERVER' ] || 'https://rc-api.admobilize.com',
   mxssUrl: process.env[ 'MATRIX_STREAMING_SERVER' ] || 'https://rc-mxss.admobilize.com',
-  appsBucket: process.env['MATRIX_APPS_BUCKET'] || 'dev-admobilize-matrix-apps'
+  appsBucket: process.env['MATRIX_APPS_BUCKET'] || 'admobilize-matrix-apps'
 };
 
 //override defaults with config
