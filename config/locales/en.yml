@@ -197,20 +197,22 @@ en:
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       starting_app: 'Starting'
-      start_app_successfully: 'Started'
-      app_failed_to_start: 'Failed starting app' #
+      start_app_successfully: 'Started'      
+      start_app_error: 'Unable to start'
     stop:
       help: stop the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       stopping_app: 'Stopping'
       stop_app_successfully: 'Stopped'
+      stop_app_error: 'Unable to stop'
     restart:
       help: restart the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       restarting_app: 'Restarting'
       restart_app_successfully: 'Restarted'
+      restart_app_error: 'Unable to restart'
     #DEVELOPMENT
     create:
       help: Creates a scaffolding for the app %{app}
