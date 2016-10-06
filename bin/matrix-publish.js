@@ -93,7 +93,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       promptHandler.onNext({
         type: 'confirm',
         name: 'current',
-        message: 'Deploy version '.white + appDetails.version.yellow + '?'.white,
+        message: 'Publish ' + appName.yellow + ' version '.white + appDetails.version.yellow + '?'.white,
         default: true
       });
 
@@ -135,8 +135,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               },
               'version': details.version,
               'config': details.config,
-              'policy': details.policy,
-              'override': true
+              'policy': details.policy
+              //'override': true //This ignores the version restriction on the backend 
             };
             debug('DOWNLOAD URL: ' + uploadUrl);
             debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData);
@@ -144,13 +144,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             //Listen for the app creation in appStore
             Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
               debug('app published>', app);
-              var deploymentTimer = setInterval(function () {
+              var publicationTimer = setInterval(function () {
                 if (publicationFinished) {
-                  clearTimeout(deploymentTimer);
+                  clearTimeout(publicationTimer);
                   console.log('Application ' + appName.green + ' published!');
                   endIt();
                 } else {
-                  debug('Deploy not finished')
+                  debug('Publication not finished')
                 }
               }, 400);
             });
@@ -183,7 +183,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               }
             };
 
-            Matrix.firebase.app.deploy(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, events);
+            Matrix.firebase.app.publish(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, events);
           });
         } else {
           console.error(err);

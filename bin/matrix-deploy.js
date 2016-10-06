@@ -153,6 +153,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   console.error(t('matrix.install.app_install_error'), ' ', app);
                   process.exit(1);
                 } else if (status === 'inactive') {
+                  var deploymentTimer = setInterval(function () {
+                    if (deploymentFinished) {
+                      clearTimeout(deploymentTimer);
+                      console.log('Application ' + appName.green + ' was successfully installed!');
+                      endIt();
+                    } else {
+                      debug('Deploy not finished')
+                    }
+                  }, 400);
                   console.log(t('matrix.install.app_install_success').green);
                   process.exit(0);
                 } else if (status === 'active') {
