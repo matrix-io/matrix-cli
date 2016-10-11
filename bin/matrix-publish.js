@@ -124,6 +124,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     debug('Finished packaging ', appName);
     var downloadFileName = details.version + '.zip';
     Matrix.firebaseInit(function (err) {
+      //Matrix.helpers.getUploadUrl('readme.md', appName, function (err, uploadUrl) 
+      //Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
       Matrix.helpers.getUploadUrl(downloadFileName, appName, function (err, uploadUrl) {
         if (!err) {
           Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {

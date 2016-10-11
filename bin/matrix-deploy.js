@@ -10,6 +10,8 @@ var fstream = require('fstream');
 var appDetectFile = 'config.yaml';
 var fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps';// /<AppName>/<version>.zip
 var deploymentFinished = false;
+var workerTimeoutSeconds = 30;
+var deviceTimeoutSeconds = 30;
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
@@ -142,6 +144,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData)
 
             var deployedAppId;
+            var workerTimeout;
+            var deviceTimeout;
+            var nowInstalling = false;
             //Listen for the app installation in device (appId from users>devices>apps)
             Matrix.firebase.app.watchNamedUserApp(appName, function (app, appId) {
               debug('App install ' + appId + ' activity');
@@ -155,28 +160,34 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     if (status === 'error') {
                       console.error(t('matrix.install.app_install_error'), ' ', app);
                       process.exit(1);
-                    } else if (status === 'inactive') {
+                    //It must first go through the pending state (nowInstalling) and then back to inactive
+                    } else if (nowInstalling && status === 'inactive') {
+                      clear(deviceTimeout);
                       var deploymentTimer = setInterval(function () {
                         if (deploymentFinished) {
                           clearTimeout(deploymentTimer);
                           console.log('Application ' + appName.green + ' was successfully installed!');
+                          console.log(t('matrix.install.app_install_success').green);
                           endIt();
-                        } else {
-                          debug('Deploy not finished')
                         }
                       }, 400);
-                      console.log(t('matrix.install.app_install_success').green);
-                      process.exit(0);
                     } else if (status === 'active') {
                       console.log('App running already, not good.')
                       process.exit(1);
-                    } else if (status === 'pending'){
+                    } else if (status === 'pending') {
+                      nowInstalling = true
                       console.log('Installing ' + appName + ' on device...');
                       Matrix.loader.start();
                     }
                 }); 
               }
             });
+
+            //Start timeout in case the workers aren't up'
+            workerTimeout = setTimeout(function () { 
+              console.log('Server response timeout, please try again later'.yellow);
+              process.exit(1);
+            }, workerTimeoutSeconds * 1000);
 
             //Send the app deployment request
             var options = {
@@ -187,6 +198,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
             Matrix.firebase.app.deploy(options, {
               error: function (err) {
+                clearTiemout(workerTimeout);
                 if (err.hasOwnProperty('details')) {
                   console.log('App deployment failed: '.red, err.details.error);
                 } else {
@@ -195,8 +207,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 process.exit();
               },
               finished: function () {
+                clearTiemout(workerTimeout);
                 Matrix.loader.stop();
                 console.log('Deploying to device...');
+                //Start timeout in case the workers aren't up'
+                deviceTimeout = setTimeout(function () { 
+                  console.log('matrix.install.device_install_timeout'.yellow);
+                  process.exit(1);
+                }, deviceTimeoutSeconds * 1000);
                 Matrix.loader.start();
                 deploymentFinished = true;
               },
@@ -211,6 +229,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 Matrix.loader.start();
               }
             });
+
           });
         } else {
           console.error(err);
