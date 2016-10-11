@@ -141,35 +141,40 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             debug('DOWNLOAD URL: ' + uploadUrl);
             debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData)
 
-            //Listen for the app installation in device
-            Matrix.firebase.app.watchNamedUserApp(appName, function (app) {
-              debug('App deployed>', app);
-              var appInfo = app;
-              if (_.has(appInfo, 'runtime.status')) {
-                Matrix.loader.stop();
-                var status = app.runtime.status;
-                debug('status>', status)
-                if (status === 'error') {
-                  console.error(t('matrix.install.app_install_error'), ' ', app);
-                  process.exit(1);
-                } else if (status === 'inactive') {
-                  var deploymentTimer = setInterval(function () {
-                    if (deploymentFinished) {
-                      clearTimeout(deploymentTimer);
-                      console.log('Application ' + appName.green + ' was successfully installed!');
-                      endIt();
-                    } else {
-                      debug('Deploy not finished')
+            var deployedAppId;
+            //Listen for the app installation in device (appId from users>devices>apps)
+            Matrix.firebase.app.watchNamedUserApp(appName, function (app, appId) {
+              debug('App install ' + appId + ' activity');
+              if (!_.isUndefined(appId) && _.isUndefined(deployedAppId)) {
+                debug('App id ' + appId + ' identified');
+                deployedAppId = appId;
+                //Listen for the status change (deviceapps)
+                Matrix.firebase.app.watchStatus(deployedAppId, function (status) {
+                  debug('App deployed with status > ' + status);
+                    Matrix.loader.stop();
+                    if (status === 'error') {
+                      console.error(t('matrix.install.app_install_error'), ' ', app);
+                      process.exit(1);
+                    } else if (status === 'inactive') {
+                      var deploymentTimer = setInterval(function () {
+                        if (deploymentFinished) {
+                          clearTimeout(deploymentTimer);
+                          console.log('Application ' + appName.green + ' was successfully installed!');
+                          endIt();
+                        } else {
+                          debug('Deploy not finished')
+                        }
+                      }, 400);
+                      console.log(t('matrix.install.app_install_success').green);
+                      process.exit(0);
+                    } else if (status === 'active') {
+                      console.log('App running already, not good.')
+                      process.exit(1);
+                    } else if (status === 'pending'){
+                      console.log('Installing ' + appName + ' on device...');
+                      Matrix.loader.start();
                     }
-                  }, 400);
-                  console.log(t('matrix.install.app_install_success').green);
-                  process.exit(0);
-                } else if (status === 'active') {
-                  console.log('App running already, not good.')
-                  process.exit(1);
-                }
-              } else {
-                debug('App reported but no status found');
+                }); 
               }
             });
 
@@ -192,6 +197,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               finished: function () {
                 Matrix.loader.stop();
                 console.log('Deploying to device...');
+                Matrix.loader.start();
                 deploymentFinished = true;
               },
               start: function () {
