@@ -128,8 +128,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         if (!err) {
           Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
             var appData = {
-              'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories']),
-              'file': fileUrl + '/' + appName + '/' + downloadFileName,
+              'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories','version']),
+              // 'file': fileUrl + '/' + appName + '/' + downloadFileName,
               'assets': {
                 'icon': iconURL
               },
@@ -138,6 +138,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               'policy': details.policy,
               'override': true
             };
+            // store file url in meta
+            appData.meta.file = fileUrl + '/' + appName + '/' + downloadFileName;
             debug('DOWNLOAD URL: ' + uploadUrl);
             debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData)
 
