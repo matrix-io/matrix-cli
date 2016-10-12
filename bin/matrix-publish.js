@@ -123,19 +123,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   function onEnd(details) {
     debug('Finished packaging ', appName);
     var downloadFileName = details.version + '.zip';
+    details.file = fileUrl + '/' + appName + '/' + downloadFileName;
     Matrix.firebaseInit(function (err) {
-      //Matrix.helpers.getUploadUrl('readme.md', appName, function (err, uploadUrl) 
-      //Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
       Matrix.helpers.getUploadUrl(downloadFileName, appName, function (err, uploadUrl) {
         if (!err) {
           Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
             var appData = {
-              'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories']),
-              'file': fileUrl + '/' + appName + '/' + downloadFileName,
+              'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories', 'version', 'file']),
+              'file': details.file, //TODO Remove this once it isn't required
+              'version': details.version, //TODO Remove this once it isn't required
               'assets': {
                 'icon': iconURL
               },
-              'version': details.version,
               'config': details.config,
               'policy': details.policy
               //'override': true //This ignores the version restriction on the backend 
