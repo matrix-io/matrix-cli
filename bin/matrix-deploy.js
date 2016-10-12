@@ -198,7 +198,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
             Matrix.firebase.app.deploy(options, {
               error: function (err) {
-                clearTiemout(workerTimeout);
+                clearTimeout(workerTimeout);
                 if (err.hasOwnProperty('details')) {
                   console.log('App deployment failed: '.red, err.details.error);
                 } else {
@@ -207,7 +207,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 process.exit();
               },
               finished: function () {
-                clearTiemout(workerTimeout);
+                clearTimeout(workerTimeout);
                 Matrix.loader.stop();
                 console.log('Deploying to device...');
                 //Start timeout in case the workers aren't up'
