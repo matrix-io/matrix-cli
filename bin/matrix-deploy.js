@@ -125,17 +125,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   function onEnd(details) {
     debug('Finished packaging ', appName);
     var downloadFileName = Matrix.config.user.id + '.zip';
+    details.file = fileUrl + '/' + appName + '/' + downloadFileName;
     Matrix.firebaseInit(function (err) {
       Matrix.helpers.getUploadUrl(downloadFileName, appName, function (err, uploadUrl) {
         if (!err) {
           Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
             var appData = {
-              'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories']),
-              'file': fileUrl + '/' + appName + '/' + downloadFileName,
+              'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories', 'version', 'file']),
+              'file': details.file, //TODO Remove this once it isn't required
+              'version': details.version, //TODO Remove this once it isn't required
               'assets': {
                 'icon': iconURL
               },
-              'version': details.version,
               'config': details.config,
               'policy': details.policy,
               'override': true
@@ -143,9 +144,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             debug('DOWNLOAD URL: ' + uploadUrl);
             debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData)
 
-            var deployedAppId;
-            var workerTimeout;
-            var deviceTimeout;
+            var deployedAppId, workerTimeout, deviceTimeout;
             var nowInstalling = false;
             //Listen for the app installation in device (appId from users>devices>apps)
             Matrix.firebase.app.watchNamedUserApp(appName, function (app, appId) {
@@ -162,7 +161,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       process.exit(1);
                     //It must first go through the pending state (nowInstalling) and then back to inactive
                     } else if (nowInstalling && status === 'inactive') {
-                      clear(deviceTimeout);
+                      clearTimeout(deviceTimeout);
                       var deploymentTimer = setInterval(function () {
                         if (deploymentFinished) {
                           clearTimeout(deploymentTimer);
@@ -212,7 +211,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 console.log('Deploying to device...');
                 //Start timeout in case the workers aren't up'
                 deviceTimeout = setTimeout(function () { 
-                  console.log('matrix.install.device_install_timeout'.yellow);
+                  console.log(t('matrix.install.device_install_timeout').yellow);
                   process.exit(1);
                 }, deviceTimeoutSeconds * 1000);
                 Matrix.loader.start();
