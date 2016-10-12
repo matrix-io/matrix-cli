@@ -83,7 +83,9 @@ Matrix.firebaseInit = function (cb) {
           //TODO try to refresh token before failing
           Matrix.loader.stop();
           console.log('Invalid user, log in again'.yellow);
-          Matrix.helpers.removeConfig();
+          Matrix.helpers.logout(function () { 
+            process.exit();
+          });
         } else if (errorCode == 4) {
           console.log('Network timeout, please check your connection and try again'.yellow);
         } else {

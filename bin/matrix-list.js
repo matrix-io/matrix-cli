@@ -34,13 +34,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         Matrix.loader.stop();
         if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
         if (_.isUndefined(apps)) apps = {};
+
+        //Retrieve status for each app
         async.forEach(Object.keys(apps), function (appId, done) { 
-          Matrix.firebase.app.getStatus(appId, function (status) { 
-            console.log("STATUS WATCH TRIGGERED! " + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
-            apps[appId].status = status ||  "inactive";
+          Matrix.firebase.app.getStatus(appId, function (status) {
+            if (!_.isUndefined(status)) status = "inactive"; //Set default status to inactive
+            debug("Status Watch: " + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
+            apps[appId].status = status;
             done();
           });
         }, function(err) {
+          //Once the status or each app has been collected, print table
           console.log(Matrix.helpers.displayApps(apps));
           process.exit();
         }); 
