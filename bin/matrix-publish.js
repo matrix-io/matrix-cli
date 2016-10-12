@@ -38,6 +38,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var configObject = {};
   var policyObject = {};
   var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png';
+  var hasReadme = false;
 
   async.parallel({
     folder: async.apply(Matrix.helpers.checkAppFolder, pwd),
@@ -46,6 +47,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   },
   function (err, results) {
     if (!err && !_.isUndefined(results.data)) {
+      if (!_.isUndefined(results.folder)) {
+        //If it has a readme file
+        if (results.folder.hasOwnProperty('readme')) {
+          hasReadme = results.folder.readme;
+        }
+      }
       var appDetails = results.data;
       debug('Using app details: ' + JSON.stringify(appDetails));
       var newVersion = Matrix.helpers.patchVersion(appDetails.version);
@@ -120,76 +127,104 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   });
   
+  var localReadmeFileName = 'README.MD';
+  var remoteReadmeFileName = 'readme.md';
+
   function onEnd(details) {
     debug('Finished packaging ', appName);
     var downloadFileName = details.version + '.zip';
     details.file = fileUrl + '/' + appName + '/' + downloadFileName;
     Matrix.firebaseInit(function (err) {
-      Matrix.helpers.getUploadUrl(downloadFileName, appName, function (err, uploadUrl) {
-        if (!err) {
-          Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
-            var appData = {
-              'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories', 'version', 'file']),
-              'file': details.file, //TODO Remove this once it isn't required
-              'version': details.version, //TODO Remove this once it isn't required
-              'assets': {
-                'icon': iconURL
-              },
-              'config': details.config,
-              'policy': details.policy
-              //'override': true //This ignores the version restriction on the backend 
-            };
-            debug('DOWNLOAD URL: ' + uploadUrl);
-            debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData);
-
-            //Listen for the app creation in appStore
-            Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
-              debug('app published>', app);
-              var publicationTimer = setInterval(function () {
-                if (publicationFinished) {
-                  clearTimeout(publicationTimer);
-                  console.log('Application ' + appName.green + ' published!');
-                  endIt();
-                } else {
-                  debug('Publication not finished')
-                }
-              }, 400);
-            });
-
-            //Send the app creation request
-            var events = {
-              error: function (err) { //error
-                if (err.hasOwnProperty('details')) {
-                  console.log('App registration failed: '.red, err.details.error);
-                } else {
-                  console.log('App registration failed: '.red, err.message);
-                }
-                debug(err);
-                process.exit();
-              },
-              finished: function () { //finished
-                Matrix.loader.stop();
-                console.log('App registered in appstore');
-                publicationFinished = true;
-              },
-              start: function () { //start
-                Matrix.loader.stop();
-                console.log('App registration formed...');
-                Matrix.loader.start();
-              },
-              progress: function () { //progress
-                Matrix.loader.stop();
-                console.log('App registration in progress...');
-                Matrix.loader.start();
+      async.parallel([
+        function (next) {
+          if (hasReadme) {
+            Matrix.helpers.getUploadUrl(remoteReadmeFileName, appName, function (err, readmeUploadUrl) {
+              if (err) {
+                next(err);
+              } else {
+                Matrix.helpers.uploadPackage(pwd + '/' + localReadmeFileName, readmeUploadUrl, function (err) {
+                  next(err);
+                });
               }
-            };
-
-            Matrix.firebase.app.publish(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, events);
-          });
-        } else {
-          console.error(err);
-          return process.exit(1);
+            });
+          } else {
+            next();
+          }
         }
+        , function (next) {
+          Matrix.helpers.getUploadUrl(downloadFileName, appName, function (err, uploadUrl) {
+            if (!err) {
+              Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
+                next(err);
+              });
+            } else {
+              console.error(err);
+              return process.exit(1);
+            }
+          });
+        }
+      ], function (err) { 
+        var appData = {
+          'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories', 'version', 'file']),
+          'file': details.file, //TODO Remove this once it isn't required
+          'version': details.version, //TODO Remove this once it isn't required
+          'assets': {
+            'icon': iconURL
+          },
+          'config': details.config,
+          'policy': details.policy
+          //'override': true //This ignores the version restriction on the backend 
+        };
+        if (hasReadme) {
+          appData.meta.readme = fileUrl + '/' + appName + '/' + remoteReadmeFileName;
+          debug('README URL: ' + appData.meta.readme);  
+        }
+        debug('DOWNLOAD URL: ' + appData.file);
+        debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData);
+
+        //Listen for the app creation in appStore
+        Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
+          debug('app published>', app);
+          var publicationTimer = setInterval(function () {
+            if (publicationFinished) {
+              clearTimeout(publicationTimer);
+              console.log('Application ' + appName.green + ' published!');
+              endIt();
+            } else {
+              debug('Publication not finished')
+            }
+          }, 400);
+        });
+
+        //Send the app creation request
+        var events = {
+          error: function (err) { //error
+            if (err.hasOwnProperty('details')) {
+              console.log('App registration failed: '.red, err.details.error);
+            } else {
+              console.log('App registration failed: '.red, err.message);
+            }
+            debug(err);
+            process.exit();
+          },
+          finished: function () { //finished
+            Matrix.loader.stop();
+            console.log('App registered in appstore');
+            publicationFinished = true;
+          },
+          start: function () { //start
+            Matrix.loader.stop();
+            console.log('App registration formed...');
+            Matrix.loader.start();
+          },
+          progress: function () { //progress
+            Matrix.loader.stop();
+            console.log('App registration in progress...');
+            Matrix.loader.start();
+          }
+        };
+
+        Matrix.firebase.app.publish(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, events);
       });
 
     });
