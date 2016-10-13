@@ -3,9 +3,6 @@
 require('./matrix-init');
 var debug = debugLog('install');
 
-console.warn('Install is not yet functional. Do NOT use.')
-process.exit(1);
-
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
   if (!Matrix.pkgs.length || showTheHelp) {
