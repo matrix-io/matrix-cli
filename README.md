@@ -6,6 +6,9 @@ https://github.com/matrix-io/matrix-firebase/issues
 ###### Questions
 http://community.matrix.one
 
+###### Documentation
+http://matrix-io.github.io/matrix-documentation
+
 
 # Installation
 
