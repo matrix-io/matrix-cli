@@ -53,6 +53,14 @@ trigger - Runs a trigger test
 log - logs output from selected MatrixOS
 ```
 
+## Setup
+
+Make sure you're using our `rc` environment.
+
+```
+matrix set env rc
+```
+
 ## Registration
 
 If you do not have an AdMobilize MATRIX account, use:
