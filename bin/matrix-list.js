@@ -30,12 +30,24 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       });
     } else if (target.match(/app/)) {
       Matrix.validate.device(); //Make sure the user has selected a device
-      Matrix.firebase.app.list(function (err, data) {
+      Matrix.firebase.app.list(function (err, apps) {
         Matrix.loader.stop();
         if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
-        if (_.isUndefined(data)) data = {};
-        console.log(Matrix.helpers.displayApps(data));
-        process.exit();
+        if (_.isUndefined(apps)) apps = {};
+
+        //Retrieve status for each app
+        async.forEach(Object.keys(apps), function (appId, done) { 
+          Matrix.firebase.app.getStatus(appId, function (status) {
+            if (!_.isUndefined(status)) status = "inactive"; //Set default status to inactive
+            debug("Status Watch: " + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
+            apps[appId].status = status;
+            done();
+          });
+        }, function(err) {
+          //Once the status or each app has been collected, print table
+          console.log(Matrix.helpers.displayApps(apps));
+          process.exit();
+        }); 
       });
     } else if (target.match(/device/)) {
 
