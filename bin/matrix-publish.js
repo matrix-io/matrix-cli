@@ -138,7 +138,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       async.parallel([
         function (next) {
           if (hasReadme) {
-            Matrix.helpers.getUploadUrl(remoteReadmeFileName, appName, function (err, readmeUploadUrl) {
+            Matrix.helpers.getUploadUrl(remoteReadmeFileName, appName, 'text', function (err, readmeUploadUrl) {
               if (err) {
                 next(err);
               } else {
@@ -152,7 +152,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           }
         }
         , function (next) {
-          Matrix.helpers.getUploadUrl(downloadFileName, appName, function (err, uploadUrl) {
+          Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function (err, uploadUrl) {
             if (!err) {
               Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
                 next(err);

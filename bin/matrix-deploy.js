@@ -127,7 +127,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     var downloadFileName = Matrix.config.user.id + '.zip';
     details.file = fileUrl + '/' + appName + '/' + downloadFileName;
     Matrix.firebaseInit(function (err) {
-      Matrix.helpers.getUploadUrl(downloadFileName, appName, function (err, uploadUrl) {
+      Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function (err, uploadUrl) {
         if (!err) {
           Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
             var appData = {
