@@ -35,7 +35,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     pwd += '/' + appName + '/';
   }
 
-  var destinationFilePath = __dirname + '/../' + appName + '.zip';
+  var destinationFilePath = require('os').homedir() + '/.matrix/' + appName + '.zip';
   var packageContent;
   var configObject = {};
   var policyObject = {};
@@ -124,7 +124,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function onEnd(details) {
     debug('Finished packaging ', appName);
-    var downloadFileName = Matrix.config.user.id + '.zip';
+    var downloadFileName = Matrix.config.user.id + '/' + appName.toLowerCase() + '-' + Math.round( Math.random() * Math.pow( 10, 8 )) + '.zip';
     details.file = fileUrl + '/' + appName + '/' + downloadFileName;
     Matrix.firebaseInit(function (err) {
       Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function (err, uploadUrl) {
@@ -143,6 +143,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             };
             debug('DOWNLOAD URL: ' + uploadUrl);
             debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData)
+
 
             var deployedAppId, workerTimeout, deviceTimeout;
             var nowInstalling = false;
@@ -167,6 +168,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                           clearTimeout(deploymentTimer);
                           console.log('Application ' + appName.green + ' was successfully installed!');
                           console.log(t('matrix.install.app_install_success').green);
+                          // clear out zip file
+                          // require('child_process').execSync('rm ' + destinationFilePath);
+                          // debug( destinationFilePath, 'removed');
                           endIt();
                         }
                       }, 400);
@@ -178,12 +182,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                       console.log('Installing ' + appName + ' on device...');
                       Matrix.loader.start();
                     }
-                }); 
+                });
               }
             });
 
             //Start timeout in case the workers aren't up'
-            workerTimeout = setTimeout(function () { 
+            workerTimeout = setTimeout(function () {
               console.log('Server response timeout, please try again later'.yellow);
               process.exit(1);
             }, workerTimeoutSeconds * 1000);
@@ -210,7 +214,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 Matrix.loader.stop();
                 console.log('Deploying to device...');
                 //Start timeout in case the workers aren't up'
-                deviceTimeout = setTimeout(function () { 
+                deviceTimeout = setTimeout(function () {
                   console.log(t('matrix.install.device_install_timeout').yellow);
                   process.exit(1);
                 }, deviceTimeoutSeconds * 1000);
