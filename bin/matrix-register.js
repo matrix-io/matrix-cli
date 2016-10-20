@@ -132,7 +132,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     console.log('\nSet up `matrix` CLI to target this device\n'.grey);
                     console.log('matrix use', deviceId);
                     console.log();
-                    process.exit();
+                    Matrix.helpers.refreshDeviceMap(process.exit)
                   })
                 }
 
