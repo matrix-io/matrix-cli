@@ -23,7 +23,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         console.log(Matrix.helpers.displayDeviceApps(resp));
 
         // save for later
-        Matrix.config.appMap = resp;
+        Matrix.config.deviceMap = resp;
         Matrix.helpers.saveConfig(function(){
           process.exit();
         })
@@ -36,7 +36,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         if (_.isUndefined(apps)) apps = {};
 
         //Retrieve status for each app
-        async.forEach(Object.keys(apps), function (appId, done) { 
+        async.forEach(Object.keys(apps), function (appId, done) {
           Matrix.firebase.app.getStatus(appId, function (status) {
             if (!_.isUndefined(status)) status = "inactive"; //Set default status to inactive
             debug("Status Watch: " + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
@@ -47,7 +47,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           //Once the status or each app has been collected, print table
           console.log(Matrix.helpers.displayApps(apps));
           process.exit();
-        }); 
+        });
       });
     } else if (target.match(/device/)) {
 

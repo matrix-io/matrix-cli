@@ -102,7 +102,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   console.log('New Device'.green, deviceId);
 
                   // // add to local ref
-                  // Matrix.config.device.appMap = _.merge({}, Matrix.config.device.appMap, d.val() );
+                  // Matrix.config.device.deviceMap = _.merge({}, Matrix.config.device.appMap, d.val() );
                   // Matrix.helpers.saveConfig();
 
 
@@ -122,7 +122,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     // return the secret
                     console.log('\nSave your *device id* and *device secret*'.green)
                     console.log('You will not be able to see the secret for this device again'.grey)
-                    
+
                     console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
                     console.log('export MATRIX_DEVICE_ID='+ deviceId);
                     console.log('export MATRIX_DEVICE_SECRET='+ secret.results.deviceSecret )

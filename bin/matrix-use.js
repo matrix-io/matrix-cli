@@ -9,8 +9,23 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     return displayHelp();
   }
 
-  var target = Matrix.pkgs[0];
-  //TODO: store device list locally
+  var target = Matrix.pkgs.join(' ');
+
+  var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name : target });
+
+  var nameProvided = true;
+
+  if ( _.isEmpty(targetDeviceId) ) {
+    // not a name, must be a key?
+    if ( _.has(Matrix.config.deviceMap, target)){
+      targetDeviceId = target;
+      nameProvided = false;
+    } else {
+      console.error(target.red, 'is not a device name or a device id')
+      process.exit(1);
+    }
+  }
+
 
   // Matrix.firebaseInit(function () {
   //
@@ -30,25 +45,22 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   //
   // })
   //
-  // 
+  //
   Matrix.validate.user();
 
   // still API dependent, TODO: depreciate to firebase
-  Matrix.api.device.register(target, function(err, state) {
+  Matrix.api.device.register(targetDeviceId, function(err, state) {
 
     if (err) return console.log(err);
     if (state.status === "OK") {
-      var name = Matrix.helpers.lookupDeviceName(target);
-
-      if (!_.isUndefined(name)) {
-        console.log('Now using device:'.grey, name);
-      } else {
-        console.log('Now using device id:'.grey, target);
+      if ( !nameProvided ){
+        target = Matrix.helpers.lookupDeviceName(target);
       }
+      console.log('Now using device:'.grey, target, 'ID:'.grey, targetDeviceId);
 
       // Save the device token
       Matrix.config.device = {}
-      Matrix.config.device.identifier = target;
+      Matrix.config.device.identifier = targetDeviceId;
       Matrix.config.device.token = state.results.device_token;
       Matrix.helpers.saveConfig(process.exit);
 

@@ -46,7 +46,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     Matrix.config.user.jwt_token = true;
 
     /** set the client to empty **/
-    Matrix.config.client = {}
+    Matrix.config.client = {};
+
+
 
     /** authenticate client and user **/
     debug('Client', Matrix.options);
@@ -72,16 +74,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         Matrix.firebaseInit( function(){
 
           Matrix.firebase.user.getAllApps(function (err, resp) {
-            debug('Device List>', resp);
+            debug('App List>', resp);
 
             // save for later
-            Matrix.config.appMap = resp;
+            Matrix.config.deviceMap = resp;
+
             Matrix.helpers.saveConfig(function(){
               /** save the creds if it's good **/
               Matrix.loader.stop();
               console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
               process.exit();
-            })
+            });
           });
         });
       });
