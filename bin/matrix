@@ -15,9 +15,10 @@ process.on('SIGTERM', function () {
 });
 
 process.on('uncaughtException', function (e) {
+  debug('Uncaught error:', e);
   Matrix.loader.stop();
   if (e.hasOwnProperty('code') && e.code == 'ENOTFOUND') {
-    console.log('Service unavailable, please try again later');
+    console.log('Service unavailable, please check your connection or try again later');
   } else {
     console.log('Matrix CLI Error:'.red, e, e.stack);
   }
