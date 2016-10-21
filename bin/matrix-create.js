@@ -67,11 +67,16 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
 
         if ( _.isUndefined(app)){
+          // no app name defined
           app = results.name;
+        } else {
+          // app name defined
+          results.name = app;
         }
 
         // write the config yaml
         configString = yaml.safeDump(results);
+
 
         debug('Writing config...',  configString);
         Matrix.loader.start();
