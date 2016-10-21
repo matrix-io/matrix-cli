@@ -131,8 +131,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey );
                     console.log('\nSet up `matrix` CLI to target this device\n'.grey);
                     console.log('matrix use', deviceId);
+                    console.log('or'.grey)
+                    console.log('matrix use', result.name);
                     console.log();
-                    process.exit();
+                    Matrix.helpers.refreshDeviceMap(process.exit)
                   })
                 }
 
