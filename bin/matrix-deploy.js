@@ -52,68 +52,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         debug('Using app details: ' + JSON.stringify(appDetails));
         var newVersion = Matrix.helpers.patchVersion(appDetails.version);
 
-        //ASK
-        var Rx = require('rx');
-        var promptHandler = new Rx.Subject();
-
-        Matrix.loader.stop();
-        require('inquirer').prompt(promptHandler).ui.process.subscribe(function (answer) {
-          if (answer.name === 'current' && answer.answer === true) {
-            promptHandler.onCompleted();
-          }
-
-          if (answer.name === 'version') {
-            appDetails.version = answer.answer;
-            try {
-              packageContent = require(pwd + '/' + 'package.json');
-            } catch (err) {
-              console.error('Error reading package.json file:' + err.message);
-              process.exit(1);
-            }
-            packageContent.version = appDetails.version;
-            Matrix.helpers.updateFile(packageContent, pwd + '/package.json', function (err) {
-              if (err) {
-                console.error('Error updating package.json file: ' + err.message.red);
-                process.exit(1);
-              }
-              promptHandler.onCompleted();
-            });
-          }
-
-        }, function (e) { console.error(e) }, function () {
-          Matrix.helpers.zipAppFolder(pwd, destinationFilePath, function (err) {
-            if (err) {
-              console.error('Error zipping app folder: ' + err.message.red);
-              process.exit();
-            } else {
-              onEnd(appDetails);
-            }
-          });
-        });
-
-        //Confirm deployment to current version
-        promptHandler.onNext({
-          type: 'confirm',
-          name: 'current',
-          message: 'Deploy version '.white + appDetails.version.yellow + '?'.white,
-          default: true
-        });
-
-        //Ask for new version to deploy
-        promptHandler.onNext({
-          type: 'input',
-          name: 'version',
-          message: 'Select new version to use:'.white,
-          default: newVersion,
-          validate: function (versionInput) {
-            if (versionInput.match('^(?:(\\d+)\.)(?:(\\d+)\.)(\\d+)$')) {
-              return true;
-            } else {
-              return versionInput + ' is not a valid version';
-            }
-          },
-          when: function (answers) {
-            return !answers.current;
+        Matrix.helpers.zipAppFolder(pwd, destinationFilePath, function (err) {
+          if (err) {
+            Matrix.loader.stop();
+            console.error('Error zipping app folder: ' + err.message.red);
+            process.exit();
+          } else {
+            onEnd(appDetails);
           }
         });
 
