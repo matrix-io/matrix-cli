@@ -44,7 +44,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           }
           var versionId = result[appId].meta.currentVersion;
           debug('VERSION: '.blue, versionId, 'APP: '.blue, appId);
-
+          
           var options = {
             policy: result[appId].versions[versionId].policy,
             name: target,
@@ -59,7 +59,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               process.exit(1);
             }
 
-            console.log(name, " has now been deployed to your device, enjoy!");
+            console.log(t('matrix.install.app_install_success').green);
             process.exit(0);
           });
         }
