@@ -53,12 +53,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     /** authenticate client and user **/
     debug('Client', Matrix.options);
     Matrix.api.auth.client(Matrix.options, function (err, out) {
-      if (err) throw err;
+      if (err) { 
+        Matrix.loader.stop();
+        debug('Client auth error: ', err);
+        console.log('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
+        process.exit(1);
+      }
       debug('User', Matrix.config.user, out);
       Matrix.api.auth.user(Matrix.config.user, function (err, state) {
         if (err) {
           Matrix.loader.stop();
-          console.error('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
+          debug('User auth error: ', err);
+          console.log('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
           process.exit(1);
         }
         debug('User Login OK', state);

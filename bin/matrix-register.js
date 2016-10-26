@@ -227,7 +227,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               console.log('Unknown error (' + err.status_code + '): ', err);
             }
           } else {
-            console.error('Unknown error: ', err);
+            if (err.hasOwnProperty('code') && err.code == 'ENOTFOUND') {
+              console.error('Unable to reach server, please try again later');
+            } else {
+              console.error('Unknown error: ', err);
+            }
+            
           }
         } else {
           debug('User', Matrix.config.user, out);
