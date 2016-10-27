@@ -44,6 +44,7 @@
     "moment": "^2.10.3",
     "ms": "^0.7.1",
     "node-yaml-localize": "https://github.com/matrix-io/node-yaml-localize/tarball/bt/localization",
+    "package-json": "^2.4.0",
     "prompt": "^0.2.14",
     "q": "^1.4.1",
     "request": "^2.74.0",
