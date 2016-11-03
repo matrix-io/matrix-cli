@@ -197,7 +197,7 @@ en:
       application_unspecified: 'specify [ app(name) ] ' #
       app_undefined: 'this app doesn`t exist' #
       starting_app: 'Starting'
-      start_app_successfully: 'Started'      
+      start_app_successfully: 'Started'
       start_app_error: 'Unable to start'
     stop:
       help: stop the application %{app}
@@ -224,6 +224,7 @@ en:
       description_developer: information about developing MATRIX apps
       description_index: 'app entry point, do not modify'
       description_package: 'node.js information file, do not modify without knowledge'
+      folder_exist: 'the app folder already exists'
     deploy:
       help: Uploads and deploys an app to the active MatrixOS %{app}
       app_not_found: 'No %{detect_file} found. Are you sure a MatrixOS app resides in %{pwd}?'
