@@ -33,8 +33,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.firebase.app.list(function (err, apps) {
         Matrix.loader.stop();
         if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
-        if (_.isUndefined(apps)) apps = {};
-
+        if (_.isUndefined(apps) || _.isNull(apps)) apps = {};
+        
         //Retrieve status for each app
         async.forEach(Object.keys(apps), function (appId, done) {
           Matrix.firebase.app.getStatus(appId, function (status) {
