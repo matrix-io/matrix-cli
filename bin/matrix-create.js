@@ -25,8 +25,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   }
 
-  //TODO check if path already exists, refuse if so
-  //
+  // check if path already exists, refuse if so
+  fs.access(process.cwd() + "/" + app, fs.F_OK, function(err) {
+    if (!err) {
+      console.error(t('matrix.create.error_creating') + ':', t('matrix.create.folder_exist'));
+      process.exit(1);
+    } else {
       var nameP = {
         name: 'name',
         description: 'App Name',
@@ -103,11 +107,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           .on('error', onError)
           .pipe(extractor);
         // unzip baseApp.zip to named folder
-        //
-
       })
-
-
+    }
+  });
 
   function displayHelp() {
     console.log('\n> matrix create ¬\n');
