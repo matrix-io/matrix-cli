@@ -1,7 +1,7 @@
 ## Welcome to your MatrixOS Console Line Interface
 
 ###### Bugs
-https://github.com/matrix-io/matrix-firebase/issues
+https://github.com/matrix-io/matrix-cli/issues
 
 ###### Questions
 http://community.matrix.one
