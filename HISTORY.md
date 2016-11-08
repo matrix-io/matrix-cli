@@ -9,3 +9,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Check to not overwrite folders on create
 - Start History file
+- Check for token expiration
