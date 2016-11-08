@@ -83,7 +83,7 @@ Matrix.firebaseInit = function (cb) {
           //TODO try to refresh token before failing
           Matrix.loader.stop();
           console.log('Invalid user, log in again'.yellow);
-          Matrix.helpers.logout(function () { 
+          Matrix.helpers.logout(function () {
             process.exit();
           });
         } else if (errorCode == 4) {
