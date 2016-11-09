@@ -9,8 +9,12 @@ var yaml = require('js-yaml');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
-
   var app = Matrix.pkgs[0];
+
+  if ( parseInt(app) === app ){
+    console.error(t('matrix.create.bad_numbers'))
+    process.exit(1);
+  }
 
   function onError(err) {
     Matrix.loader.stop();
