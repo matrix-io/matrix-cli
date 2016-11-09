@@ -52,6 +52,13 @@ en:
       command_help: 'set active device to device id'
     register:
       creating_device: 'Registering a new device.'
+    remove:
+      start: Preparing to remove device
+      progress: Removing device
+      finish: Device successfully removed
+      error: Unable to remove device
+      help_selected: Remove the selected device
+      help_id: Remove the device with id %{id}
     set:
       help_device: 'set device environment'
       help_config: 'configures application variables'

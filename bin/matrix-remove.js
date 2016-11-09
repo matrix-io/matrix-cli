@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var debug = debugLog('install');
+var debug = debugLog('remove');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   Matrix.loader.start();
@@ -10,51 +10,48 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
   
   var deviceId, progress;
-  if (Matrix.pkgs.length < 1) {
-    Matrix.validate.device();
+  if (Matrix.pkgs.length < 1) { // No id specified
+    Matrix.validate.device(); // Require a selected device
     deviceId = Matrix.config.device.identifier;
-  } else if (Matrix.pkgs.length === 1) {
+  } else if (Matrix.pkgs.length === 1) { //Id specified
     deviceId = Matrix.pkgs[0];
   } else {
     return displayHelp();
   }
   
-  Matrix.validate.user();
+  Matrix.validate.user(); // Need to be logged in
 
   Matrix.firebaseInit(function () {
     Matrix.firebase.device.lookup(deviceId, function (error, device) { //Check if device exists
-      if (error) { //If it doesn't
+      if (error) { //Device doesn't exist
         Matrix.loader.stop();
         console.log('Device ' + deviceId.yellow + ' doesn\'t exist');
         return process.exit(2);
-      } else { //If it exists
+      } else { // Device exists
         //Create a timeout in case workers don't respond'
         var deleteTimeoutSeconds = 20; 
-        var deleteTimeout = setTimeout(function () {
-          //If deleteTimeoutSeconds is passed, fail
+        var deleteTimeout = setTimeout(function () { //If deleteTimeoutSeconds is passed, fail
           Matrix.loader.stop();
           console.log('Unable to delete device right now, please try again later');
           process.exit(3)
         }, deleteTimeoutSeconds * 1000);
 
-        //Send removal task to Firebase queue
-        Matrix.firebase.device.delete(deviceId, {
-          error: function (err) { //If anything fails
+        Matrix.firebase.device.delete(deviceId, { //Send removal task to Firebase queue
+          error: function (err) {
             Matrix.loader.stop();
             clearTimeout(deleteTimeout); //Remove timeout
-            //Report error
-            if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) {
+            if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) { //Report error
               console.error('\n' + t('matrix.remove.error').red + ': ', err.details.error);
             } else {
               console.error('\n' + t('matrix.remove.error').red + ': ', err);
             }
-            process.exit(1);
+            process.exit(1); //Stop exectuion
           },
           finished: function () {
             clearTimeout(deleteTimeout); //Remove timeout
             Matrix.loader.stop();
             console.log('\n' + t('matrix.remove.finish').green + '...'.green);
-            process.exit(0);
+            process.exit(0); //Stop exectuion
           },
           start: function () {
             _.once(function () {
@@ -68,7 +65,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             if (!progress) {
               progress = true;
               Matrix.loader.stop();
-              process.stdout.write(t('matrix.remove.progress') + ':' + msg); //Report progress
+              process.stdout.write(t('matrix.remove.progress') + msg); //Report progress
             } else {
               process.stdout.write('.' + msg);
             }
@@ -78,16 +75,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
   });
 
-  //Confirm removal
-
-  //Create worker request
-
-
   function displayHelp() {
     Matrix.loader.stop();
     console.log('\n> matrix remove ¬\n');;
-    console.log('\t    matrix remove -', t('matrix.remove.help_selected', { app: '<app>' }).grey);
-    console.log('\t    matrix remove <id> -', t('matrix.remove.help_deviceId', { id: '<id>' }).grey);
+    console.log('\t    matrix remove -', t('matrix.remove.help_selected').grey);
+    console.log('\t    matrix remove <id> -', t('matrix.remove.help_id', { id: '<id>' }).grey);
     console.log('\n');
     process.exit(1);
   }
