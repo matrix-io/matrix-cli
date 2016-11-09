@@ -11,4 +11,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Start History file
 
 ### Changed
-- Apps cannot have numbered names
+- Apps cannot have numbers as names
