@@ -9,12 +9,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     return displayHelp();
   }
 
-  var deviceId, progress;
+  var targetValue, progress, target;
   if (Matrix.pkgs.length < 1) { // No id specified
     Matrix.validate.device(); // Require a selected device
-    deviceId = Matrix.config.device.identifier;
+    target = Matrix.config.device.identifier;
   } else if (Matrix.pkgs.length === 1) { //Id specified
-    deviceId = Matrix.pkgs[0];
+    target = Matrix.pkgs[0];
   } else {
     return displayHelp();
   }
@@ -22,11 +22,27 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   Matrix.validate.user(); // Need to be logged in
 
   Matrix.firebaseInit(function () {
-    Matrix.firebase.device.lookup(deviceId, function (error, device) { //Check if device exists
-      if (error) { //Device doesn't exist
+
+    var targetValue = _.findKey(Matrix.config.deviceMap, { name: target });
+
+    if (_.isEmpty(targetValue)) { // not a name, must be a key?
+      if (_.has(Matrix.config.deviceMap, target)) {
+        targetValue = target;
+      } else { //Doesn't exist
         Matrix.loader.stop();
-        console.log('Device ' + deviceId.yellow + ' doesn\'t exist');
+        console.log('Device ' + target.yellow + ' doesn\'t exist');
         return process.exit(2);
+      }
+    }
+
+    Matrix.firebase.device.lookup(targetValue, function (error, device) { //Check if device exists in firebase
+      if (error) { //Device doesn't exist in Firebase
+        delete Matrix.config.deviceMap[targetValue]; //Remove from local cache
+        Matrix.helpers.saveConfig(function () {
+          Matrix.loader.stop();
+          console.log('Device ' + targetValue.yellow + ' was already removed');
+          return process.exit(3);
+        });
       } else { // Device exists
 
         Matrix.loader.stop();
@@ -54,7 +70,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               process.exit(3)
             }, deleteTimeoutSeconds * 1000);
 
-            Matrix.firebase.device.delete(deviceId, { //Send removal task to Firebase queue
+            Matrix.firebase.device.delete(targetValue, { //Send removal task to Firebase queue
               error: function (err) {
                 Matrix.loader.stop();
                 clearTimeout(deleteTimeout); //Remove timeout
@@ -68,8 +84,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               finished: function () {
                 clearTimeout(deleteTimeout); //Remove timeout
                 Matrix.loader.stop();
-                console.log('\n' + t('matrix.remove.finish').green + '...'.green);
-                process.exit(0); //Stop exectuion
+                delete Matrix.config.deviceMap[targetValue]; //Remove from local cache
+                Matrix.helpers.saveConfig(function () {
+                  Matrix.loader.stop();
+                  console.log('\n' + t('matrix.remove.finish').green + '...'.green);
+                  process.exit(0); //Stop exectuion
+                });
               },
               start: function () {
                 _.once(function () {
@@ -95,8 +115,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         prompts.onNext({
           type: 'confirm',
           name: 'confirm',
-          message: 'This removes the device ' + deviceId.yellow + ' and all the data associated with it, are you sure?'.white,
-          default: true
+          message: 'This removes the device ' + targetValue.yellow + ' (' + device.meta.name.yellow + ') and all the data associated with it, are you sure?'.white,
+          default: false //Default to NO
         });
 
       }
