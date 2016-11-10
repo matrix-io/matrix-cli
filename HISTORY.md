@@ -7,5 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.2.5]
 ### Added
-- Check to not overwrite folders on create
 - **matrix remove** command to remove devices
+- Check to not overwrite folders on create
+- Start History file
