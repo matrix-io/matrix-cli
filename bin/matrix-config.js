@@ -8,6 +8,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   Matrix.validate.user(); //Make sure the user has logged in
   Matrix.validate.device(); //Make sure the user has logged in
 
+
   Matrix.firebaseInit(function () {
 
       var options = {};
