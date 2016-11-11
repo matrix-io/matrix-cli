@@ -11,3 +11,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Start History file
 - Check for token expiration
 - Start, stop, restart acknowledgements from firebase
+
+### Changed
+- Apps cannot have only numbers as names
