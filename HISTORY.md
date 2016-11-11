@@ -11,3 +11,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Check to not overwrite folders on create
 - Start History file
 - Check for token expiration
+- Start, stop, restart acknowledgements from firebase
