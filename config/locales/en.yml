@@ -199,7 +199,7 @@ en:
       starting_app: 'Starting'
       start_app_successfully: 'Started'
       start_app_error: 'Unable to start'
-      start_app_status_error: 'The application can`t start because it`s currently active'
+      start_app_status_error: 'The application can`t start because it`s currently active or pending installation'
     stop:
       help: stop the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
