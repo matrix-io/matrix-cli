@@ -13,6 +13,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   if (Matrix.pkgs.length < 1) { // No id specified
     Matrix.validate.device(); // Require a selected device
     target = Matrix.config.device.identifier;
+  } else if (Matrix.pkgs.length > 1) { //Id specified
+    target = Matrix.pkgs.join(' ');
   } else if (Matrix.pkgs.length === 1) { //Id specified
     target = Matrix.pkgs[0];
   } else {
