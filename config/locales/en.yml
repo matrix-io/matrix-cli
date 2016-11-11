@@ -219,6 +219,7 @@ en:
       name_undefined: 'Must specify app name'
       new_folder: New Folder
       error_creating: An error occurred
+      bad_numbers: Application names must not only be numbers
       description_app: this is your application logic
       description_config: 'change variables, indicate sensors, configure dashboard'
       description_developer: information about developing MATRIX apps

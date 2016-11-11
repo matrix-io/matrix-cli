@@ -9,3 +9,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Check to not overwrite folders on create
 - Start History file
+
+### Changed
+- Apps cannot have numbers as names
