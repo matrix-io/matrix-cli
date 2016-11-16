@@ -153,6 +153,7 @@ en:
       app_not_found: Application doesn't exist #
       sensor_not_found: Sensor doesn't exist #
       app_x_not_found: Application %{app} not found
+      app_version_x_not_found: Application version %{version} not found
       installing_x_with_policy: Installing %{app} with policy
       invalid_app_status: Invalid application status
       waiting_for_device_install: Awaiting installation on Device
