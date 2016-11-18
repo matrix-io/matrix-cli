@@ -207,6 +207,7 @@ en:
       start_app_successfully: 'Started'
       start_app_error: 'Unable to start'
       start_app_status_error: 'The application can`t start because it`s currently active or pending installation'
+      start_timeout: 'Could not start application. Unable to reach device'
     stop:
       help: stop the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
@@ -215,6 +216,7 @@ en:
       stop_app_successfully: 'Stopped'
       stop_app_error: 'Unable to stop'
       stop_app_status_error: 'The application can`t be stopped because it isn`t currently active'
+      stop_timeout: 'Could not stop application. Unable to reach device'
     restart:
       help: restart the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
@@ -223,6 +225,7 @@ en:
       restart_app_successfully: 'Restarted'
       restart_app_error: 'Unable to restart'
       restart_app_status_error: 'The application can`t be restarted because it isn`t currently active'
+      restart_timeout: 'Could not restart application. Unable to reach device'
     #DEVELOPMENT
     create:
       help: Creates a scaffolding for the app %{app}
