@@ -65,33 +65,36 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       prompt.start();
 
       prompt.get(ps, function(err, results){
+
         if (err) console.error(err);
 
         debug(results);
 
+        try {
 
-        if ( _.isUndefined(app)){
-          // no app name defined
-          app = results.name;
-        } else {
-          // app name defined
-          results.name = app;
-        }
+          if ( _.isUndefined(app)){
+            // no app name defined
+            app = results.name;
+          } else {
+            // app name defined
+            results.name = app;
+          }
 
-        // write the config yaml
-        configString = yaml.safeDump(results);
+          // write the config yaml
+          configString = yaml.safeDump(results);
 
+          debug('Writing config...',  configString);
 
-        debug('Writing config...',  configString);
-        Matrix.loader.start();
-        var extractor = tar.Extract({
-          path: process.cwd() + "/" + app,
-          strip: 1
-        })
+          Matrix.loader.start();
+
+          var extractor = tar.Extract({
+            path: process.cwd() + "/" + app,
+            strip: 1
+          })
           .on('error', onError)
           .on('end', function onFinishedExtract(){
 
-           Matrix.loader.stop();
+            Matrix.loader.stop();
 
             fs.writeFileSync(app + '/config.yaml', '\n' + configString, { flag: 'a'});
 
@@ -103,11 +106,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             console.log('   package.json'.grey, '-', t('matrix.create.description_package'))
           });
 
-        fs.createReadStream(__dirname + "/../baseapp.tar")
-          .on('error', onError)
-          .pipe(extractor);
-        // unzip baseApp.zip to named folder
-      })
+          fs.createReadStream(__dirname + "/../baseapp.tar")
+            .on('error', onError)
+            .pipe(extractor);
+          // unzip baseApp.zip to named folder
+        } catch (err) {
+          process.exit(1);
+        }
+      });
     }
   });
 
