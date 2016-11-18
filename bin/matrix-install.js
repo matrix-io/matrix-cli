@@ -60,7 +60,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         if(version){
           versionId = _.findKey(result.versions, function (appVersion, versionId) {
             if (appVersion.version === version) {
-              return 1;
+              return true;
             }
           });
           //If the version doesn't exist show the error and end the process
