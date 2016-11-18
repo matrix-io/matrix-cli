@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Acknowledgements from device for start, stop restart
 - Check for non-expired token before attempting to use
 - stop apps before installing, uninstalling or deploying
+- clean cancel of matrix create
 
 ## [1.2.5]
 ### Added
