@@ -66,11 +66,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       prompt.get(ps, function(err, results){
 
-        if (err) console.error(err);
+        if (err.toString().indexOf('canceled') > 0) {
+          console.log('');
+          process.exit();
+        } else {
+          console.log("Error: ", err);
+          process.exit();
+        }
 
         debug(results);
-
-        try {
 
           if ( _.isUndefined(app)){
             // no app name defined
@@ -110,9 +114,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             .on('error', onError)
             .pipe(extractor);
           // unzip baseApp.zip to named folder
-        } catch (err) {
-          process.exit(1);
-        }
       });
     }
   });
