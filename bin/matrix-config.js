@@ -20,6 +20,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       if ( !_.isUndefined(key)){
         key = key.replace(/\./g, '/');
       }
+
       var value = Matrix.pkgs[2];
 
       // split on = if exists
@@ -32,6 +33,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       if (!_.isUndefined(value) && value.indexOf(',') > -1 ) {
         // is an array
         value = value.split(',');
+      }
+
+      //support multiword
+      if(!_.isUndefined(value) && Matrix.pkgs.length > 3){
+        value += ' ' + _.tail(_.tail(Matrix.pkgs)).join(' ');
       }
 
       console.log('App Path:'.blue, _.compact([ target, key, value ]).join('/').grey)
