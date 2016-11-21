@@ -53,7 +53,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     /** authenticate client and user **/
     debug('Client', Matrix.options);
     Matrix.api.auth.client(Matrix.options, function (err, out) {
-      if (err) { 
+      if (err) {
         Matrix.loader.stop();
         debug('Client auth error: ', err);
         console.log('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
@@ -74,6 +74,29 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         /** token stores, delete extra stuff **/
         // delete Matrix.config.user.username;
         delete Matrix.config.user.password;
+
+        if(Matrix.config.keepDevice && _.has(Matrix.config.keepDevice, Matrix.config.user.id)){
+          var deviceName = Matrix.config.keepDevice[Matrix.config.user.id].name;
+          Matrix.api.device.register( Matrix.config.keepDevice[Matrix.config.user.id].identifier, function(err, state) {
+            if (err) return console.log(err);
+            if (state.status === "OK") {
+              // Save the device token
+              Matrix.config.device = {}
+              Matrix.config.device.identifier = Matrix.config.keepDevice[Matrix.config.user.id].identifier;
+              Matrix.config.device.token = state.results.device_token;
+            }
+
+            delete Matrix.config.keepDevice[Matrix.config.user.id];
+            if(Object.keys(Matrix.config.keepDevice).length === 0){
+              Matrix.config = _.omit(Matrix.config, ['keepDevice']);
+            }
+            Matrix.helpers.saveConfig(function(){
+              if( Matrix.config.device){
+                console.log('Now using device:'.grey, deviceName, 'ID:'.grey, Matrix.config.device.identifier);
+              }
+            });
+          });
+        }
 
         // download apps and devices belonging to user
         // from `users` in firebase
