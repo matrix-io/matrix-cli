@@ -1,10 +1,12 @@
 //Check if a user is logged in
 function user() {
-  token();
+
   if (_.isEmpty(Matrix.config.user)) {
     Matrix.loader.stop();
     console.error(t('matrix.please_login').yellow);
     process.exit();
+  }else{
+    token();
   }
 }
 
