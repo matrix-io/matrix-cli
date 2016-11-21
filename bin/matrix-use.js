@@ -62,6 +62,20 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.config.device = {}
       Matrix.config.device.identifier = targetDeviceId;
       Matrix.config.device.token = state.results.device_token;
+
+      //Create the object for keep device after session expired
+      if(!Matrix.config.keepDevice){
+        Matrix.config.keepDevice = {};
+      }
+
+      //Create key for the current user into the object for keep device after session expired
+      if(!_.has(Matrix.config.keepDevice, Matrix.config.user.id)){
+        Matrix.config.keepDevice[ Matrix.config.user.id]={};
+      }
+      //Put the data into the object for keep device after session expired
+      Matrix.config.keepDevice[ Matrix.config.user.id].identifier = Matrix.config.device.identifier;
+      Matrix.config.keepDevice[ Matrix.config.user.id].name = target;
+      //Save config
       Matrix.helpers.saveConfig(process.exit);
 
     } else {

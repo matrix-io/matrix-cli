@@ -75,29 +75,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         // delete Matrix.config.user.username;
         delete Matrix.config.user.password;
 
-        if(Matrix.config.keepDevice && _.has(Matrix.config.keepDevice, Matrix.config.user.id)){
-          var deviceName = Matrix.config.keepDevice[Matrix.config.user.id].name;
-          Matrix.api.device.register( Matrix.config.keepDevice[Matrix.config.user.id].identifier, function(err, state) {
-            if (err) return console.log(err);
-            if (state.status === "OK") {
-              // Save the device token
-              Matrix.config.device = {}
-              Matrix.config.device.identifier = Matrix.config.keepDevice[Matrix.config.user.id].identifier;
-              Matrix.config.device.token = state.results.device_token;
-            }
-
-            delete Matrix.config.keepDevice[Matrix.config.user.id];
-            if(Object.keys(Matrix.config.keepDevice).length === 0){
-              Matrix.config = _.omit(Matrix.config, ['keepDevice']);
-            }
-            Matrix.helpers.saveConfig(function(){
-              if( Matrix.config.device){
-                console.log('Now using device:'.grey, deviceName, 'ID:'.grey, Matrix.config.device.identifier);
-              }
-            });
-          });
-        }
-
         // download apps and devices belonging to user
         // from `users` in firebase
         Matrix.firebaseInit( function(){
@@ -105,7 +82,36 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             /** save the creds if it's good **/
             Matrix.loader.stop();
             console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
-            process.exit();
+
+            //Verify if the user has a device to be used
+            if(Matrix.config.keepDevice && _.has(Matrix.config.keepDevice, Matrix.config.user.id)){
+              //Get the device name
+              var deviceName = Matrix.config.keepDevice[Matrix.config.user.id].name;
+              //Get the device token
+              Matrix.api.device.register( Matrix.config.keepDevice[Matrix.config.user.id].identifier, function(err, state) {
+                if (err) return console.log(err);
+                //Verify if the devices status is OK.
+                if (state.status === "OK") {
+                  //Save the device token And Put the device into use
+                  Matrix.config.device = {}
+                  Matrix.config.device.identifier = Matrix.config.keepDevice[Matrix.config.user.id].identifier;
+                  Matrix.config.device.token = state.results.device_token;
+                }
+                //Clear the object for keep device after session expired
+                delete Matrix.config.keepDevice[Matrix.config.user.id];
+                if(Object.keys(Matrix.config.keepDevice).length === 0){
+                  Matrix.config = _.omit(Matrix.config, ['keepDevice']);
+                }
+                //Save config
+                Matrix.helpers.saveConfig(function(){
+                  if( Matrix.config.device){
+                    console.log('Using device:'.grey, deviceName, 'ID:'.grey, Matrix.config.device.identifier);
+                  }
+                  process.exit();
+                });
+              });
+            }
+
           });
         });
       });

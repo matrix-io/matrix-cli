@@ -21,7 +21,6 @@ function device() {
 function token(){
   var jwt = require('jsonwebtoken');
   var token = Matrix.config.user.token;
-  console.log('----------------->', Matrix.config);
   if ( _.isUndefined(token) ){
     console.error(t('matrix.please_login').yellow);
     process.exit();
