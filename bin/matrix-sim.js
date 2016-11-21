@@ -24,6 +24,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
       process.exit();
     }
+    Matrix.loader.start();
     // make sure device name, device id and userId are available
     var deviceId = 'sim-' + _.times(24, function () {
       return Math.round(Math.random() * 16).toString(16)
@@ -33,6 +34,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     prompt.delimiter = '';
     prompt.message = [t('matrix.sim.init.specify_data_for_init') + '\n'];
+    Matrix.loader.stop();
     prompt.start();
     prompt.get(['name', 'description'], function (err, inputs) {
       if (err) {
@@ -44,6 +46,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           process.exit();
         }
       }
+      //TODO Probably need to adjust this later
       // check for dupe name, note, this requires matrix list devices to have run
 
       _.each(Matrix.config.deviceMap, function (d) {
@@ -52,14 +55,59 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           process.exit();
         }
       });
+
       console.log(t('matrix.sim.init.creating_device') + ' ', inputs, '[' + deviceId + ']')
+      Matrix.loader.start();
       var deviceObj = {
-        deviceId: deviceId,
-        deviceName: inputs,
-        deviceDescription: inputs2,
-        user: Matrix.config.user.id,
+        type: 'matrix',
+        osVersion: 'sim',
+        version: require(__dirname + '/../package.json').version,
+        name: inputs.name,
+        description: inputs.description,
+        hardwareId: deviceId
       };
 
+      Matrix.firebaseInit(function () {
+        debug('Firebase init passed');
+
+        var events = {
+          error: function (err) {
+            Matrix.loader.stop();
+            console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
+            process.exit();
+          },
+          finished: function () {
+            Matrix.loader.stop();
+            console.log('Device registered succesfuly');
+
+            Matrix.config.sim = {
+              token: Matrix.config.user.token,
+              id: deviceId
+            }
+
+            Matrix.helpers.saveConfig(function () { 
+              console.log(t('matrix.sim.init.success').green)
+              console.log('\n' + t('matrix.sim.init.to_target_device') + ':\n');
+              console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
+              process.exit();
+            });
+          },
+          start: function () {
+            Matrix.loader.stop();
+            console.log('Device registration request formed...');
+            Matrix.loader.start();
+          },
+          progress: function () {
+            Matrix.loader.stop();
+            console.log('Registering device...');
+            Matrix.loader.start();
+          }
+        };
+
+        Matrix.firebase.device.add(deviceObj, events);
+      });
+
+      /*
       Matrix.api.device.create(deviceObj, function (err, device) {
         if (err) return console.error(t('matrix.sim.init.error_creating_device'), err);
         debug('Create Device:', device);
@@ -82,7 +130,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           console.log('\n' + t('matrix.sim.init.to_target_device') + ':\n');
           console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
         });
-      });
+      });*/
     });
     
   } else if (cmd === 'start') {

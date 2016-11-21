@@ -5,7 +5,7 @@ var prompt = require('prompt');
 var debug = debugLog('login');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  
+
   var schema = {
     properties: {
       username: {
@@ -25,11 +25,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   prompt.message = 'Login -- ';
   prompt.start();
   prompt.get(schema, function (err, result) {
+    Matrix.loader.start();
     if (err) {
+      Matrix.loader.stop();
       if (err.toString().indexOf('canceled') > 0) {
         console.log('');
         process.exit();
-      } else { 
+      } else {
         console.log("Error: ", err);
         process.exit();
       }
@@ -44,16 +46,27 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     Matrix.config.user.jwt_token = true;
 
     /** set the client to empty **/
-    Matrix.config.client = {}
+    Matrix.config.client = {};
+
+
 
     /** authenticate client and user **/
     debug('Client', Matrix.options);
     Matrix.api.auth.client(Matrix.options, function (err, out) {
-      if (err) throw err;
+      if (err) { 
+        Matrix.loader.stop();
+        debug('Client auth error: ', err);
+        console.log('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
+        process.exit(1);
+      }
       debug('User', Matrix.config.user, out);
       Matrix.api.auth.user(Matrix.config.user, function (err, state) {
-        if (err) return console.error('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
-
+        if (err) {
+          Matrix.loader.stop();
+          debug('User auth error: ', err);
+          console.log('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
+          process.exit(1);
+        }
         debug('User Login OK', state);
         Matrix.config.user.token = state.access_token;
         Matrix.config.user.id = state.id;
@@ -61,17 +74,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         /** token stores, delete extra stuff **/
         // delete Matrix.config.user.username;
         delete Matrix.config.user.password;
-        Matrix.helpers.saveConfig(function () {
-          console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
-          process.exit();
+
+        // download apps and devices belonging to user
+        // from `users` in firebase
+        Matrix.firebaseInit( function(){
+          Matrix.helpers.refreshDeviceMap(function(){
+            /** save the creds if it's good **/
+            Matrix.loader.stop();
+            console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
+            process.exit();
+          });
         });
-
-
-        // set user token
       });
     });
-    /** save the creds if it's good **/
-
   });
-
 });

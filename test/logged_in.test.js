@@ -4,7 +4,7 @@ var exec = require('child_process').exec;
 var colors = require('colors');
 var should = require('should');
 var sinon = require('sinon');
-var Table = require('cli-table');
+var Table = require('cli-table2');
 
 
 describe('Matrix CLI Commands', function () {
@@ -661,8 +661,8 @@ describe('Matrix CLI Commands', function () {
             // console.log('stderr', out.toString())
           })
           setProc.on('close', function (code) {
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
-            // console.log('close', outputs)
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
+           // console.log('close', outputs)
             done();
           });
         });
@@ -682,8 +682,7 @@ describe('Matrix CLI Commands', function () {
             outputs.push(out.toString());
           })
           rebootProc.on('close', function (code) {
-            // console.log('close', outputs);
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           })
         });
@@ -702,8 +701,8 @@ describe('Matrix CLI Commands', function () {
             outputs.push(out.toString());
           })
           searchProc.on('close', function (code) {
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
-            // console.log('close', outputs)
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
+           // console.log('close', outputs)
             done();
           });
         });
@@ -722,8 +721,7 @@ describe('Matrix CLI Commands', function () {
             // console.log('stderr', out.toString())
           });
           installProc.on('close', function (code) {
-            // console.log('close', outputs)
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           });
         });
@@ -742,8 +740,7 @@ describe('Matrix CLI Commands', function () {
             // console.log('stderr', out.toString())
           });
           configProc.on('close', function (code) {
-            // console.log('close', outputs)
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           });
         });
@@ -762,8 +759,7 @@ describe('Matrix CLI Commands', function () {
             // console.log('stderr', out.toString())
           });
           uninstallProc.on('close', function (code) {
-            // console.log('close', outputs)
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           });
         });
@@ -782,8 +778,7 @@ describe('Matrix CLI Commands', function () {
             // console.log('stderr', out.toString())
           });
           updateProc.on('close', function (code) {
-            // console.log('close', outputs)
-            outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+            outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
             done();
           });
         }); // Finish update
@@ -802,8 +797,7 @@ describe('Matrix CLI Commands', function () {
               // console.log('stderr', out.toString())
             });
             startProc.on('close', function (code) {
-              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -822,8 +816,7 @@ describe('Matrix CLI Commands', function () {
               // console.log('stderr', out.toString())
             });
             stopProc.on('close', function (code) {
-              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -843,8 +836,7 @@ describe('Matrix CLI Commands', function () {
               // console.log('stderr', out.toString())
             });
             restartProc.on('close', function (code) {
-              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -865,8 +857,7 @@ describe('Matrix CLI Commands', function () {
               // console.log('stderr', out.toString())
             });
             createProc.on('close', function (code) {
-              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -886,8 +877,7 @@ describe('Matrix CLI Commands', function () {
               // console.log('stderr', out.toString())
             });
             deployProc.on('close', function (code) {
-              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -906,8 +896,7 @@ describe('Matrix CLI Commands', function () {
               // console.log('stderr', out.toString())
             });
             triggerProc.on('close', function (code) {
-              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
           });
@@ -927,8 +916,7 @@ describe('Matrix CLI Commands', function () {
               // console.log('stderr', out.toString())
             });
             logProc.on('close', function (code) {
-              // console.log('close', outputs)
-              outputs.should.matchAny(new RegExp(t('matrix.set.warning_device_required')), 'stdout Fail, expecting "' + t('matrix.set.warning_device_required') + '"')
+              outputs.should.matchAny(new RegExp(t('matrix.validate.no_device')), 'stdout Fail, expecting "' + t('matrix.validate.no_device') + '"')
               done();
             });
 

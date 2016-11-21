@@ -50,7 +50,7 @@ function runMatrix(cmd, target, errors, cb){
 
     it('`matrix stop`', function(done){
 
-        var proc = run('matrix', ['start','monitor'])
+        var proc = run('matrix', ['stop','monitor'])
         proc.stdout.on('data', function(out){
           console.log(out.toString())
           if (out.toString().indexOf('error') > -1){
@@ -66,15 +66,15 @@ function runMatrix(cmd, target, errors, cb){
     it('`matrix set config app key=value`')
   })
 
-  describe('has application development functions', function(done){
-    it('`matrix create`', function () {
-      var name = _.map(Array(16), function(){
+  describe('has application development functions', function(){
+    it('`matrix create`', function (done) {
+      var name = 'matrixtestapp-' + _.map(Array(8), function(){
         return Math.round(Math.random()*16).toString(16)
       }).join('');
 
-      run('matrix', ['create', name ])
+      require('child_process').spawnSync('matrix', ['create', name ])
       var fs = require('fs');
-      if ( fs.stat( name ).isDirectory() ) {
+      if ( fs.statSync( name ).isDirectory() ) {
         exec('rm -r '+ name);
         done();
       } else {

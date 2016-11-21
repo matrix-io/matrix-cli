@@ -29,7 +29,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     },
     dev: {
       api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://dev-mxss.admobilize.com'
+      mxss: 'http://dev-mxss.admobilize.com',
+      appsBucket: 'dev-admobilize-matrix-apps'
+    },
+    rc: {
+      api: 'https://rc-api.admobilize.com',
+      mxss: 'https://rc-mxss.admobilize.com',
+      appsBucket: 'admobilize-matrix-apps'
     },
     stage: {
       api: 'http://stage-api.admobilize.com',
@@ -37,11 +43,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     },
     production: {
       api: 'http://demo.admobilize.com',
-      mxss: 'http://mxss.admobilize.com'
+      mxss: 'http://mxss.admobilize.com',
+      appsBucket: 'admobilize-matrix-apps'
     },
     hardcode: {
       api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://104.196.123.3:80'
+      mxss: 'http://104.197.139.81'
     }
   };
 
@@ -49,14 +56,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     var value = Matrix.pkgs[1];
 
-    if (value && value.match(/sandbox|dev|stage|local|production|hardcode/)) {
-      Matrix.config.environment = _.assign(environments[value], { name: value });
-      Matrix.helpers.saveConfig();
-      console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
-      // TODO: set-env [value] sets a environment on the Matrix
-      Matrix.validate.device(); //Make sure the user has logged in
+    if (value && value.match(/sandbox|dev|stage|local|production|rc|hardcode/)) {
+      Matrix.helpers.logout(function () {
+        Matrix.config.environment = _.assign(environments[value], { name: value });
+        Matrix.helpers.saveConfig(function () {
+          console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
+          // TODO: set-env [value] sets a environment on the Matrix
+          //Matrix.validate.device(); //Make sure the user has logged in
+        });
+      });
     } else {
-      console.error(t('matrix.set.env.valid_environments') + ' = [ sandbox, production ]')
+      console.error(t('matrix.set.env.valid_environments') + ' = [ dev, rc, production ]')
     }
 
   } else if (Matrix.pkgs.indexOf('config') === 0) {
@@ -107,11 +117,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       if (locale && locale.match(localesRegExp)) {
         Matrix.config.locale = _.assign(locale, { "name": locale });
-        Matrix.helpers.saveConfig();
-        console.log(t('matrix.set.locale.locale').grey + ':'.grey, Matrix.config.locale.green);
+        Matrix.helpers.saveConfig(function () {
+          console.log(t('matrix.set.locale.locale').grey + ':'.grey, Matrix.config.locale.green);
+          process.exit(0);
+        });
       } else {
         var validLocales = Object.keys(locales).join(', ');
         console.error(t('matrix.set.locale.valid_locales') + ' = [ ' + validLocales + ' ]');
+        process.exit(0);
       }
     }
 
