@@ -70,12 +70,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       prompt.get(ps, function(err, results){
 
-        if (err.toString().indexOf('canceled') > 0) {
-          console.log('');
-          process.exit();
-        } else {
-          console.log("Error: ", err);
-          process.exit();
+
+        if (err) {
+          if (err.toString().indexOf('canceled') > 0) {
+            console.log('');
+            process.exit();
+          } else {
+            console.log("Error: ", err);
+            process.exit();
+          }
         }
 
         debug(results);
