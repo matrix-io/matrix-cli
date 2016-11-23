@@ -70,6 +70,10 @@ module.exports = {
   device: device,
   user: user,
   token: token,
+  config: function(config){
+    var configHelper = require('matrix-app-config-helper')
+    return configHelper.validate(config);
+  },
   isCurrentDevice: isCurrentDevice,
   firebaseError: firebaseError
 };
