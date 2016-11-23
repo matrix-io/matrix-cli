@@ -53,7 +53,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     /** authenticate client and user **/
     debug('Client', Matrix.options);
     Matrix.api.auth.client(Matrix.options, function (err, out) {
-      if (err) { 
+      if (err) {
         Matrix.loader.stop();
         debug('Client auth error: ', err);
         console.log('Matrix CLI :'.grey, t('matrix.login.user_auth_error').yellow + ':'.yellow, err.message.red);
@@ -82,7 +82,36 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             /** save the creds if it's good **/
             Matrix.loader.stop();
             console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
-            process.exit();
+
+            //Verify if the user has a device to be used
+            if(Matrix.config.keepDevice && _.has(Matrix.config.keepDevice, Matrix.config.user.id)){
+              //Get the device name
+              var deviceName = Matrix.config.keepDevice[Matrix.config.user.id].name;
+              //Get the device token
+              Matrix.api.device.register( Matrix.config.keepDevice[Matrix.config.user.id].identifier, function(err, state) {
+                if (err) return console.log(err);
+                //Verify if the devices status is OK.
+                if (state.status === "OK") {
+                  //Save the device token And Put the device into use
+                  Matrix.config.device = {}
+                  Matrix.config.device.identifier = Matrix.config.keepDevice[Matrix.config.user.id].identifier;
+                  Matrix.config.device.token = state.results.device_token;
+                }
+                //Clear the object for keep device after session expired
+                delete Matrix.config.keepDevice[Matrix.config.user.id];
+                if(Object.keys(Matrix.config.keepDevice).length === 0){
+                  Matrix.config = _.omit(Matrix.config, ['keepDevice']);
+                }
+                //Save config
+                Matrix.helpers.saveConfig(function(){
+                  if( Matrix.config.device){
+                    console.log('Using device:'.grey, deviceName, 'ID:'.grey, Matrix.config.device.identifier);
+                  }
+                  process.exit();
+                });
+              });
+            }
+
           });
         });
       });
