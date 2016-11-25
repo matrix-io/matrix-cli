@@ -110,8 +110,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   process.exit();
                 });
               });
+            }else{
+              process.exit();
             }
-
           });
         });
       });
