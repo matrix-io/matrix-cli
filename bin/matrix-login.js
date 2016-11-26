@@ -113,7 +113,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             } else {
               process.exit();
             }
-
           });
         });
       });
