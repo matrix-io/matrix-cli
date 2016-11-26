@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [1.2.7]
+
+### Added
+- Keeping device on login
+- `matrix validate` command for testing config.yaml
+
+### Changed
+- Fixed Login Not Exiting Bug
+
+### Removed
+- Removed regex for installing sensors / apps
+
+
 ### [1.2.6]
 ### Added
 - Timeouts for start, stop, restart in case device is off
