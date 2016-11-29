@@ -39,7 +39,7 @@ var run = function(cmd, options, done){
   // global to match multis
   var checkRegex = new RegExp( options.checks.join('|'), 'g' );
 
-  // console.log(respondRegex, checkRegex)
+  console.log(respondRegex, checkRegex)
 //
 
   var output = [];
@@ -48,12 +48,12 @@ var run = function(cmd, options, done){
   proc.stdout.on('data', function (out) {
     out = out.toString();
     output.push(out.split('\n'))
-    // console.log(out)
+    console.log(out)
     // called for each line of out
     var respMatch = out.match( respondRegex );
-    if ( options.hasOwnProperty('responses') && !_.isNull( respMatch ) ) {
+    if (responseCount < targetResps && options.hasOwnProperty('responses') && !_.isNull( respMatch ) ) {
       var index = respondPrompts.indexOf( respMatch[0] );
-      // console.log(respMatch[0], index)
+      // console.log(respMatch[0], index, options.responses[index][1])
       proc.stdin.write( options.responses[index][1] );
       responseCount += 1;
     }
@@ -62,6 +62,7 @@ var run = function(cmd, options, done){
       checkCount += out.match(checkRegex).length;
     }
 
+    console.log( responseCount, checkCount )
     if ( !finished && responseCount >= targetResps && checkCount >= targetChecks ){
       finished = true;
       if ( options.hasOwnProperty('postCheck') ){
@@ -73,7 +74,6 @@ var run = function(cmd, options, done){
   })
 
   proc.on('close', function(code){
-    // console.log( responseCount, checkCount )
 
   })
 }

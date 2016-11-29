@@ -75,33 +75,6 @@ var Matrix;
      }, done)
    })
 
-   describe('appdev lifecycle', function(){
-     it('`matrix create`', function(done){
-       fn.run('matrix create', {
-         responses: [
-           ['App Name', 'matrix-test-app'],
-           ['Description', 'description'],
-           ['Keywords', 'foo,bar'],
-         ],
-         checks: 'New Folder:> matrix-test-app/',
-         postCheck: function(done){
-           var config = require('js-yaml').safeLoad('./matrix-test-app/config.yaml');
-           assert( config.name === 'matrix-test-app' );
-           assert( config.description === 'description');
-           assert( config.keywords === 'foo,bar');
-           done();
-         }
-       }, done)
-     });
-     it('`matrix create app-name`')
-     it('`matrix deploy`')
-     it('`matrix list apps`')
-
-
-     after(function (done) {
-       require('child_process').exec('rm -rf matrix-test-app matrix-test-app2')
-     })
-   })
 
    after(function (done) {
      Matrix.kill();
