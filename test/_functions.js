@@ -22,7 +22,7 @@ var run = function(cmd, options, done){
   if ( _.isString(options.checks) ){
     options.checks = [ options.checks ]
   }
-  console.log(args);
+  // console.log(args)
   var proc = require('child_process').spawn('matrix', args);
 
   var responseCount = 0; //options.responses.length;
@@ -44,10 +44,11 @@ var run = function(cmd, options, done){
 
   var output = [];
   var finished = false;
+
   proc.stdout.on('data', function (out) {
     out = out.toString();
     output.push(out.split('\n'))
-    console.log(out)
+    // console.log(out)
     // called for each line of out
     var respMatch = out.match( respondRegex );
     if ( options.hasOwnProperty('responses') && !_.isNull( respMatch ) ) {
@@ -61,11 +62,6 @@ var run = function(cmd, options, done){
       checkCount += out.match(checkRegex).length;
     }
 
-
-  })
-
-  proc.on('close', function(code){
-    // console. log( responseCount, checkCount )
     if ( !finished && responseCount >= targetResps && checkCount >= targetChecks ){
       finished = true;
       if ( options.hasOwnProperty('postCheck') ){
@@ -73,9 +69,12 @@ var run = function(cmd, options, done){
       } else {
         done();
       }
-    } else {
-      done('finished execution without outputting responses and checks')
     }
+  })
+
+  proc.on('close', function(code){
+    // console.log( responseCount, checkCount )
+
   })
 }
 

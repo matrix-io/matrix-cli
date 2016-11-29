@@ -12,40 +12,42 @@ describe('Matrix CLI Commands', function () {
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, done);
   })
 
-  describe('No login warnings', function (done) {
-
+  describe.only('No login warnings', function () {
+    this.timeout(2500)
       it('matrix', function (done) {
         fn.run('matrix', {
           checks: t('matrix.no_user_message')
         }, done);
       });
 
+
       it('logout', function (done) {
-        fn.run('logout', {
-          checks: t('matrix.please_login')
+
+        fn.run('matrix logout', {
+          checks: 'No user logged in'
         }, done);
       });
 
       it('use', function (done) {
-        fn.run('use', {
+        fn.run('use 123', {
           checks: t('matrix.please_login')
         }, done);
       });
 
       it('sim', function (done) {
-        fn.run('sim', {
+        fn.run('sim init', {
           checks: t('matrix.please_login')
         }, done);
       });
 
       it('list', function (done) {
-        fn.run('list', {
+        fn.run('list all', {
           checks: t('matrix.please_login')
         }, done);
       });
 
       it('set', function (done) {
-        fn.run('set', {
+        fn.run('set config', {
           checks: t('matrix.please_login')
         }, done);
       });
@@ -57,7 +59,7 @@ describe('Matrix CLI Commands', function () {
       });
 
       it('install', function (done) {
-        fn.run('install', {
+        fn.run('install sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
@@ -68,200 +70,38 @@ describe('Matrix CLI Commands', function () {
         }, done);
       });
       it('uninstall', function (done) {
-        fn.run('uninstall', {
+        fn.run('uninstall sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
       it('update', function (done) {
-        fn.run('update', {
+        fn.run('update sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
 
       it('start', function (done) {
-        fn.run('start', {
+        fn.run('start sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
       it('stop', function (done) {
-        fn.run('stop', {
+        fn.run('stop sensortest', {
+          checks: t('matrix.please_login')
+        }, done);
+      });
+      it('restart', function (done) {
+        fn.run('restart sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-    describe('config', function () {
-      it('should show a log in warning', function (done) {
-        var configProc = run('matrix', ['config']);
-        var outputs = new Array();
-
-        configProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        configProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        configProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
+      it('deploy', function (done) {
+        fn.run('deploy sensortest', {
+          checks: t('matrix.please_login')
+        }, done);
       });
-    }); //Finish config
-    describe('uninstall', function () {
-      it('should show a log in warning', function (done) {
-        var uninstallProc = run('matrix', ['uninstall']);
-        var outputs = new Array();
 
-        uninstallProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        uninstallProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        uninstallProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-      });
-    }); //Finish uninstall
-    describe('update', function () {
-      it('should show a log in warning', function (done) {
-        var updateProc = run('matrix', ['update']);
-        var outputs = new Array();
-        updateProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        updateProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        updateProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish update
-    describe('start', function () {
-      it('should show a log in warning', function (done) {
-        var startProc = run('matrix', ['start']);
-        var outputs = new Array();
-        startProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        startProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        startProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish start
-    describe('stop', function () {
-      it('should show a log in warning', function (done) {
-        var stopProc = run('matrix', ['stop']);
-        var outputs = new Array();
-        stopProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        stopProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        stopProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-
-      });
-    }); //Finish stop
-
-    describe('restart', function () {
-      it('should show a log in warning', function (done) {
-        var restartProc = run('matrix', ['restart']);
-        var outputs = new Array();
-        restartProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        restartProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        restartProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-
-      });
-    }); //Finish restart
-
-describe('create', function () {
-      it('should show a log in warning', function (done) {
-        var createProc = run('matrix', ['create']);
-        var outputs = new Array();
-        createProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        createProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        createProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish create
-    describe('deploy', function () {
-      it('should show a log in warning', function (done) {
-        var deployProc = run('matrix', ['deploy']);
-        var outputs = new Array();
-        deployProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        deployProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        deployProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-      });
-    }); //Finish deploy
-
-    describe('trigger', function () {
-      it('should show a log in warning', function (done) {
-        var triggerProc = run('matrix', ['trigger']);
-        var outputs = new Array();
-        triggerProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        triggerProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        triggerProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-
-      });
-    }); //Finish trigger
-
-    describe('log }', function () {
-      it('should show a log in warning Log', function (done) {
-        var logProc = run('matrix', ['log']);
-        var outputs = new Array();
-        logProc.stdout.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        logProc.stderr.on('data', function (out) {
-          outputs.push(out.toString());
-        });
-        logProc.on('close', function (code) {
-          outputs.should.matchAny(new RegExp(t('matrix.please_login')), 'stdout Fail, expecting "' + t('matrix.please_login') + '"')
-          done();
-        });
-      });
-    }); //Finish log
   }) // FINISH CONTEXT Not logged in
 
   describe('Logged in {', function () {

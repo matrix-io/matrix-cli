@@ -29,7 +29,7 @@ en:
     help_trigger: Runs a CrossTalk event test
     help_log: Logs output from selected MatrixOS and applications
     help_ping: Flash lights on selected Matrix device
-    please_login: No user logged in.
+    please_login: No user logged in
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:
