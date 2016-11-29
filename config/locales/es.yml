@@ -45,6 +45,7 @@ es:
       not_authorized: 'No autorizado'
       device_not_found: El dispositivo no existe'
       invalid_token: 'Tu token es invalido'
+      invalid_nameid: 'No es un nombre de dispositivo ni un id de dispositivo'
       try: 'Intenta'
       command_help: 'establece como dispositivo activo el dispositivo con id'
     set:

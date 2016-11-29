@@ -21,7 +21,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       targetDeviceId = target;
       nameProvided = false;
     } else {
-      console.error(target.red, 'is not a device name or a device id')
+      console.log(target.red, t('matrix.use.invalid_nameid'))
       process.exit(1);
     }
   }
