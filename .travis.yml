@@ -5,8 +5,6 @@ node_js:
   - "5"
   - "4"
 sudo: required
-env:
-  - NPM_CONFIG_PREFIX=~/.npm-global
 before_script:
   - npm config get prefix
   - mkdir ~/.npm-global
