@@ -24,7 +24,6 @@ before_script:
   - source ~/.profile
   - npm link
   - mkdir ../matrix-os
-  - touch ~/.matrix
   - git clone https://github.com/matrix-io/matrix-os.git ../matrix-os
   - cd ../matrix-os/
   - git submodule update --init
@@ -33,4 +32,4 @@ before_script:
   - cd ../matrix-cli
 
 after_failure:
-  - cat ~/.matrix
+  - cat ~/.matrix/store.json
