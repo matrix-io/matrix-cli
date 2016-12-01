@@ -13,6 +13,7 @@ before_script:
   - source ~/.profile
   - npm link
   - mkdir ../matrix-os
+  - npm install -g node-gyp
   - git clone https://github.com/matrix-io/matrix-os.git ../matrix-os
   - cd ../matrix-os/
   - npm install
