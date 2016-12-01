@@ -8,6 +8,8 @@
  * options.postCheck f() - ( done, output=['','',...]) run a final check
  */
 
+var showLogs = false;
+
 var run = function(cmd, options, done){
   if ( !_.isFunction(done)){
     throw new Error('Run needs a done()');
@@ -39,7 +41,7 @@ var run = function(cmd, options, done){
   // global to match multis
   var checkRegex = new RegExp( options.checks.join('|'), 'g' );
 
-  console.log(respondRegex, checkRegex)
+  // console.log(respondRegex, checkRegex)
 //
 
   var output = [];
@@ -48,7 +50,9 @@ var run = function(cmd, options, done){
   proc.stdout.on('data', function (out) {
     out = out.toString();
     output.push(out.split('\n'))
-    console.log(out)
+    // if (showLogs){
+      console.log(out)
+    // }
     // called for each line of out
     var respMatch = out.match( respondRegex );
     if (responseCount < targetResps && options.hasOwnProperty('responses') && !_.isNull( respMatch ) ) {
@@ -62,7 +66,7 @@ var run = function(cmd, options, done){
       checkCount += out.match(checkRegex).length;
     }
 
-    console.log( responseCount, checkCount )
+    // console.log( responseCount, checkCount )
     if ( !finished && responseCount >= targetResps && checkCount >= targetChecks ){
       finished = true;
       if ( options.hasOwnProperty('postCheck') ){
@@ -80,6 +84,7 @@ var run = function(cmd, options, done){
 
 
 module.exports = {
+  showLogs: showLogs,
   run: run,
   readConfig: function readConfig(){
     return JSON.parse( require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json') );
@@ -127,6 +132,15 @@ module.exports = {
     }, done )
   },
   useDevice: function(done){
+    // if we haven't done the whole test, get deviceid from the config
+    if ( !M.hasOwnProperty('DEVICE_ID') ){
+      var c = fn.readConfig();
+
+      M.DEVICE_ID = ( c.device.hasOwnProperty('identifier') ) ?
+        c.device.identifier :
+        Object.keys(c.deviceMap)[0];
+    }
+
     run('matrix use ' + M.DEVICE_ID, {
       checks: ['device: test-device'],
       postCheck : function(done){

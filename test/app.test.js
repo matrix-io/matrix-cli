@@ -1,5 +1,6 @@
 var run = require('child_process').spawn;
 var exec = require('child_process').exec;
+var assert = require('assert');
 var Matrix;
 
 
@@ -19,7 +20,8 @@ var Matrix;
            MATRIX_DEVICE_SECRET: M.DEVICE_SECRET || process.env.MATRIX_DEVICE_SECRET,
            NO_UPGRADE: true,
            NODE_ENV: 'dev',
-           TEST_MODE: true
+           TEST_MODE: true,
+           DEBUG:'',
          },
          stdio: 'ignore'
        })
@@ -71,9 +73,70 @@ var Matrix;
 
    it('`matrix uninstall`', function (done) {
      fn.run('matrix uninstall sensorTest', {
-       checks: 'Uninstall Progress:Uninstall sent to device...'
+       checks: 'Uninstall sent to device'
      }, done)
    })
+
+
+    describe('appdev lifecycle', function(){
+      this.timeout(5000)
+      before(function (done) {
+        require('child_process').exec('rm -rf matrix-test-app matrix-test-app2')
+        done()
+      })
+
+      it('`matrix create`', function(done){
+        fn.run('matrix create', {
+          responses: [
+            ['App Name', 'matrix-test-app\n'],
+            ['Description', 'description\n'],
+            ['Keywords', 'foo,bar\n'],
+          ],
+          checks: ['matrix-test-app'],
+          postCheck: function(done){
+            var config = require('js-yaml').safeLoad(require('fs').readFileSync('./matrix-test-app/config.yaml'));
+            assert( (config.name === 'matrix-test-app') );
+            assert( (config.description === 'description'));
+            assert( (config.keywords === 'foo,bar'));
+            done();
+          }
+        }, done)
+      });
+
+      it('`matrix create app-name`', function(done){
+        fn.run('matrix create matrix-test-app2', {
+          responses: [
+            ['Description', 'description\n'],
+            ['Keywords', 'foo,bar\n'],
+          ],
+          checks: 'New Folder',
+          postCheck: function(done){
+            var config = require('js-yaml').safeLoad(require('fs').readFileSync('./matrix-test-app2/config.yaml'));
+            assert( (config.name === 'matrix-test-app2') );
+            assert( (config.description === 'description'));
+            assert( (config.keywords === 'foo,bar'));
+            done();
+          }
+        }, done)
+      })
+      this.timeout(15000)
+      it('`matrix deploy`', function (done) {
+        fn.run('matrix deploy matrix-test-app', {
+          checks: 'Application installation SUCCESS'
+        }, done)
+      })
+      it('`matrix list apps`', function(done){
+        fn.run('matrix list apps', {
+          checks: 'matrix-test-app'
+        }, done)
+      })
+
+      after(function (done) {
+        require('child_process').exec('rm -rf matrix-test-app matrix-test-app2')
+        done();
+      })
+    })
+
 
 
    after(function (done) {
@@ -81,7 +144,7 @@ var Matrix;
      done();
    })
 
-   after(fn.logout)
+  //  after(fn.logout)
     //
     // it('`matrix list apps`')
     // it('`matrix search`')

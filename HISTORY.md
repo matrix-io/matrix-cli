@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [1.2.6]
+## [1.2.7]
+### Added
+- Refactored test suite. See `test/_functions#run()`
+
+### Test results
+33 passing (2m)
+14 pending
+
+
+## [1.2.6]
 ### Added
 - Timeouts for start, stop, restart in case device is off
 - matrix install supports versions

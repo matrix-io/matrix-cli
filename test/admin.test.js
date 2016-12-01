@@ -53,7 +53,7 @@ describe('has admin functions', function(){
   });
 
   describe('can make, list and delete devices', function(){
-    it('`matrix register device`', fn.registerDevice );
+    before('`matrix register device`', fn.registerDevice );
     it('`matrix list devices`', function(done){
       fn.run(
       'list devices',

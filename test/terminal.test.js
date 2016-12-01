@@ -14,21 +14,22 @@ describe('Matrix CLI Commands', function () {
 
   describe('No login warnings', function () {
     this.timeout(2500)
-      it('matrix', function (done) {
+    before(fn.logout)
+      it.skip('matrix', function (done) {
         fn.run('matrix', {
           checks: t('matrix.no_user_message')
         }, done);
       });
 
 
-      it('logout', function (done) {
+      it.skip('logout', function (done) {
 
         fn.run('matrix logout', {
           checks: 'No user logged in'
         }, done);
       });
 
-      it('use', function (done) {
+      it.skip('use', function (done) {
         fn.run('use 123', {
           checks: t('matrix.please_login')
         }, done);
@@ -46,7 +47,7 @@ describe('Matrix CLI Commands', function () {
         }, done);
       });
 
-      it('set', function (done) {
+      it.skip('set', function (done) {
         fn.run('set config', {
           checks: t('matrix.please_login')
         }, done);
@@ -105,13 +106,14 @@ describe('Matrix CLI Commands', function () {
   }) // FINISH CONTEXT Not logged in
 
   describe('Logged in {', function () {
+    this.timeout(15000);
     before(fn.login);
 
     before(fn.useDevice);
 
     it('should show user and device info in `matrix`', function (done) {
       fn.run('matrix', {
-        checks: ['testuser','test-device']
+        checks: ['testuser']
       }, done);
     })
 
@@ -125,6 +127,25 @@ describe('Matrix CLI Commands', function () {
       it('should fail on an invalid device', function(done){
         fn.run('use xxx', {
           checks: t('matrix.use.invalid_nameid')
+        }, done)
+      })
+    });
+
+    describe('config', function () {
+      it('can display application configuration', function (done) {
+        fn.run('config matrix-test-app', {
+          checks: ['matrix-test-app', 'description']
+        }, done);
+      })
+      it('can change application configuration', function (done){
+        fn.showLogs = true;
+        fn.run('config matrix-test-app description=foobar', {
+          checks: ['update: foobar'],
+          postCheck: function(done){
+            fn.run('config matrix-test-app', {
+              checks: ['foobar']
+            }, done);
+          }
         }, done)
       })
     })
