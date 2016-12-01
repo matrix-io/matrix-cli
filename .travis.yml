@@ -4,3 +4,5 @@ node_js:
   - "6.3"
   - "5"
   - "4"
+sudo: required
+before_script: sudo npm link
