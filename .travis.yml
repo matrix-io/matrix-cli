@@ -29,4 +29,4 @@ before_script:
   - git submodule update --init
   - npm install zmq
   - npm install
-  - lwd
+  - cd ../matrix-cli
