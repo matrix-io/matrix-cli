@@ -24,9 +24,13 @@ before_script:
   - source ~/.profile
   - npm link
   - mkdir ../matrix-os
+  - touch ~/.matrix
   - git clone https://github.com/matrix-io/matrix-os.git ../matrix-os
   - cd ../matrix-os/
   - git submodule update --init
   - npm install zmq
   - npm install
   - cd ../matrix-cli
+
+after_failure:
+  - cat ~/.matrix
