@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "6.5"
+  - "4"
 sudo: required
 env:
   - CXX=g++-4.8
@@ -10,7 +10,8 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
-      
+      - gcc-4.8
+
 before_script:
   - npm config get prefix
   - mkdir ~/.npm-global
