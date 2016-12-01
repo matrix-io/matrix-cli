@@ -12,7 +12,8 @@ before_script:
   - echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.profile
   - source ~/.profile
   - npm link
-  - git clone https://github.com/matrix-io/matrix-os.git ../
+  - mkdir ../matrix-os
+  - git clone https://github.com/matrix-io/matrix-os.git ../matrix-os
   - cd ../matrix-os/
   - npm install
   - lwd
