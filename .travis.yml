@@ -5,6 +5,12 @@ node_js:
   - "5"
   - "4"
 sudo: required
+env:
+  - NPM_CONFIG_PREFIX=~/.npm-global
 before_script:
-  - sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+  - npm config get prefix
+  - mkdir ~/.npm-global
+  - npm config set prefix '~/.npm-global'
+  - echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.profile
+  - source ~/.profile
   - npm link
