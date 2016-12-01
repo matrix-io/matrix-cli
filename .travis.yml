@@ -23,5 +23,6 @@ before_script:
   - npm install -g node-gyp
   - git clone https://github.com/matrix-io/matrix-os.git ../matrix-os
   - cd ../matrix-os/
+  - npm install zmq
   - npm install
   - lwd
