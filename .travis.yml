@@ -1,7 +1,7 @@
 language: node_js
 node_js:
   - "4"
-
+sudo: required
 env:
   - CXX=g++-4.8
 addons:
@@ -11,9 +11,12 @@ addons:
     packages:
       - g++-4.8
       - gcc-4.8
+      - libzmq3-dev
+
+before_install:
+  - npm install -g node-gyp
 
 before_script:
-  - apt-get -y install libzmq3-dev
   - npm config get prefix
   - mkdir ~/.npm-global
   - npm config set prefix '~/.npm-global'
@@ -21,7 +24,6 @@ before_script:
   - source ~/.profile
   - npm link
   - mkdir ../matrix-os
-  - npm install -g node-gyp
   - git clone https://github.com/matrix-io/matrix-os.git ../matrix-os
   - cd ../matrix-os/
   - git submodule update --init
