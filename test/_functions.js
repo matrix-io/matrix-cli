@@ -50,9 +50,9 @@ var run = function(cmd, options, done){
   proc.stdout.on('data', function (out) {
     out = out.toString();
     output.push(out.split('\n'))
-    // if (showLogs){
+    if(process.env.hasOwnProperty('DEBUG')){
       console.log(out)
-    // }
+    }
     // called for each line of out
     var respMatch = out.match( respondRegex );
     if (responseCount < targetResps && options.hasOwnProperty('responses') && !_.isNull( respMatch ) ) {
@@ -145,6 +145,10 @@ module.exports = {
       checks: ['device: test-device'],
       postCheck : function(done){
         var config = fn.readConfig();
+        if ( !config.hasOwnProperty('device') ){
+
+          return done('No Config File Found');
+        }
         var did = config.device.identifier;
         var name = config.deviceMap[did].name;
         if ( name === 'test-device' ){

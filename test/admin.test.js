@@ -76,8 +76,7 @@ describe('has admin functions', function(){
       }, done)
     })
 
-    it('`matrix use`', fn.useDevice );
-
+  
   });
 
   describe('can logout', function(){
