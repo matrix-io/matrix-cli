@@ -56,7 +56,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       if ( !nameProvided ){
         target = Matrix.helpers.lookupDeviceName(target);
       }
-      console.log('Now using device:'.grey, target, 'ID:'.grey, targetDeviceId);
 
       // Save the device token
       Matrix.config.device = {}
@@ -76,7 +75,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.config.keepDevice[ Matrix.config.user.id].identifier = Matrix.config.device.identifier;
       Matrix.config.keepDevice[ Matrix.config.user.id].name = target;
       //Save config
-      Matrix.helpers.saveConfig(process.exit);
+      Matrix.helpers.saveConfig(function(){
+        console.log('Now using device:'.grey, target, 'ID:'.grey, targetDeviceId);
+        process.exit()
+      });
 
     } else {
       debug('Matrix Use Error Object:', state);
