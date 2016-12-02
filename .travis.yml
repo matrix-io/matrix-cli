@@ -3,8 +3,7 @@ node_js:
   - "4"
 sudo: required
 env:
-  - CXX=g++-4.8
-  - DEBUG=true
+  - CXX=g++-4.8 DEBUG=true
 addons:
   apt:
     sources:

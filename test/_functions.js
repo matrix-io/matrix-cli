@@ -134,6 +134,7 @@ module.exports = {
   useDevice: function(done){
     // if we haven't done the whole test, get deviceid from the config
     if ( !M.hasOwnProperty('DEVICE_ID') ){
+      console.log('No new device made. Using first entry from deviceMap')
       var c = fn.readConfig();
 
       M.DEVICE_ID = ( c.device.hasOwnProperty('identifier') ) ?
@@ -147,7 +148,7 @@ module.exports = {
         var config = fn.readConfig();
         if ( !config.hasOwnProperty('device') ){
 
-          return done('No Config File Found');
+          return done(new Error('No Config File Found'));
         }
         var did = config.device.identifier;
         var name = config.deviceMap[did].name;
