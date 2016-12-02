@@ -147,7 +147,7 @@ module.exports = {
       postCheck : function(done){
         var config = fn.readConfig();
         if ( !config.hasOwnProperty('device') ){
-
+          console.log( require('os').homedir() + '/.matrix/store.json' )
           return done(new Error('No Config File Found'));
         }
         var did = config.device.identifier;
