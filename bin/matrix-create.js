@@ -38,7 +38,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       var nameP = {
         name: 'name',
         description: 'App Name',
-        pattern: /^\w+$/,
+        pattern: /\w|\n/,
         message: 'App name must be a single word. Use - for multi word app names',
         required: true
       };

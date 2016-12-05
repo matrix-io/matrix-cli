@@ -3,7 +3,7 @@ function user() {
 
   if (_.isEmpty(Matrix.config.user)) {
     Matrix.loader.stop();
-    console.error(t('matrix.please_login').yellow);
+    console.log(t('matrix.please_login').yellow);
     process.exit();
   }else{
     token();
@@ -24,13 +24,13 @@ function token(){
   var jwt = require('jsonwebtoken');
   var token = Matrix.config.user.token;
   if ( _.isUndefined(token) ){
-    console.error(t('matrix.please_login').yellow);
+    console.log(t('matrix.please_login').yellow);
     process.exit();
   } else {
     var decode = jwt.decode(token, { complete: true });
     if ( decode.payload.exp < Math.round( new Date().getTime() / 1000 ) ){
       debug('Token Expired.');
-      console.error(t('matrix.please_login').yellow);
+      console.log(t('matrix.please_login').yellow);
       process.exit();
     } else {
       debug('Token ok!'.green)

@@ -29,7 +29,7 @@ en:
     help_trigger: Runs a CrossTalk event test
     help_log: Logs output from selected MatrixOS and applications
     help_ping: Flash lights on selected Matrix device
-    please_login: No user logged in.
+    please_login: No user logged in
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:
@@ -48,6 +48,7 @@ en:
       not_authorized: 'Not Authorized'
       device_not_found: Device doesn`t exist #
       invalid_token: 'Your token is invalid'
+      invalid_nameid: 'is not a device name or a device id'
       try: 'Try'
       command_help: 'set active device to device id'
     register:

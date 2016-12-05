@@ -1,18 +1,27 @@
-var fs = require('fs');
 var run = require('child_process').execSync;
-var path = require('path');
+function readConfig(){
+return JSON.parse( require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json') );
+}
+
+// make CLI methods available
+require('../bin/matrix-init')
+
+// save variables here
+M = {};
 _ = require('lodash');
 should = require('should');
 
 var Mocha = require('mocha');
 var mocha = new Mocha();
 
+// reusable test functions
+fn = require('./_functions.js');
+
 log=console.log;
 
 // Instantiate a Mocha instance.
 
-// Matrix = require('../index.js').Matrix;
-log('Please ensure MatrixOS and Streaming Server are available.')
+// log('Please ensure MatrixOS and Streaming Server are available.')
 try {
   run('which matrix')
 } catch(e) {

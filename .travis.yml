@@ -1,0 +1,35 @@
+language: node_js
+node_js:
+  - "4"
+sudo: required
+env:
+  - CXX=g++-4.8 DEBUG=true
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+      - gcc-4.8
+      - libzmq3-dev
+
+before_install:
+  - npm install -g node-gyp
+
+before_script:
+  - npm config get prefix
+  - mkdir ~/.npm-global
+  - npm config set prefix '~/.npm-global'
+  - echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.profile
+  - source ~/.profile
+  - npm link
+  - mkdir ../matrix-os
+  - git clone https://github.com/matrix-io/matrix-os.git ../matrix-os
+  - cd ../matrix-os/
+  - git submodule update --init
+  - npm install zmq
+  - npm install
+  - cd ../matrix-cli
+
+after_failure:
+  - cat ~/.matrix/store.json
