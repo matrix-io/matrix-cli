@@ -27,6 +27,8 @@ es:
     help_deploy: Sube y despliega una aplicación al dispositivo MatrixOS activo
     help_trigger: Ejecuta una prueba de disparador
     help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
+    help_ping: Luces de activación en el dispositivo seleccionado
+    help_remove: Eliminar un dispositivo de su cuenta y eliminar todos los datos
     please_login: 'No se ha iniciado sesión con un usuario, Por favor'
     set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
     validate:
