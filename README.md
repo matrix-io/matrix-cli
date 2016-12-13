@@ -1,5 +1,5 @@
 ## Welcome to your MatrixOS Console Line Interface
-
+[![Build Status](https://travis-ci.org/matrix-io/matrix-cli.svg?branch=master)](https://travis-ci.org/matrix-io/matrix-cli)
 ###### Bugs
 https://github.com/matrix-io/matrix-cli/issues
 

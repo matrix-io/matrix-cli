@@ -16,6 +16,7 @@ var mocha = new Mocha();
 
 // reusable test functions
 fn = require('./_functions.js');
+helpers = require('./../lib/helpers.js');
 
 log=console.log;
 

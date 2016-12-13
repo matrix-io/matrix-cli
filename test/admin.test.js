@@ -3,6 +3,33 @@ var exec = require('child_process').exec;
 describe('has admin functions', function(){
   this.timeout(15000)
 
+  describe('will init properly', function () {
+    it('will create `~/.matrix` if not exists')
+    it('will create `~/.matrix/config.json` if not exists')
+  })
+
+  describe('helpers', function(){
+    it.only('can allow all on a policy', function(){
+      var p = helpers.allowAllPolicy({
+        services: {
+          fooTest: {
+            engine: 'detection',
+            type: 'face'
+          }
+        },
+        integrations: ['nest', 'hue'],
+        events: ['event1', 'event2'],
+        sensors: ['temperature','gyroscope']
+      });
+
+      p.services.should.have.keys('face-detection');
+      p.integrations.should.have.keys('nest','hue');
+      p.events.should.have.keys('event1', 'event2');
+      p.sensors.should.have.keys('temperature','gyroscope');
+    })
+    it('can step through a policy generation')
+  })
+
   describe('can switch environments', function () {
 
     it('`matrix set env local`', function(done){
@@ -76,7 +103,7 @@ describe('has admin functions', function(){
       }, done)
     })
 
-  
+
   });
 
   describe('can logout', function(){
