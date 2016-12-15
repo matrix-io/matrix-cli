@@ -89,6 +89,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 description: result.description,
               };
 
+
               // fire off worker
               Matrix.firebase.device.add(deviceObj, events)
 
@@ -100,6 +101,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   debug('new device on user record!');
                   Matrix.loader.stop();
                   console.log('New Device'.green, deviceId);
+                  Matrix.helpers.trackEvent('device-register', { did: deviceId });
 
                   // // add to local ref
                   // Matrix.config.device.deviceMap = _.merge({}, Matrix.config.device.appMap, d.val() );
@@ -232,7 +234,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             } else {
               console.error('Unknown error: ', err);
             }
-            
+
           }
         } else {
           debug('User', Matrix.config.user, out);

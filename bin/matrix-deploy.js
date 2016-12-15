@@ -68,6 +68,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     });
 
   function onEnd(details) {
+
+    Matrix.helpers.trackEvent('app-deploy', { aid: appName, did: Matrix.config.device.identifier });
+    
     debug('Finished packaging ', appName);
     var downloadFileName = Matrix.config.user.id + '/' + appName.toLowerCase() + '-' + Math.round( Math.random() * Math.pow( 10, 8 )) + '.zip';
     details.file = fileUrl + '/' + appName + '/' + downloadFileName;

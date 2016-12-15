@@ -20,6 +20,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   Matrix.loader.start();
   Matrix.firebaseInit(function () {
 
+    Matrix.helpers.trackEvent('app-search', { aid: needle });
+
     Matrix.firebase.app.search(needle, function (data) {
       Matrix.loader.stop();
       if (!_.isNull(data)) {

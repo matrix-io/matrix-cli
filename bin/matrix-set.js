@@ -101,9 +101,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
 
     Matrix.api.app.configure(options, function (err, resp) {
-      if (err) console.error(err);
+      if (err) console.error('Configure Set Error', err);
       console.log('[' + options.deviceId + '](' + options.name + ')', options.key, '=', options.value);
-      setTimeout(process.exit, 1000);
+      Matrix.helpers.trackEvent('app-config-change', { aid: appName, did: Matrix.config.device.identifier }, process.exit);
     });
 
   } else if (Matrix.pkgs.indexOf('locale') === 0) {
