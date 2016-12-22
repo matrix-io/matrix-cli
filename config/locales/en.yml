@@ -9,6 +9,9 @@ en:
     locale_title: Locale
     help_login: Login to the MatrixOS platform
     help_register: Create a MatrixOS platform user
+    help_register_device: register new device
+    help_account: Manage user account details
+    help_account_profile: update user profile info
     help_logout: Log out of the MatrixOS platform
     help_config: View and modify application configuration
     help_create: Creates a new scaffolding for a MatrixOS Application
@@ -37,6 +40,8 @@ en:
       no_device: No Device Selected
       select_device_id: select a device id'
     #SETUP:
+    account:
+      no_profile: No profile data available
     login:
       already_login_warning: 'there is already a registered account' #
       user_auth_error: 'User Authentication Error'
