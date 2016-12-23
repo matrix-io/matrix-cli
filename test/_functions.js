@@ -93,7 +93,8 @@ module.exports = {
     run('matrix login', {
       responses: [
         ['username', 'testuser@testing.admobilize.com\n'],
-        ['password', 'test1234\n']
+        ['password', 'test1234\n'],
+        ['Share usage information', 'n']
       ],
       checks: [
         'Login Successful'
