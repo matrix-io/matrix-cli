@@ -37,7 +37,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         var progress;
         Matrix.loader.start();
 
-        Matrix.helpers.trackEvent('app-uninstall', { aid: appName, did: Matrix.config.device.identifier });
+        Matrix.helpers.trackEvent('app-uninstall', { aid: target, did: Matrix.config.device.identifier });
 
         Matrix.firebase.app.uninstall(Matrix.config.user.token, Matrix.config.device.identifier, appId, {
           error: function (err) {

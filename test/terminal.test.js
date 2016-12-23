@@ -13,7 +13,7 @@ describe('Matrix CLI Commands', function () {
   })
 
   describe('No login warnings', function () {
-    this.timeout(2500)
+    this.timeout(10000)
     before(fn.logout)
       it.skip('matrix', function (done) {
         fn.run('matrix', {
