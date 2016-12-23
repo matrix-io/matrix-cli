@@ -18,6 +18,19 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   };
 
+  var oldTrack;
+  // if user has not answered tracking question before
+  if ( !_.has(Matrix.config,'user.trackOk') ){
+    schema.properties.trackOk = {
+      description: "Share usage information? (Y/n)",
+      default: 'y',
+      pattern: /y|n|yes|no|Y|N/,
+      message: "Please answer y or n."
+    };
+  } else {
+    oldTrack = Matrix.config.user.trackOk;
+  }
+
   if (!_.isEmpty(Matrix.config.user)) {
     console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
   }
@@ -45,10 +58,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     Matrix.config.user.jwt_token = true;
 
+    // configure monitoring
+    if ( _.has(result, 'trackOk')){
+      result.trackOk = ( result.trackOk[0].toLowerCase() === 'y' ) ? true : false;
+    }
+
     /** set the client to empty **/
     Matrix.config.client = {};
-
-
 
     /** authenticate client and user **/
     debug('Client', Matrix.options);
@@ -70,6 +86,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         debug('User Login OK', state);
         Matrix.config.user.token = state.access_token;
         Matrix.config.user.id = state.id;
+        // true / false not y/n
+        Matrix.config.user.trackOk = result.trackOk || oldTrack;
+
+        if (result.trackOk === true){
+          process.env.TRACKOK = true;
+          Matrix.helpers.trackEvent('user-login');
+        }
 
         /** token stores, delete extra stuff **/
         // delete Matrix.config.user.username;
@@ -78,13 +101,20 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         // download apps and devices belonging to user
         // from `users` in firebase
         Matrix.firebaseInit( function(){
+
+          if ( Matrix.config.user.trackOk ){
+            Matrix.firebase.user.allowTracking();
+          } else {
+            Matrix.firebase.user.denyTracking();
+          }
+
           Matrix.helpers.refreshDeviceMap(function(){
             /** save the creds if it's good **/
             Matrix.loader.stop();
             console.log(t('matrix.login.login_success').green, ':'.grey, result.username);
 
             //Verify if the user has a device to be used
-            if(Matrix.config.keepDevice && _.has(Matrix.config.keepDevice, Matrix.config.user.id)){
+            if (Matrix.config.keepDevice && _.has(Matrix.config.keepDevice, Matrix.config.user.id)){
               //Get the device name
               var deviceName = Matrix.config.keepDevice[Matrix.config.user.id].name;
               //Get the device token

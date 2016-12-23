@@ -33,7 +33,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   var destinationFilePath = __dirname + '/../' + appName + '.zip';
-  var packageContent;  
+  var packageContent;
   var configObject = {};
   var policyObject = {};
   var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png';
@@ -55,11 +55,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       var appDetails = results.data;
       debug('Using app details: ' + JSON.stringify(appDetails));
       var newVersion = Matrix.helpers.patchVersion(appDetails.version);
-      
+
       //ASK
       var Rx = require('rx');
       var promptHandler = new Rx.Subject();
-      
+
       Matrix.loader.stop();
       require('inquirer').prompt(promptHandler).ui.process.subscribe(function (answer) {
         if (answer.name === 'current' && answer.answer === true) {
@@ -81,11 +81,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               process.exit(1);
             }
             promptHandler.onCompleted();
-          }); 
+          });
         }
 
       }, function (e) { console.error(e) }, function () {
-        Matrix.helpers.zipAppFolder(pwd, destinationFilePath, function (err) { 
+        Matrix.helpers.zipAppFolder(pwd, destinationFilePath, function (err) {
           if (err) {
             console.error('Error zipping app folder: ' + err.message.red);
             process.exit();
@@ -125,7 +125,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       console.error(err.message.red);
     }
   });
-  
+
   var localReadmeFileName = 'README.MD';
   var remoteReadmeFileName = 'readme.md';
 
@@ -162,7 +162,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             }
           });
         }
-      ], function (err) { 
+      ], function (err) {
         var appData = {
           'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories', 'version', 'file']),
           'file': details.file, //TODO Remove this once it isn't required
@@ -172,15 +172,16 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           },
           'config': details.config,
           'policy': details.policy
-          //'override': true //This ignores the version restriction on the backend 
+          //'override': true //This ignores the version restriction on the backend
         };
         if (hasReadme) {
           appData.meta.readme = fileUrl + '/' + appName + '/' + remoteReadmeFileName;
-          debug('README URL: ' + appData.meta.readme);  
+          debug('README URL: ' + appData.meta.readme);
         }
         debug('DOWNLOAD URL: ' + appData.file);
         debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData);
 
+        Matrix.helpers.trackEvent('app-publish', { aid: appName });
         //Listen for the app creation in appStore
         Matrix.firebase.appstore.watchForAppCreated(appName, function (app) {
           debug('app published>', app);
@@ -188,6 +189,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             if (publicationFinished) {
               clearTimeout(publicationTimer);
               console.log('Application ' + appName.green + ' published!');
+
+
               endIt();
             } else {
               debug('Publication not finished')
@@ -243,5 +246,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     console.log('\n')
     process.exit(1);
   }
-  
+
 });
