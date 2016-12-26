@@ -72,6 +72,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
               process.exit(3)
             }, deleteTimeoutSeconds * 1000);
 
+            Matrix.helpers.trackEvent('device-remove', { did: targetValue });
+
             Matrix.firebase.device.delete(targetValue, { //Send removal task to Firebase queue
               error: function (err) {
                 Matrix.loader.stop();

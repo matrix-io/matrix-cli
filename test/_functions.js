@@ -93,7 +93,8 @@ module.exports = {
     run('matrix login', {
       responses: [
         ['username', 'testuser@testing.admobilize.com\n'],
-        ['password', 'test1234\n']
+        ['password', 'test1234\n'],
+        ['Share usage information', 'n\n']
       ],
       checks: [
         'Login Successful'
@@ -141,6 +142,8 @@ module.exports = {
         c.device.identifier :
         Object.keys(c.deviceMap)[0];
     }
+
+    console.log('Use Device', M.DEVICE_ID);
 
     run('matrix use ' + M.DEVICE_ID, {
       checks: ['device: test-device'],

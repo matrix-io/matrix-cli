@@ -3,6 +3,8 @@ function readConfig(){
 return JSON.parse( require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json') );
 }
 
+// process.env.DEBUG='*';
+
 // make CLI methods available
 require('../bin/matrix-init')
 

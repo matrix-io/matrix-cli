@@ -62,6 +62,9 @@ Matrix.firebaseInit(function () {
       id: result.id,
       versionId: versionId
     }
+
+    Matrix.helpers.trackEvent('app-install', { aid: appName, did: Matrix.config.device.identifier });
+
     Matrix.helpers.installApp(options, function (err) {
       Matrix.loader.stop();
       if (err) {

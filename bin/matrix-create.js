@@ -105,6 +105,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         .on('error', onError)
         .on('end', function onFinishedExtract(){
 
+          Matrix.helpers.trackEvent('app-create', { aid: app });
+
           Matrix.loader.stop();
 
           fs.writeFileSync(app + '/config.yaml', '\n' + configString, { flag: 'a'});
