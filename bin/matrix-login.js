@@ -91,6 +91,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
         if (result.trackOk === true){
           process.env.TRACKOK = true;
+          //TODO Event is not tracked if the token expired, maybe add another event for successful login?
           Matrix.helpers.trackEvent('user-login');
         }
 

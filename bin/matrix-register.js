@@ -47,13 +47,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           Matrix.firebaseInit(function () {
             debug('Firebase init passed');
 
-
             Matrix.firebase.user.getAllDevices(function (devices) {
 
               var deviceIds = _.keys(devices);
-
               debug('Existing Device Ids', deviceIds)
-
 
               var events = {
                 error: function (err) {
@@ -88,7 +85,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 name: result.name,
                 description: result.description,
               };
-
 
               // fire off worker
               Matrix.firebase.device.add(deviceObj, events)
@@ -157,41 +153,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       // # prompt
     }
   } else {
-
-    var schema = {
-      properties: {
-        username: {
-          required: true,
-          pattern: /\S+@\S+\.\S+/,
-          message: 'Username must be a valid email',
-          description: 'Username: '
-        },
-        password: {
-          required: true,
-          pattern: /^(?=.*?[a-zA-Z])(?=.*?[0-9]).{6,}/,
-          message: 'Password must be at least 6 characters long and should contain a lower case letter and a number',
-          hidden: true,
-          description: 'Password: '
-        },
-        confirmPassword: {
-          hidden: true,
-          description: 'Confirm Password: '
-        }
-      }
-    };
-
-    prompt.delimiter = '';
-    prompt.message = 'Registration -- ';
-    prompt.start();
-    prompt.get(schema, function (err, result) {
+    
+    processPromptData(function (err, result) { 
       if (err) {
-        if (err.toString().indexOf('canceled') > 0) {
-          console.log('');
-          process.exit();
-        } else {
-          console.log('Error: ', err);
-          process.exit();
-        }
+        console.log('Error: ', err);
+        process.exit();
       }
       if (result.password !== result.confirmPassword) {
         return console.error('Passwords didn\'t match');
@@ -237,13 +203,53 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
           }
         } else {
+
+          //Login          
+          //Update user information
+
           debug('User', Matrix.config.user, out);
           console.log('User ' + result.username + ' successfully created');
         }
         process.exit();
-      });
-
-
+      });        
     });
+
+    
   }
 });
+
+function processPromptData(cb) {
+  Matrix.helpers.profile.prompt(function () {
+    var schema = {
+      properties: {
+        username: {
+          required: true,
+          pattern: /\S+@\S+\.\S+/,
+          message: 'Username must be a valid email',
+          description: 'Username: '
+        },
+        password: {
+          required: true,
+          pattern: /^(?=.*?[a-zA-Z])(?=.*?[0-9]).{6,}/,
+          message: 'Password must be at least 6 characters long and should contain a lower case letter and a number',
+          hidden: true,
+          description: 'Password: '
+        },
+        confirmPassword: {
+          hidden: true,
+          description: 'Confirm Password: '
+        }
+      }
+    };
+
+    prompt.delimiter = '';
+    prompt.message = 'User -- ';
+    prompt.start();
+    prompt.get(schema, function (err, result) {
+      /*if (err && err.toString().indexOf('canceled') > 0) {
+        err = new Error('User registration cancelled');
+      } */
+      cb(err, result);
+    });
+  });
+}
