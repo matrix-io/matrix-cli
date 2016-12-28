@@ -154,19 +154,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   } else {
     
-    processPromptData(function (err, result) { 
+    processPromptData(function (err, userData) {
       if (err) {
         console.log('Error: ', err);
         process.exit();
       }
-      if (result.password !== result.confirmPassword) {
+      if (userData.password !== userData.confirmPassword) {
         return console.error('Passwords didn\'t match');
       }
-
       /** set the creds **/
       Matrix.config.user = {
-        username: result.username,
-        password: result.password
+        username: userData.username,
+        password: userData.password
       };
 
       Matrix.config.user.jwt_token = true;
@@ -178,8 +177,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       };*/
 
       Matrix.loader.start();
-      Matrix.api.register.user(result.username, result.password, Matrix.options.clientId, function (err, out) {
+      Matrix.api.register.user(userData.username, userData.password, Matrix.options.clientId, function (err, out) {
         Matrix.loader.stop();
+        console.log("REGISTER\n --\nerr:", err, "out:", out, '\n--\n');
         /*500 server died
         400 bad request
           user exists
@@ -190,7 +190,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             if (err.status_code === 500) {
               console.log('Server unavailable, please try again later');
             } else if (err.status_code === 400) {
-              console.log('Unable to create user ' + result.username + ', user already exists');
+              console.log('Unable to create user ' + userData.username + ', user already exists');
             } else {
               console.log('Unknown error (' + err.status_code + '): ', err);
             }
@@ -204,22 +204,27 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           }
         } else {
 
-          //Login          
-          //Update user information
-
-          debug('User', Matrix.config.user, out);
-          console.log('User ' + result.username + ' successfully created');
+          var userOptions = {
+            username: userData.username,
+            password: userData.password,
+            trackOk: userData.profile.trackOk
+          } 
+          Matrix.helpers.login(userOptions, function (err) {
+            Matrix.helpers.profile.update(userData.profile, function (err) { 
+              debug('User', Matrix.config.user, out);
+              console.log('User ' + userData.username + ' successfully created');
+              process.exit();
+            });
+          });
         }
         process.exit();
-      });        
+      }); 
     });
-
-    
   }
 });
 
 function processPromptData(cb) {
-  Matrix.helpers.profile.prompt(function () {
+  Matrix.helpers.profile.prompt(function (err, profile) {
     var schema = {
       properties: {
         username: {
@@ -249,6 +254,8 @@ function processPromptData(cb) {
       /*if (err && err.toString().indexOf('canceled') > 0) {
         err = new Error('User registration cancelled');
       } */
+      result.profile = profile;
+      console.log('PROMPT CALLBACK!!');
       cb(err, result);
     });
   });
