@@ -39,7 +39,7 @@
     "loading-spinner": "^1.1.3",
     "lodash": "^3.10.0",
     "matrix-app-config-helper": "git+https://github.com/matrix-io/matrix-app-config-helper.git",
-    "matrix-firebase": "https://github.com/matrix-io/matrix-firebase/tarball/master",
+    "matrix-firebase": "https://github.com/matrix-io/matrix-firebase/tarball/AA/list-appstore-apps",
     "matrix-node-sdk": "https://github.com/matrix-io/matrix-node-sdk/tarball/master",
     "mocha": "^2.5.3",
     "moment": "^2.10.3",
