@@ -77,7 +77,7 @@ Matrix.loader.type('braille'); //Types: braille, matrix
 Matrix.firebase = require('matrix-firebase');
 Matrix.firebaseInit = function (cb) {
   var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier: '';
-  Matrix.firebase.init(
+  Matrix.firebase.initialize(
     Matrix.config.user.id,
     currentDevice,
     Matrix.config.user.token,
