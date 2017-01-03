@@ -7,7 +7,7 @@ describe('has admin functions', function(){
 
     it('`matrix set env local`', function(done){
       fn.run('matrix set env local', {
-        checks: [': local'],
+        checks: ['local'],
         postCheck: function(done){
           var env = fn.readConfig().environment.name;
           if ( env !== 'local'){
@@ -21,7 +21,7 @@ describe('has admin functions', function(){
 
     it('`matrix set env production`', function(done){
       fn.run('matrix set env production', {
-        checks: [': production'],
+        checks: ['production'],
         postCheck: function(done){
           var env = fn.readConfig().environment.name;
           if ( env !== 'production'){
@@ -35,7 +35,7 @@ describe('has admin functions', function(){
 
     it('`matrix set env dev`', function(done){
       fn.run('matrix set env dev', {
-        checks: [': dev'],
+        checks: ['dev'],
         postCheck: function(done){
           var env = fn.readConfig().environment.name;
           if ( env !== 'dev'){
@@ -76,7 +76,7 @@ describe('has admin functions', function(){
       }, done)
     })
 
-  
+
   });
 
   describe('can logout', function(){

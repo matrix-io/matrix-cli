@@ -47,6 +47,7 @@ var run = function(cmd, options, done){
   var output = [];
   var finished = false;
 
+  // TODO: Debug uses stderr
   proc.stdout.on('data', function (out) {
     out = out.toString();
     output.push(out.split('\n'))
