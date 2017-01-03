@@ -5,7 +5,7 @@ var Matrix;
 
 
  describe('can manage apps', function () {
-   this.timeout(30000);
+   this.timeout(60000);
    before(function(done){
      // fire up a matrix device -- fn.registerDevice must run before this
      var fs = require('fs');
@@ -21,7 +21,8 @@ var Matrix;
            NO_UPGRADE: true,
            NODE_ENV: 'dev',
            TEST_MODE: true,
-           DEBUG:'',
+           DEBUG:'*',
+          //  DEBUG:'',
          },
          stdio: 'ignore'
        })

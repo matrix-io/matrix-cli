@@ -13,7 +13,7 @@ describe('Matrix CLI Commands', function () {
   })
 
   describe('No login warnings', function () {
-    this.timeout(10000)
+    this.timeout(15000)
     before(fn.logout)
       it.skip('matrix', function (done) {
         fn.run('matrix', {
@@ -106,7 +106,7 @@ describe('Matrix CLI Commands', function () {
   }) // FINISH CONTEXT Not logged in
 
   describe('Logged in {', function () {
-    this.timeout(15000);
+    this.timeout(30000);
     before(fn.login);
 
     before(fn.useDevice);
