@@ -173,19 +173,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.config.client = {};
       debug('Client', Matrix.options);
 
-      /*request.post(params, function(error, response, body) {
-      };*/
-
       Matrix.loader.start();
       Matrix.api.register.user(userData.username, userData.password, Matrix.options.clientId, function (err, out) {
-        Matrix.loader.stop();
-        console.log("REGISTER\n --\nerr:", err, "out:", out, '\n--\n');
         /*500 server died
         400 bad request
           user exists
           missing parameter
         401*/
         if (err) {
+          Matrix.loader.stop();
           if (err.hasOwnProperty('status_code')) {
             if (err.status_code === 500) {
               console.log('Server unavailable, please try again later');
@@ -200,24 +196,33 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             } else {
               console.error('Unknown error: ', err);
             }
-
           }
+          process.exit();
         } else {
-
           var userOptions = {
             username: userData.username,
             password: userData.password,
             trackOk: userData.profile.trackOk
           } 
           Matrix.helpers.login(userOptions, function (err) {
-            Matrix.helpers.profile.update(userData.profile, function (err) { 
+            if (err) {
+              Matrix.loader.stop();
+              console.log('Unable to login, your account was created but the profile info couldn\'t be updated'.red);
+              process.exit(1);
+            } 
+
+            Matrix.helpers.profile.update(userData.profile, function (err) {
+              Matrix.loader.stop();
               debug('User', Matrix.config.user, out);
+              if (err) {
+                console.log('Unable to update profile, your account was created but the profile information couldn\'t be updated'.yellow);
+                process.exit(1);
+              }
               console.log('User ' + userData.username + ' successfully created');
               process.exit();
             });
           });
         }
-        process.exit();
       }); 
     });
   }
@@ -255,7 +260,6 @@ function processPromptData(cb) {
         err = new Error('User registration cancelled');
       } */
       result.profile = profile;
-      console.log('PROMPT CALLBACK!!');
       cb(err, result);
     });
   });

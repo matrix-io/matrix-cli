@@ -20,7 +20,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   var oldTrack;
   // if user has not answered tracking question before
-  if ( !_.has(Matrix.config,'user.trackOk') ){
+  if (!_.has(Matrix.config, 'user.trackOk')) {
     schema.properties.trackOk = {
       description: "Share usage information? (Y/n)",
       default: 'y',
@@ -50,6 +50,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       }
     }
 
+    if (!_.has(result, 'trackOk')) result.trackOk = oldTrack;
     Matrix.helpers.login(result, function (err) {
       process.exit();
     });
