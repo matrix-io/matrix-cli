@@ -42,7 +42,7 @@ var Matrix;
    it('`matrix install`', function(done){
      fn.run('matrix install sensorTest', {
        responses: [
-         ['OK to allow sensorTest', 'y\n']
+         ['OK to allow sensorTest', 'y']
        ],
        checks: ['SUCCESS']
      }, done)
