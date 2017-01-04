@@ -147,7 +147,7 @@ module.exports = {
     console.log('Use Device', M.DEVICE_ID);
 
     run('matrix use ' + M.DEVICE_ID, {
-      checks: ['device: test-device'],
+      checks: ['test-device'],
       postCheck : function(done){
         var config = fn.readConfig();
         if ( !config.hasOwnProperty('device') ){
