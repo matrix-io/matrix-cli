@@ -74,6 +74,24 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     debug('Finished packaging ', appName);
     var downloadFileName = Matrix.config.user.id + '/' + appName.toLowerCase() + '-' + Math.round( Math.random() * Math.pow( 10, 8 )) + '.zip';
     details.file = fileUrl + '/' + appName + '/' + downloadFileName;
+    var configOk = true;
+    Matrix.loader.stop();
+    console.log('Validating configuration file...');
+    try {
+      configOk = Matrix.validate.config(details.config);
+    } catch (e) {
+      console.error(e);
+      console.log('Deployment interrupted. Please make sure the config.yaml file is properly formatted and try again'.yellow);
+      process.exit();
+    }
+
+    if (!configOk) {
+      console.log('Deployment interrupted. Please adjust the config.yaml file and try again'.yellow);
+      process.exit();
+    }
+    console.log('Successful config file validation');
+    Matrix.loader.start();
+    
     Matrix.firebaseInit(function (err) {
       Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function (err, uploadUrl) {
         if (!err) {
