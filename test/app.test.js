@@ -21,8 +21,8 @@ var Matrix;
            NO_UPGRADE: true,
            NODE_ENV: 'dev',
            TEST_MODE: true,
-           DEBUG:'*',
-          //  DEBUG:'',
+          //  DEBUG:'*',
+           DEBUG:'',
          },
          stdio: 'ignore'
        })
