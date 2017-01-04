@@ -106,7 +106,7 @@ describe('Matrix CLI Commands', function () {
   }) // FINISH CONTEXT Not logged in
 
   describe('Logged in {', function () {
-    this.timeout(30000);
+    this.timeout(60000);
     before(fn.login);
 
     before(fn.useDevice);
