@@ -54,6 +54,24 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       }
       var appDetails = results.data;
       debug('Using app details: ' + JSON.stringify(appDetails));
+      var configOk = true;
+      Matrix.loader.stop();
+      console.log('Validating configuration file...');
+      try {
+        configOk = Matrix.validate.config(appDetails.config);
+      } catch (e) {
+        console.error(e);
+        console.log('Publication interrupted. Please make sure the config.yaml file is properly formatted and try again'.yellow);
+        process.exit();
+      }
+
+      if (!configOk) {
+        console.log('Publication interrupted. Please adjust the config.yaml file and try again'.yellow);
+        process.exit();
+      }
+      console.log('Successful config file validation');
+      Matrix.loader.start();
+
       var newVersion = Matrix.helpers.patchVersion(appDetails.version);
 
       //ASK
@@ -122,6 +140,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       });
 
     } else {
+      console.log('App configuration error, please adjust it and try again'.yellow);
       console.error(err.message.red);
     }
   });
