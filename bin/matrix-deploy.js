@@ -81,15 +81,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       configOk = Matrix.validate.config(details.config);
     } catch (e) {
       console.error(e);
-      console.log('Deployment interrupted. Please make sure the config.yaml file is properly formatted and try again'.yellow);
+      console.log('Configuration Invalid. Please make sure the config.yaml file is properly formatted and try again'.yellow);
       process.exit();
     }
 
     if (!configOk) {
-      console.log('Deployment interrupted. Please adjust the config.yaml file and try again'.yellow);
+      console.log('Configuration Invalid. Please make sure the config.yaml is properly formatted and try again'.red );
       process.exit();
     }
-    console.log('Successful config file validation');
+    console.log('Successfully validated configuration file');
     Matrix.loader.start();
     
     Matrix.firebaseInit(function (err) {
