@@ -12,8 +12,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 33 passing (2m)
 14 pending
 
+### Added
+- Keeping device on login
+- `matrix validate` command for testing config.yaml
 
-## [1.2.6]
+### Changed
+- Fixed Login Not Exiting Bug
+
+### Removed
+- Removed regex for installing sensors / apps
+
 ### Added
 - Timeouts for start, stop, restart in case device is off
 - matrix install supports versions
