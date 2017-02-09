@@ -22,9 +22,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     Matrix.firebase.app.search(needle, function (data) {
       Matrix.loader.stop();
-      if (!_.isNull(data)) {
+      if (!_.isNull(data) && !_.isUndefined(data)) {
         debug(data)
-        // get rid of non matches
+
+        // additional filtering - get rid of non matches
         data = _.filter(data, function (app, appId) {
           if ( app.hasOwnProperty('meta') ){
             return (app.meta.name.indexOf(needle) > -1);
