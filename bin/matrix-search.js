@@ -8,7 +8,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   if (!Matrix.pkgs.length || showTheHelp) {
     return displayHelp();
   }
-  
+
   Matrix.validate.user(); //Make sure the user has logged in
   debug(Matrix.pkgs);
   var needle = Matrix.pkgs[0];
@@ -26,7 +26,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         debug(data)
         // get rid of non matches
         data = _.filter(data, function (app, appId) {
-          return (app.meta.name.indexOf(needle) > -1);
+          if ( app.hasOwnProperty('meta') ){
+            return (app.meta.name.indexOf(needle) > -1);
+          }
         })
 
         if (_.isEmpty(data)) {
