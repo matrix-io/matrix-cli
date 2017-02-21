@@ -24,24 +24,25 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     Matrix.firebase.app.search(needle, function (data) {
       Matrix.loader.stop();
-      if (!_.isNull(data)) {
-        debug(data);
 
-        if ( !_.isArray(data)){
-          data = [ data ];
+      debug(data);
+      if (data.meta.visible === false) {
+        console.log(t('matrix.search.no_results').green);
+        process.exit();
+      } else {
+        if (!_.isArray(data) && !_.isUndefined(data)) {
+          data = [data];
         }
-
-        if (_.isEmpty(data)) {
+        if (_.isEmpty(data) || _.isUndefined(data)) {
           console.log(t('matrix.search.no_results').green);
         } else {
-          console.log(Matrix.helpers.displaySearch(data, needle));
+          Matrix.helpers.displaySearch(data, needle);
         }
         process.exit();
       }
     });
     //Get versionId of appId with version X
-  }
-  );
+  });
 
   function displayHelp() {
     console.log('\n> matrix search ¬\n');
