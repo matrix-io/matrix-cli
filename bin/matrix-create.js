@@ -6,7 +6,7 @@ var fs = require('fs');
 var tar = require('tar');
 var prompt = require('prompt');
 var yaml = require('js-yaml');
-
+var pwd = process.cwd();
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
   var app = Matrix.pkgs[0];
@@ -101,22 +101,31 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           path: process.cwd() + "/" + app,
           strip: 1
         })
-        .on('error', onError)
-        .on('end', function onFinishedExtract(){
+          .on('error', onError)
+          .on('end', function onFinishedExtract(){
 
-          Matrix.helpers.trackEvent('app-create', { aid: app });
+            Matrix.helpers.trackEvent('app-create', { aid: app });
+             
+            Matrix.loader.stop();
 
-          Matrix.loader.stop();
+            fs.writeFileSync(app + '/config.yaml', '\n' + configString, { flag: 'a'});
 
-          fs.writeFileSync(app + '/config.yaml', '\n' + configString, { flag: 'a'});
+            changeNameP = require(process.cwd() + "/" + app + '/package.json');
+            changeNameP.name = app;
+            Matrix.helpers.updateFile(changeNameP, process.cwd() + "/" + app + '/package.json', function (err) {
+              if (err) {
+                console.error('Error updating package.json file: ' + err.message.red);
+                process.exit(1);
+              }
+            });
 
-          console.log(t('matrix.create.new_folder') + ':>'.grey, app.green + '/'.grey);
-          console.log('         app.js'.grey, '-', t('matrix.create.description_app'))
-          console.log('    config.yaml'.grey, '-', t('matrix.create.description_config'))
-          console.log('      README.MD'.grey, '-', t('matrix.create.description_developer'))
-          console.log('       index.js'.grey, '-', t('matrix.create.description_index'))
-          console.log('   package.json'.grey, '-', t('matrix.create.description_package'))
-        });
+            console.log(t('matrix.create.new_folder') + ':>'.grey, app.green + '/'.grey);
+            console.log('         app.js'.grey, '-', t('matrix.create.description_app'))
+            console.log('    config.yaml'.grey, '-', t('matrix.create.description_config'))
+            console.log('      README.MD'.grey, '-', t('matrix.create.description_developer'))
+            console.log('       index.js'.grey, '-', t('matrix.create.description_index'))
+            console.log('   package.json'.grey, '-', t('matrix.create.description_package'))
+          });
 
         fs.createReadStream(__dirname + "/../baseapp.tar")
           .on('error', onError)
