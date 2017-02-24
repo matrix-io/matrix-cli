@@ -3,6 +3,7 @@
 require('./matrix-init');
 var debug = debugLog('set');
 
+
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
 
   if (!Matrix.pkgs.length || showTheHelp) {
@@ -18,45 +19,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   };
 
-  var environments = {
-    local: {
-      api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://localhost:3000'
-    },
-    local2: {
-      api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://localhost:3001'
-    },
-    dev: {
-      api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://dev-mxss.admobilize.com',
-      appsBucket: 'dev-admobilize-matrix-apps'
-    },
-    rc: {
-      api: 'https://rc-api.admobilize.com',
-      mxss: 'https://rc-mxss.admobilize.com',
-      appsBucket: 'admobilize-matrix-apps'
-    },
-    stage: {
-      api: 'http://stage-api.admobilize.com',
-      mxss: 'http://stage-mxss.admobilize.com'
-    },
-    production: {
-      api: 'http://demo.admobilize.com',
-      mxss: 'http://mxss.admobilize.com',
-      appsBucket: 'admobilize-matrix-apps'
-    },
-    hardcode: {
-      api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://104.197.139.81'
-    }
-  };
+  var environments = require('../config/environments.js');
 
   if (Matrix.pkgs.indexOf('env') === 0) {
 
     var value = Matrix.pkgs[1];
-
-    if (value && value.match(/sandbox|dev|stage|local|production|rc|hardcode/)) {
+    if (!_.isUndefined(value) && value === 'local' || value === 'local2' || value === 'dev' || value === 'rc' || value === 'stage' || value === 'production' || value === 'hardcode') {
       Matrix.helpers.logout(function () {
         Matrix.config.environment = _.assign(environments[value], { name: value });
         Matrix.helpers.saveConfig(function () {
@@ -66,7 +34,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         });
       });
     } else {
-      console.error(t('matrix.set.env.valid_environments') + ' = [ dev, rc, production ]')
+      console.error(t('matrix.set.env.valid_environments') + ' = [ dev, rc, production ]'.yellow)
     }
 
   } else if (Matrix.pkgs.indexOf('config') === 0) {
