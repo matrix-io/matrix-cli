@@ -98,7 +98,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         Matrix.loader.start();
 
         var extractor = tar.Extract({
-          path: process.cwd() + "/" + app,
+          path: pwd + "/" + app,
           strip: 1
         })
           .on('error', onError)
@@ -110,9 +110,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
             fs.writeFileSync(app + '/config.yaml', '\n' + configString, { flag: 'a'});
 
-            changeNameP = require(process.cwd() + "/" + app + '/package.json');
+            changeNameP = require( pwd + "/" + app + '/package.json');
             changeNameP.name = app;
-            Matrix.helpers.updateFile(changeNameP, process.cwd() + "/" + app + '/package.json', function (err) {
+            Matrix.helpers.changeName(changeNameP, pwd + "/" + app + '/package.json', function (err) {
               if (err) {
                 console.error('Error updating package.json file: ' + err.message.red);
                 process.exit(1);
