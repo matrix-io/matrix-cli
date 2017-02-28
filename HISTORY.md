@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 - Verify Config before deploy and publish
 
+### Fixed
+- Can set configuration to emails now. 
+
+### Removed
+- Publish no longer requires a selected device
+- Closed off matrix set config path
+
 ## [1.2.7]
 ### Added
 - Refactored test suite. See `test/_functions#run()`
