@@ -26,11 +26,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.loader.stop();
 
       debug(data);
-      if (data.meta.visible === false) {
+      if ( _.isNull(data)  || data.meta.visible === false ) {
         console.log(t('matrix.search.no_results').green);
         process.exit();
       } else {
-        if (!_.isArray(data) && !_.isUndefined(data)) {
+        if (!_.isArray(data) && !_.isUndefined(data) && !_.isNull(data) ) {
           data = [data];
         }
         if (_.isEmpty(data) || _.isUndefined(data)) {
