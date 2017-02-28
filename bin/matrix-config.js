@@ -18,6 +18,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
 
     //target
     var key = Matrix.pkgs[1];
+
+    // in case they don't use =
     var value = Matrix.pkgs[2];
 
     // split on = if exists
