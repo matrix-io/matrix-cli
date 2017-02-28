@@ -25,10 +25,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   // to write to disk after prompt
   var configString;
 
-  function onEnd() {
-
-  }
-
   // check if path already exists, refuse if so
   fs.access(process.cwd() + "/" + app, fs.F_OK, function(err) {
     if (!err) {
@@ -90,6 +86,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           // app name defined
           results.name = app;
         }
+
+        //Add a display name
+        results.displayName = _.startCase(results.name);
 
         // write the config yaml
         configString = yaml.safeDump(results);
