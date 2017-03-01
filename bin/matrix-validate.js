@@ -31,7 +31,8 @@ function token(){
     if ( decode.payload.exp < Math.round( new Date().getTime() / 1000 ) ){
       debug('Token Expired.');
       console.log(t('matrix.please_login').yellow);
-      process.exit();
+      return false
+      //process.exit();
     } else {
       debug('Token ok!'.green)
       return true;
