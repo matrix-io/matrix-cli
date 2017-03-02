@@ -17,7 +17,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     if (target.match(/all/)) {
       Matrix.firebase.user.getAllApps(function (err, resp) {
-        if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
+        if (_.isEmpty(resp)) return  process.exit(console.error(t('matrix.list.no_results').red));
         debug('Device List>', resp);
         Matrix.loader.stop();
         console.log(Matrix.helpers.displayDeviceApps(resp));
