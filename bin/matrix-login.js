@@ -33,6 +33,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   if (!_.isEmpty(Matrix.config.user)) {
     if (Matrix.validate.token() === false) {
+      Matrix.helpers.logout();
       console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);
     } else {
       console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
@@ -53,7 +54,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         process.exit();
       }
     }
-
+    Matrix.helpers.logout();
     if (!_.has(result, 'trackOk')) result.trackOk = oldTrack;
     Matrix.helpers.login(result, function (err) {
       process.exit();
