@@ -20,8 +20,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   Matrix.loader.start();
   Matrix.firebaseInit(function () {
 
+    Matrix.helpers.trackEvent('app-search', { aid: needle });
+
     Matrix.firebase.app.search(needle, function (data) {
       Matrix.loader.stop();
+<<<<<<< HEAD
       if (!_.isNull(data) && !_.isUndefined(data)) {
         debug(data)
 
@@ -31,6 +34,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             return (app.meta.name.indexOf(needle) > -1);
           }
         })
+=======
+      if (!_.isNull(data)) {
+        debug(data);
+
+        if ( !_.isArray(data)){
+          data = [ data ];
+        }
+>>>>>>> dev
 
         if (_.isEmpty(data)) {
           console.log(t('matrix.search.no_results').green);

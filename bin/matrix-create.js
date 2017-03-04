@@ -25,10 +25,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   // to write to disk after prompt
   var configString;
 
-  function onEnd() {
-
-  }
-
   // check if path already exists, refuse if so
   fs.access(process.cwd() + "/" + app, fs.F_OK, function(err) {
     if (!err) {
@@ -38,7 +34,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       var nameP = {
         name: 'name',
         description: 'App Name',
-        pattern: /^\w+$/,
+        pattern: /\w|\n|-/,
         message: 'App name must be a single word. Use - for multi word app names',
         required: true
       };
@@ -91,6 +87,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           results.name = app;
         }
 
+        //Add a display name
+        results.displayName = _.startCase(results.name);
+
         // write the config yaml
         configString = yaml.safeDump(results);
 
@@ -104,6 +103,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         })
         .on('error', onError)
         .on('end', function onFinishedExtract(){
+
+          Matrix.helpers.trackEvent('app-create', { aid: app });
 
           Matrix.loader.stop();
 

@@ -21,7 +21,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       targetDeviceId = target;
       nameProvided = false;
     } else {
-      console.error(target.red, 'is not a device name or a device id')
+      console.log(target.red, t('matrix.use.invalid_nameid'))
       process.exit(1);
     }
   }
@@ -48,20 +48,34 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   //
   Matrix.validate.user();
 
+
   // still API dependent, TODO: depreciate to firebase
   Matrix.api.device.register(targetDeviceId, function(err, state) {
 
     if (err) return console.log(err);
-    if (state.status === "OK") {
+    if (state.status === "OK"){
       if ( !nameProvided ){
         target = Matrix.helpers.lookupDeviceName(target);
       }
-      console.log('Now using device:'.grey, target, 'ID:'.grey, targetDeviceId);
 
       // Save the device token
       Matrix.config.device = {}
       Matrix.config.device.identifier = targetDeviceId;
       Matrix.config.device.token = state.results.device_token;
+
+      async.parallel([
+        function track(cb){
+          // track
+          Matrix.helpers.trackEvent('device-use', { did: targetDeviceId }, cb);
+        },
+        function write(cb){
+          Matrix.helpers.saveConfig(cb);
+        }
+      ], function(){
+        console.log('Now using device:'.grey, target, 'ID:'.grey, targetDeviceId);
+        process.exit()
+      })
+
 
       //Create the object for keep device after session expired
       if(!Matrix.config.keepDevice){
@@ -76,7 +90,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.config.keepDevice[ Matrix.config.user.id].identifier = Matrix.config.device.identifier;
       Matrix.config.keepDevice[ Matrix.config.user.id].name = target;
       //Save config
-      Matrix.helpers.saveConfig(process.exit);
+
 
     } else {
       debug('Matrix Use Error Object:', state);

@@ -21,14 +21,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       deviceId: Matrix.config.device.identifier
     };
 
-    //If the device has the app    
+    //If the device has the app
     Matrix.helpers.lookupAppId(target, function (err, appId) {
       Matrix.loader.stop();
       if (err) {
         console.log('Error: '.red, err.message);
         process.exit();
       }
-      if (!appId) { 
+      if (!appId) {
         console.log("\nApp not installed in device... ")
         process.exit(1);
       } else {
@@ -36,6 +36,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         console.log("\nApp found in device... ")
         var progress;
         Matrix.loader.start();
+
+        Matrix.helpers.trackEvent('app-uninstall', { aid: target, did: Matrix.config.device.identifier });
+
         Matrix.firebase.app.uninstall(Matrix.config.user.token, Matrix.config.device.identifier, appId, {
           error: function (err) {
             Matrix.loader.stop();
@@ -61,8 +64,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             if (!progress) {
               progress = true;
               Matrix.loader.stop();
-              process.stdout.write('Uninstall Progress:' + msg) 
-            } else {                      
+              process.stdout.write('Uninstall Progress:' + msg)
+            } else {
               process.stdout.write('.' + msg);
             }
           }
@@ -70,7 +73,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       }
 
     });
-    
+
   });
 
   function displayHelp() {

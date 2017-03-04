@@ -47,13 +47,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           Matrix.firebaseInit(function () {
             debug('Firebase init passed');
 
-
             Matrix.firebase.user.getAllDevices(function (devices) {
 
               var deviceIds = _.keys(devices);
-
               debug('Existing Device Ids', deviceIds)
-
 
               var events = {
                 error: function (err) {
@@ -100,6 +97,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                   debug('new device on user record!');
                   Matrix.loader.stop();
                   console.log('New Device'.green, deviceId);
+                  Matrix.helpers.trackEvent('device-register', { did: deviceId });
 
                   // // add to local ref
                   // Matrix.config.device.deviceMap = _.merge({}, Matrix.config.device.appMap, d.val() );
@@ -155,7 +153,83 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       // # prompt
     }
   } else {
+    
+    processPromptData(function (err, userData) {
+      if (err) {
+        console.log('Error: ', err);
+        process.exit();
+      }
+      if (userData.password !== userData.confirmPassword) {
+        return console.error('Passwords didn\'t match');
+      }
+      /** set the creds **/
+      Matrix.config.user = {
+        username: userData.username,
+        password: userData.password
+      };
 
+      Matrix.config.user.jwt_token = true;
+
+      Matrix.config.client = {};
+      debug('Client', Matrix.options);
+
+      Matrix.loader.start();
+      Matrix.api.register.user(userData.username, userData.password, Matrix.options.clientId, function (err, out) {
+        /*500 server died
+        400 bad request
+          user exists
+          missing parameter
+        401*/
+        if (err) {
+          Matrix.loader.stop();
+          if (err.hasOwnProperty('status_code')) {
+            if (err.status_code === 500) {
+              console.log('Server unavailable, please try again later');
+            } else if (err.status_code === 400) {
+              console.log('Unable to create user ' + userData.username + ', user already exists');
+            } else {
+              console.log('Unknown error (' + err.status_code + '): ', err);
+            }
+          } else {
+            if (err.hasOwnProperty('code') && err.code == 'ENOTFOUND') {
+              console.error('Unable to reach server, please try again later');
+            } else {
+              console.error('Unknown error: ', err);
+            }
+          }
+          process.exit();
+        } else {
+          var userOptions = {
+            username: userData.username,
+            password: userData.password,
+            trackOk: userData.profile.trackOk
+          } 
+          Matrix.helpers.login(userOptions, function (err) {
+            if (err) {
+              Matrix.loader.stop();
+              console.log('Unable to login, your account was created but the profile info couldn\'t be updated'.red);
+              process.exit(1);
+            } 
+
+            Matrix.helpers.profile.update(userData.profile, function (err) {
+              Matrix.loader.stop();
+              debug('User', Matrix.config.user, out);
+              if (err) {
+                console.log('Unable to update profile, your account was created but the profile information couldn\'t be updated'.yellow);
+                process.exit(1);
+              }
+              console.log('User ' + userData.username + ' successfully created');
+              process.exit();
+            });
+          });
+        }
+      }); 
+    });
+  }
+});
+
+function processPromptData(cb) {
+  Matrix.helpers.profile.prompt(function (err, profile) {
     var schema = {
       properties: {
         username: {
@@ -179,69 +253,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     };
 
     prompt.delimiter = '';
-    prompt.message = 'Registration -- ';
+    prompt.message = 'User -- ';
     prompt.start();
     prompt.get(schema, function (err, result) {
-      if (err) {
-        if (err.toString().indexOf('canceled') > 0) {
-          console.log('');
-          process.exit();
-        } else {
-          console.log('Error: ', err);
-          process.exit();
-        }
-      }
-      if (result.password !== result.confirmPassword) {
-        return console.error('Passwords didn\'t match');
-      }
-
-      /** set the creds **/
-      Matrix.config.user = {
-        username: result.username,
-        password: result.password
-      };
-
-      Matrix.config.user.jwt_token = true;
-
-      Matrix.config.client = {};
-      debug('Client', Matrix.options);
-
-      /*request.post(params, function(error, response, body) {
-      };*/
-
-      Matrix.loader.start();
-      Matrix.api.register.user(result.username, result.password, Matrix.options.clientId, function (err, out) {
-        Matrix.loader.stop();
-        /*500 server died
-        400 bad request
-          user exists
-          missing parameter
-        401*/
-        if (err) {
-          if (err.hasOwnProperty('status_code')) {
-            if (err.status_code === 500) {
-              console.log('Server unavailable, please try again later');
-            } else if (err.status_code === 400) {
-              console.log('Unable to create user ' + result.username + ', user already exists');
-            } else {
-              console.log('Unknown error (' + err.status_code + '): ', err);
-            }
-          } else {
-            if (err.hasOwnProperty('code') && err.code == 'ENOTFOUND') {
-              console.error('Unable to reach server, please try again later');
-            } else {
-              console.error('Unknown error: ', err);
-            }
-            
-          }
-        } else {
-          debug('User', Matrix.config.user, out);
-          console.log('User ' + result.username + ' successfully created');
-        }
-        process.exit();
-      });
-
-
+      /*if (err && err.toString().indexOf('canceled') > 0) {
+        err = new Error('User registration cancelled');
+      } */
+      result.profile = profile;
+      cb(err, result);
     });
-  }
-});
+  });
+}

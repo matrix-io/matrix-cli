@@ -4,7 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [1.2.7]
+## [0.2.3]
+### Fixed
+No categories defaults to 'Development' on publish
+
+## [0.2.0]
+
+- Verify Config before deploy and publish
+
+### Fixed
+- Can set configuration to emails now. 
+
+### Removed
+- Publish no longer requires a selected device
+- Closed off matrix set config path
+
+## [1.2.7]
+### Added
+- Refactored test suite. See `test/_functions#run()`
+
+### Test results
+33 passing (2m)
+14 pending
 
 ### Added
 - Keeping device on login
@@ -16,8 +37,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - Removed regex for installing sensors / apps
 
-
-### [1.2.6]
 ### Added
 - Timeouts for start, stop, restart in case device is off
 - matrix install supports versions

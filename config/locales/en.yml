@@ -9,33 +9,39 @@ en:
     locale_title: Locale
     help_login: Login to the MatrixOS platform
     help_register: Create a MatrixOS platform user
+    help_register_device: register new device
+    help_account: Manage user account details
+    help_account_profile: update user profile info
     help_logout: Log out of the MatrixOS platform
-    help_use: Indicate active device
-    help_set: 'Set environment settings, update application configuration, change cli locale'
-    help_sim: Manage local MatrixOS simulator with Docker
-    help_list: 'Information about your devices, applications and installs'
-    help_reboot: Reboots the active MatrixOS device
-    help_search: Search for apps
-    help_install: Install an app or sensor to active MatrixOS device
-    help_install_default: defaults to app
     help_config: View and modify application configuration
-    help_uninstall: Uninstall the app
-    help_update: Update to a specified version of a MatrixOS application
-    help_start: Starts an app running on the active MatrixOS
-    help_stop: Stops an app running on the active MatrixOS
-    help_restart: Restarts an app running on the MatrixOS
     help_create: Creates a new scaffolding for a MatrixOS Application
     help_deploy: Uploads and deploys an app to the active MatrixOS
-    help_trigger: Runs a CrossTalk event test
+    help_install_default: defaults to app
+    help_install: Install an app or sensor to active MatrixOS device
+    help_list: 'Information about your devices, applications and installs'
     help_log: Logs output from selected MatrixOS and applications
     help_ping: Flash lights on selected Matrix device
-    please_login: No user logged in.
+    help_reboot: Reboots the active MatrixOS device
+    help_remove: Remove a device from your account and delete all data
+    help_restart: Restarts an app running on the MatrixOS
+    help_search: Search for apps
+    help_set: 'Set environment settings, update application configuration, change cli locale'
+    help_sim: Manage local MatrixOS simulator with Docker
+    help_start: Starts an app running on the active MatrixOS
+    help_stop: Stops an app running on the active MatrixOS
+    help_trigger: Runs a CrossTalk event test
+    help_uninstall: Uninstall the app
+    help_update: Update to a specified version of a MatrixOS application
+    help_use: Indicate active device
+    please_login: No user logged in
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:
       no_device: No Device Selected
       select_device_id: select a device id'
     #SETUP:
+    account:
+      no_profile: No profile data available
     login:
       already_login_warning: 'there is already a registered account' #
       user_auth_error: 'User Authentication Error'
@@ -48,6 +54,7 @@ en:
       not_authorized: 'Not Authorized'
       device_not_found: Device doesn`t exist #
       invalid_token: 'Your token is invalid'
+      invalid_nameid: 'is not a device name or a device id'
       try: 'Try'
       command_help: 'set active device to device id'
     register:

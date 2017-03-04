@@ -1,6 +1,6 @@
 
 
-  describe('has device management functions', function(){
+  describe.skip('has device management functions', function(){
     it('`matrix list devices`')
     // look for sim-
     describe('supports a simulator', function(){

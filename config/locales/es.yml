@@ -8,6 +8,9 @@ es:
     locale_title: Localización
     help_login: Iniciar sesión en la plataforma del MatrixOS
     help_register: Crea un usuario en la plataforma MatrixOS
+    help_register_device: registrar nuevo dispositivo
+    help_account: Maneja los detalles de la cuenta de usuario
+    help_account_profile: actualizar la información del perfil de usuario
     help_logout: Cerrar la sesión en la plataforma MatrixOS
     help_use: Indica el dispositivo activo
     help_set: 'Establece la configuración de ambiente, actualiza la configuración de una aplicación, cambia la localización del cli'
@@ -27,6 +30,8 @@ es:
     help_deploy: Sube y despliega una aplicación al dispositivo MatrixOS activo
     help_trigger: Ejecuta una prueba de disparador
     help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
+    help_ping: Luces de activación en el dispositivo seleccionado
+    help_remove: Eliminar un dispositivo de su cuenta y eliminar todos los datos
     please_login: 'No se ha iniciado sesión con un usuario, Por favor'
     set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
     validate:
@@ -45,6 +50,7 @@ es:
       not_authorized: 'No autorizado'
       device_not_found: El dispositivo no existe'
       invalid_token: 'Tu token es invalido'
+      invalid_nameid: 'No es un nombre de dispositivo ni un id de dispositivo'
       try: 'Intenta'
       command_help: 'establece como dispositivo activo el dispositivo con id'
     set:
