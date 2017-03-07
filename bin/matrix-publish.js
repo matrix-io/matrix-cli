@@ -245,7 +245,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           }
         };
 
-        Matrix.firebase.app.publish(Matrix.config.user.token, Matrix.config.device.identifier, Matrix.config.user.id, appData, events);
+        Matrix.firebase.app.publish(Matrix.config.user.token,'', Matrix.config.user.id, appData, events);
       });
 
     });
