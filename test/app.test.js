@@ -42,7 +42,7 @@ describe('can manage apps', function() {
   it('`matrix install`', function(done) {
     fn.run('matrix install sensorTest', {
       responses: [
-        ['allow sensorTest', 'y\n']
+        ['allow sensorTest', 'y\n\n']
       ],
       checks: ['Installing']
     }, done)
@@ -56,7 +56,7 @@ describe('can manage apps', function() {
 
   it('`matrix start`', function(done) {
     fn.run('matrix start sensorTest', {
-      checks: ['Started:  sensorTest']
+      checks: ['Starting:  sensorTest']
     }, done)
   })
 

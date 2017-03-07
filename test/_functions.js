@@ -57,7 +57,7 @@ var run = function(cmd, options, done) {
     var respMatch = out.match(respondRegex);
     if (responseCount < targetResps && options.hasOwnProperty('responses') && !_.isNull(respMatch)) {
       var index = respondPrompts.indexOf(respMatch[0]);
-      // console.log(respMatch[0], index, options.responses[index][1])
+      console.log(respMatch[0], index, options.responses[index][1])
       proc.stdin.write(options.responses[index][1]);
       responseCount += 1;
     }
@@ -66,9 +66,11 @@ var run = function(cmd, options, done) {
       checkCount += out.match(checkRegex).length;
     }
 
-    // console.log( responseCount, checkCount )
+    console.log(responseCount, checkCount)
     if (!finished && responseCount >= targetResps && checkCount >= targetChecks) {
       finished = true;
+      console.log('>>>Function POSTCHECK')
+
       if (options.hasOwnProperty('postCheck')) {
         // make sure command has time to finish
         setTimeout(function() {
