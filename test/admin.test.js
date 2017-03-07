@@ -16,7 +16,7 @@ describe('has admin functions', function() {
             done();
           }
         }
-      }, done)
+      }, done);
     })
 
     it('`matrix set env production`', function(done) {
