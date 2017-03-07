@@ -42,7 +42,7 @@ describe('can manage apps', function() {
   it('`matrix install`', function(done) {
     fn.run('matrix install sensorTest', {
       responses: [
-        ['OK to allow sensorTest', '\n']
+        ['OK to allow sensorTest', 'Y\n']
       ],
       checks: ['SUCCESS']
     }, done)
