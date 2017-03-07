@@ -11,7 +11,7 @@ describe('has admin functions', function() {
         postCheck: function(done) {
           var env = fn.readConfig().environment.name;
           if (env !== 'local') {
-            done('Invalid environment:', env)
+            done('Invalid environment:' + env)
           } else {
             done();
           }
