@@ -24,16 +24,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
   if (Matrix.pkgs.indexOf('env') === 0) {
 
     var value = Matrix.pkgs[1];
-    
-    if (!_.isUndefined(value) && _.keys(environments).indexOf(value) !== -1) {
-      Matrix.helpers.logout(function () {
 
-        Matrix.config.environment = _.assign(environments[value], { name: value });
-        Matrix.helpers.saveConfig(function() {
-          console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
-          // TODO: set-env [value] sets a environment on the Matrix
-          //Matrix.validate.device(); //Make sure the user has logged in
-        });
+    if (!_.isUndefined(value) && _.keys(environments).indexOf(value) !== -1) {
+
+      Matrix.config.environment = _.assign(environments[value], { name: value });
+      var keysToRemove = ['client', 'user', 'device', 'deviceMap'];
+      Matrix.config = _.omit(Matrix.config, keysToRemove);
+
+      Matrix.helpers.saveConfig(function() {
+        console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
+        // TODO: set-env [value] sets a environment on the Matrix
+        process.exit();
       });
     } else {
       console.error(t('matrix.set.env.valid_environments') + ' = [ dev, rc, production ]'.yellow)
