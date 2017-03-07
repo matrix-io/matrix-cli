@@ -3,7 +3,8 @@
 require('./matrix-init');
 var debug = debugLog('set');
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
+
+Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
 
   if (!Matrix.pkgs.length || showTheHelp) {
     return displayHelp();
@@ -18,58 +19,28 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   };
 
-  var environments = {
-    local: {
-      api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://localhost:3000'
-    },
-    local2: {
-      api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://localhost:3001'
-    },
-    dev: {
-      api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://dev-mxss.admobilize.com',
-      appsBucket: 'dev-admobilize-matrix-apps'
-    },
-    rc: {
-      api: 'https://rc-api.admobilize.com',
-      mxss: 'https://rc-mxss.admobilize.com',
-      appsBucket: 'admobilize-matrix-apps'
-    },
-    stage: {
-      api: 'http://stage-api.admobilize.com',
-      mxss: 'http://stage-mxss.admobilize.com'
-    },
-    production: {
-      api: 'http://demo.admobilize.com',
-      mxss: 'http://mxss.admobilize.com',
-      appsBucket: 'admobilize-matrix-apps'
-    },
-    hardcode: {
-      api: 'http://dev-demo.admobilize.com',
-      mxss: 'http://104.197.139.81'
-    }
-  };
+  var environments = require('../config/environments.js');
 
   if (Matrix.pkgs.indexOf('env') === 0) {
 
     var value = Matrix.pkgs[1];
-
-    if (value && value.match(/sandbox|dev|stage|local|production|rc|hardcode/)) {
+    
+    if (!_.isUndefined(value) && _.keys(environments).indexOf(value) !== -1) {
       Matrix.helpers.logout(function () {
+
         Matrix.config.environment = _.assign(environments[value], { name: value });
-        Matrix.helpers.saveConfig(function () {
+        Matrix.helpers.saveConfig(function() {
           console.log(t('matrix.set.env.env').grey + ':'.grey, Matrix.config.environment.name.green);
           // TODO: set-env [value] sets a environment on the Matrix
           //Matrix.validate.device(); //Make sure the user has logged in
         });
       });
     } else {
-      console.error(t('matrix.set.env.valid_environments') + ' = [ dev, rc, production ]')
+      console.error(t('matrix.set.env.valid_environments') + ' = [ dev, rc, production ]'.yellow)
     }
 
   } else if (Matrix.pkgs.indexOf('config') === 0) {
+    return console.error('matrix set config has been depreciated');
     Matrix.validate.user(); //Make sure the user has logged in
     Matrix.validate.device(); //Make sure the user has logged in
     var appName = Matrix.pkgs[1];
@@ -100,7 +71,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       value: val
     }
 
-    Matrix.api.app.configure(options, function (err, resp) {
+    Matrix.api.app.configure(options, function(err, resp) {
       if (err) console.error('Configure Set Error', err);
       console.log('[' + options.deviceId + '](' + options.name + ')', options.key, '=', options.value);
       Matrix.helpers.trackEvent('app-config-change', { aid: appName, did: Matrix.config.device.identifier }, process.exit);
@@ -117,7 +88,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
       if (locale && locale.match(localesRegExp)) {
         Matrix.config.locale = _.assign(locale, { "name": locale });
-        Matrix.helpers.saveConfig(function () {
+        Matrix.helpers.saveConfig(function() {
           console.log(t('matrix.set.locale.locale').grey + ':'.grey, Matrix.config.locale.green);
           process.exit(0);
         });
@@ -135,8 +106,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   function displayHelp() {
 
     console.log('\n> matrix set ¬\n');
-    console.log('\t         matrix set env [env] -', t('matrix.set.help_device').grey + ' ( production | sandbox )'.grey)
-    console.log('\t         matrix set config <app> [k=v] -', t('matrix.set.help_config').grey)
+    console.log('\t         matrix set env [env] -', t('matrix.set.help_device').grey + ' ( production | rc | dev )'.grey)
     console.log('\t         matrix set locale <locale> -', t('matrix.set.help_locale').grey)
     console.log('\n')
     process.exit(1);
