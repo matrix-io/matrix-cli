@@ -40,6 +40,7 @@ describe('can manage apps', function() {
   before(fn.useDevice);
 
   it('`matrix install`', function(done) {
+    console.log('>>>Install Start')
     fn.run('matrix install sensorTest', {
       responses: [
         ['allow sensorTest', 'y\n\n']
