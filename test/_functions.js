@@ -56,7 +56,7 @@ var run = function(cmd, options, done) {
     // called for each line of out
     var respMatch = out.match(respondRegex);
     console.log(responseCount, '<', targetResps);
-    console.log(respMatch, out, '[]=>', targetResps)
+    console.log(respMatch, out, '[]=>', respondRegex, targetResps)
     if (responseCount < targetResps && options.hasOwnProperty('responses') && !_.isNull(respMatch)) {
       var index = respondPrompts.indexOf(respMatch[0]);
       console.log(respMatch[0], index, options.responses[index][1])
