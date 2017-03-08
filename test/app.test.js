@@ -43,7 +43,7 @@ describe('can manage apps', function() {
     console.log('>>>Install Start')
     fn.run('matrix install sensorTest', {
       responses: [
-        ['allow sensorTest', 'y\n\n']
+        ['access to the above', 'y\n\n']
       ],
       checks: ['Installing']
     }, done)
