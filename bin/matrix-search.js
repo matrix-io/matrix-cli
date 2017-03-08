@@ -24,7 +24,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
 
     Matrix.firebase.app.search(needle, function(data) {
       Matrix.loader.stop();
-      if (!_.isNull(data)) {
+      if (!_.isNull(data) && !_.isUndefined(data)) {
         debug(data);
 
         if (!_.isArray(data)) {
@@ -37,6 +37,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
           console.log(Matrix.helpers.displaySearch(data, needle));
         }
         process.exit();
+      } else {
+        console.log(t('matrix.search.no_results').green);
       }
     });
     //Get versionId of appId with version X
