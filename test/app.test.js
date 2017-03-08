@@ -62,7 +62,7 @@ describe('can manage apps', function() {
 
   it('`matrix restart`', function(done) {
     fn.run('matrix restart sensorTest', {
-      checks: ['Started']
+      checks: ['Restarted']
     }, done)
   })
 
