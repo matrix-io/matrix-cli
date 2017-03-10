@@ -182,8 +182,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
           });
         }
       ], function(err) {
-        if (appDetails.config.hasOwnProperty('galleryUrl')) {
-          iconUrl = appDetails.config.galleryUrl;
+        if (details.config.hasOwnProperty('galleryUrl')) {
+          iconUrl = details.config.galleryUrl;
         }
 
         var appData = {
