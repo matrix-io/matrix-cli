@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo $(date) >> testFileDate
 if  grep -qR "Raspbian"  "/etc/os-release"
 then
  echo "THIS IS A RASPBERRY DON'T INSTALL MATRIX CLI IN THIS MACHINE"
