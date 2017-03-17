@@ -24,7 +24,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
         // save for later
         Matrix.config.deviceMap = resp;
-        Matrix.helpers.saveConfig(function(){
+        Matrix.helpers.saveConfig(function () {
           process.exit();
         })
       });
@@ -34,7 +34,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         Matrix.loader.stop();
         if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
         if (_.isUndefined(apps) || _.isNull(apps)) apps = {};
-        
+
         //Retrieve status for each app
         async.forEach(Object.keys(apps), function (appId, done) {
           Matrix.firebase.app.getStatus(appId, function (status) {
@@ -43,7 +43,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             apps[appId].status = status;
             done();
           });
-        }, function(err) {
+        }, function (err) {
           //Once the status or each app has been collected, print table
           console.log(Matrix.helpers.displayApps(apps));
           process.exit();
@@ -52,12 +52,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     } else if (target.match(/device/)) {
 
       Matrix.firebase.device.list(function (devices) {
-        debug('Device list found: ' , devices)
+        debug('Device list found: ', devices)
         var deviceIds = _.keys(devices);
 
         var deviceMap = {};
         Matrix.loader.stop();
-        async.eachOf(devices, function( userDevice, deviceId, cb ){
+        async.eachOf(devices, function (userDevice, deviceId, cb) {
           Matrix.firebase.device.lookup(deviceId, function (err, device) {
             debug(device)
             if (err) {
@@ -68,16 +68,16 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 return cb(err)
               }
             } else {
-              if ( !_.isEmpty(device) ) {
+              if (!_.isEmpty(device)) {
                 //TODO temporary defaults until device creation includes this
-                if (!device.hasOwnProperty('runtime')) device.runtime = {online: false, lastConnectionEvent: 0};
-                if (!device.hasOwnProperty('config')) device.config = {init: []};
+                if (!device.hasOwnProperty('runtime')) device.runtime = { online: false, lastConnectionEvent: 0 };
+                if (!device.hasOwnProperty('config')) device.config = { init: [] };
                 deviceMap[deviceId] = {
-                  name: device.meta.name,
+                  name: device.meta.name.trim(),
                   online: device.runtime.online,
-                  description: device.meta.description,
+                  description: device.meta.description.trim(),
                   lastSeen: device.runtime.lastConnectionEvent,
-                  defaultApps : device.config.init
+                  defaultApps: device.config.init
                 }
               }
               cb();
@@ -119,5 +119,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     process.exit(1);
   }
 
- // TODO: support config <app>
+  // TODO: support config <app>
 });

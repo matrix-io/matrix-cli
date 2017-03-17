@@ -3,7 +3,7 @@
 require('./matrix-init');
 var debug = debugLog('search');
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
+Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
 
   if (!Matrix.pkgs.length || showTheHelp) {
     return displayHelp();
@@ -18,17 +18,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   Matrix.loader.start();
-  Matrix.firebaseInit(function () {
+  Matrix.firebaseInit(function() {
 
     Matrix.helpers.trackEvent('app-search', { aid: needle });
 
-    Matrix.firebase.app.search(needle, function (data) {
+    Matrix.firebase.app.search(needle, function(data) {
       Matrix.loader.stop();
-      if (!_.isNull(data)) {
+      if (!_.isNull(data) && !_.isUndefined(data)) {
         debug(data);
 
-        if ( !_.isArray(data)){
-          data = [ data ];
+        if (!_.isArray(data)) {
+          data = [data];
         }
 
         if (_.isEmpty(data)) {
@@ -37,11 +37,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           console.log(Matrix.helpers.displaySearch(data, needle));
         }
         process.exit();
+      } else {
+        console.log(t('matrix.search.no_results').green);
       }
     });
     //Get versionId of appId with version X
-  }
-  );
+  });
 
   function displayHelp() {
     console.log('\n> matrix search ¬\n');
