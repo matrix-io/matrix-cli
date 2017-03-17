@@ -1,11 +1,6 @@
 {
   "name": "matrix-cli",
-<<<<<<< HEAD
-
   "version": "1.3.4",
-=======
-  "version": "1.3.0",
->>>>>>> e9a3146f167ea89cc3592fbe2ceac1e6ffd64d93
   "description": "Matrix CLI Enables Communication with MatrixOS devices.",
   "preferGlobal": true,
   "bin": {
