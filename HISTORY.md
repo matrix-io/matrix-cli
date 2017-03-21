@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [unreleased]
+### Fixed
+- Error message from firebase init
+
 ## [1.3.7]
 ### Added
 - ES6 passes deploy/publish linter
