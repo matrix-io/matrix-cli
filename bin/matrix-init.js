@@ -110,7 +110,7 @@ async.series([
           } else if (errorCode == 4) {
             console.log('Network timeout, please check your connection and try again'.yellow);
           } else {
-            console.error('Error initializing Firebase: '.yellow, err.red);
+            console.error('Error initializing Firebase: '.yellow, err.message.red);
           }
           process.exit();
         }
