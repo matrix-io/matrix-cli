@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 ### Fixed
 - Error message from firebase init
+### Added
+- Error resolution text
 
 ## [1.3.7]
 ### Added
