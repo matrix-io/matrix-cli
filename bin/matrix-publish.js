@@ -1,13 +1,8 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var fs = require('fs');
-var tar = require('tar');
 var async = require('async');
-var yaml = require('js-yaml');
 var debug = debugLog('publish');
-var fstream = require('fstream');
-var appDetectFile = 'config.yaml';
 var fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps'; // /<AppName>/<version>.zip
 var publicationFinished = false;
 
@@ -34,9 +29,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
 
   var destinationFilePath = __dirname + '/../' + appName + '.zip';
   var packageContent;
-  var configObject = {};
-  var policyObject = {};
-  var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png';
   var hasReadme = false;
 
   async.parallel({
@@ -46,11 +38,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
     },
     function(err, results) {
       if (!err && !_.isUndefined(results.data)) {
-        if (!_.isUndefined(results.folder)) {
-          //If it has a readme file
-          if (results.folder.hasOwnProperty('readme')) {
-            hasReadme = results.folder.readme;
-          }
+        if (!_.isUndefined(results.folder) && results.folder.hasOwnProperty('readme')) { //If it has a readme file
+          hasReadme = results.folder.readme; 
         }
         var appDetails = results.data;
         debug('Using app details: ' + JSON.stringify(appDetails));
@@ -182,27 +171,17 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
           });
         }
       ], function(err) {
+
+        var appData = Matrix.helpers.formAppData(details);
+
         if (details.config.hasOwnProperty('galleryUrl')) {
           iconUrl = details.config.galleryUrl;
         }
 
-        var appData = {
-          'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories', 'version', 'file']),
-          'file': details.file, //TODO Remove this once it isn't required
-          'version': details.version, //TODO Remove this once it isn't required
-          'assets': {
-            'icon': iconURL
-          },
-          'config': details.config,
-          'policy': details.policy
-            //'override': true //This ignores the version restriction on the backend
-        };
         if (hasReadme) {
           appData.meta.readme = fileUrl + '/' + appName + '/' + remoteReadmeFileName;
           debug('README URL: ' + appData.meta.readme);
         }
-        debug('DOWNLOAD URL: ' + appData.file);
-        debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData);
 
         Matrix.helpers.trackEvent('app-publish', { aid: appName });
         //Listen for the app creation in appStore
