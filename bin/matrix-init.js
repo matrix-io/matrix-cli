@@ -92,12 +92,14 @@ async.series([
   Matrix.firebase = require('matrix-firebase');
   Matrix.firebaseInit = function(cb) {
     var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier : '';
+    debug('Firebase Init', Matrix.config.user.id, currentDevice );
     Matrix.firebase.init(
       Matrix.config.user.id,
       currentDevice,
       Matrix.config.user.token,
       Matrix.config.environment.name,
       function(err) {
+        if (err) { debug( 'firebase error', err)}
         var errorCode = Matrix.validate.firebaseError(err);
         if (errorCode != 0) {
           if (errorCode == 1) {

@@ -73,9 +73,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 if (!device.hasOwnProperty('runtime')) device.runtime = { online: false, lastConnectionEvent: 0 };
                 if (!device.hasOwnProperty('config')) device.config = { init: [] };
                 deviceMap[deviceId] = {
-                  name: device.meta.name.trim(),
+                  name: device.meta.name,
                   online: device.runtime.online,
-                  description: device.meta.description.trim(),
+                  description: device.meta.description,
                   lastSeen: device.runtime.lastConnectionEvent,
                   defaultApps: device.config.init
                 }
