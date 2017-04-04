@@ -112,7 +112,14 @@ async.series([
           } else if (errorCode == 4) {
             console.log('Network timeout, please check your connection and try again'.yellow);
           } else {
-            console.error('Error initializing Firebase: '.yellow, err.red);
+            console.error('Error initializing Firebase: '.yellow, err.message.red);
+
+            // specific info on how to resolve
+            if (err.code === 'auth/custom-token-mismatch') {
+              console.error('Server environments may be incongruent.',
+                'Rerun `%s` and login again to reset your configuration', 'matrix set env <dev/production>'.yellow
+              );
+            }
           }
           process.exit();
         }

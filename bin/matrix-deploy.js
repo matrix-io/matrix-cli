@@ -1,13 +1,8 @@
 #!/usr/bin/env node
 
 require('./matrix-init');
-var fs = require('fs');
-var tar = require('tar');
 var async = require('async');
-var yaml = require('js-yaml');
 var debug = debugLog('deploy');
-var fstream = require('fstream');
-var appDetectFile = 'config.yaml';
 var fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps';// /<AppName>/<version>.zip
 var deploymentFinished = false;
 var workerTimeoutSeconds = 30;
@@ -36,10 +31,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   var destinationFilePath = require('os').homedir() + '/.matrix/' + appName + '.zip';
-  var packageContent;
-  var configObject = {};
-  var policyObject = {};
-  var iconURL = 'https://storage.googleapis.com/dev-admobilize-matrix-apps/default.png';
 
   async.parallel({
     folder: async.apply(Matrix.helpers.checkAppFolder, pwd),
@@ -50,7 +41,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       if (!err && !_.isUndefined(results.data)) {
         var appDetails = results.data;
         debug('Using app details: ' + JSON.stringify(appDetails));
-        var newVersion = Matrix.helpers.patchVersion(appDetails.version);
 
         Matrix.helpers.zipAppFolder(pwd, destinationFilePath, function (err) {
           if (err) {
@@ -96,20 +86,9 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function (err, uploadUrl) {
         if (!err) {
           Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
-            var appData = {
-              'meta': _.pick(details, ['name', 'description', 'shortname', 'keywords', 'categories', 'version', 'file']),
-              'file': details.file, //TODO Remove this once it isn't required
-              'version': details.version, //TODO Remove this once it isn't required
-              'assets': {
-                'icon': iconURL
-              },
-              'config': details.config,
-              'policy': details.policy,
-              'override': true
-            };
-            debug('DOWNLOAD URL: ' + uploadUrl);
-            debug('The data sent for ' + appName + ' ( ' + details.version + ' ) is: ', appData)
 
+            var appData = Matrix.helpers.formAppData(details);            
+            appData.override = true; //If true the appstore won't check for uniqueness
 
             var deployedAppId, workerTimeout, deviceTimeout;
             var nowInstalling = false;

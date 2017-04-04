@@ -1,7 +1,9 @@
 {
+  "globals": {
+    "matrix": false,
+    "_": false
+  },
   "node": true,
-  "browser": true,
-  "esnext": true,
   "bitwise": true,
   "camelcase": false,
   "curly": false,
@@ -16,20 +18,11 @@
   "noarg": true,
   "quotmark": "single",
   "regexp": true,
-  "undef": true,
   "unused": true,
   "strict": false,
   "trailing": true,
   "smarttabs": true,
   "laxcomma": true,
   "mocha": true,
-  "node": true,
-  "globals": {
-    "Matrix": true,
-    "debugLog": true,
-    "app" : true,
-    "$": true,
-    "_": true,
-    "t": true
-  }
+  "esversion": 6
 }
