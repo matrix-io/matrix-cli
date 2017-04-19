@@ -7,7 +7,6 @@
     "matrix": "./bin/matrix"
   },
   "scripts": {
-    "install": "sh validate.sh",
     "test": "mocha test",
     "local-setup": "cd node_modules; ln -s ../../matrix-app-config-helper ./matrix-app-config-helper;ln -s ../../matrix-firebase ./matrix-firebase; ln -s ../../matrix-node-sdk ./matrix-node-sdk; cd ..",
     "install-clear": "sudo rm -r node_modules/matrix-firebase node_modules/matrix-app-config-helper node_modules/matrix-node-sdk"
