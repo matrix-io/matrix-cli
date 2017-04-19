@@ -92,12 +92,14 @@ async.series([
   Matrix.firebase = require('matrix-firebase');
   Matrix.firebaseInit = function(cb) {
     var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier : '';
+    debug('Firebase Init', Matrix.config.user.id, currentDevice );
     Matrix.firebase.init(
       Matrix.config.user.id,
       currentDevice,
       Matrix.config.user.token,
       Matrix.config.environment.name,
       function(err) {
+        if (err) { debug( 'firebase error', err)}
         var errorCode = Matrix.validate.firebaseError(err);
         if (errorCode != 0) {
           if (errorCode == 1) {
@@ -110,7 +112,14 @@ async.series([
           } else if (errorCode == 4) {
             console.log('Network timeout, please check your connection and try again'.yellow);
           } else {
-            console.error('Error initializing Firebase: '.yellow, err.red);
+            console.error('Error initializing Firebase: '.yellow, err.message.red);
+
+            // specific info on how to resolve
+            if (err.code === 'auth/custom-token-mismatch') {
+              console.error('Server environments may be incongruent.',
+                'Rerun `%s` and login again to reset your configuration', 'matrix set env <dev/production>'.yellow
+              );
+            }
           }
           process.exit();
         }

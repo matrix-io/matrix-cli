@@ -32,7 +32,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   if (!_.isEmpty(Matrix.config.user)) {
-    console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
+    if (Matrix.validate.token() === false) {
+      console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);
+    } else {
+      console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
+    }
   }
   prompt.delimiter = '';
   prompt.message = 'Login -- ';
@@ -49,7 +53,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         process.exit();
       }
     }
-
     if (!_.has(result, 'trackOk')) result.trackOk = oldTrack;
     Matrix.helpers.login(result, function (err) {
       process.exit();
