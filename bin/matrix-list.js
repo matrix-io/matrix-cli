@@ -17,9 +17,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
     if (target.match(/all/)) {
       Matrix.firebase.user.getAllApps(function (err, resp) {
-        if (_.isEmpty(resp)) return console.error(t('matrix.list.no_results'));
-        debug('Device List>', resp);
         Matrix.loader.stop();
+        if (_.isEmpty(resp)) {
+          console.error(t('matrix.list.no_results'));
+          process.exit(1);
+        }
+        debug('Device List>', resp);
         console.log(Matrix.helpers.displayDeviceApps(resp));
 
         // save for later
@@ -32,7 +35,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.validate.device(); //Make sure the user has selected a device
       Matrix.firebase.app.list(function (err, apps) {
         Matrix.loader.stop();
-        if (err) return console.error('- ', t('matrix.list.app_list_error') + ':', err);
+        if (err) {
+          console.error('- ', t('matrix.list.app_list_error') + ':', err);
+          process.exit(1);
+        }
         if (_.isUndefined(apps) || _.isNull(apps)) apps = {};
 
         //Retrieve status for each app
@@ -84,7 +90,10 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             }
           })
         }, function (err) {
-          if (err) return console.error(err.red);
+          if (err) {
+            console.error(err.red);
+            process.exit(1);
+          }
           console.log(Matrix.helpers.displayDevices(deviceMap));
           Matrix.config.deviceMap = deviceMap;
           Matrix.helpers.saveConfig(function () {
