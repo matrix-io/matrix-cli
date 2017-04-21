@@ -11,6 +11,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   Matrix.validate.user(); //Make sure the user has logged in
+  console.log('User validated');
   var target = Matrix.pkgs[0];
   Matrix.loader.start();
   Matrix.firebaseInit(function () {

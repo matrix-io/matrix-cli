@@ -1,43 +1,69 @@
-//Check if a user is logged in
-function user() {
-
+/**
+ *
+ * @param {bool} refresh If a token refresh should be executted. Defaults to true
+ * @returns {bool} 
+ */
+function user(refresh) {
+  var result = false;
   if (_.isEmpty(Matrix.config.user)) {
     Matrix.loader.stop();
     console.log(t('matrix.please_login').yellow);
-    process.exit();
-  }else{
-    token();
+  } else {
+    if (!token()) {
+      if (refresh) {
+        if (!_.isEmpty(Matrix.config.user.refreshToken)) {
+          Matrix.api.refresh(Matrix.config.user.refreshToken, function (err, state) {
+            Matrix.loader.stop();
+            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Token:', Matrix.config.user.refreshToken, 'Err:', err, 'State:', state);
+          });
+        } else {
+          Matrix.loader.stop();
+          console.log('Unable to refesh token!');
+        } 
+      }
+    } else {
+      result = true;
+    }
   }
+
+  if (!result) process.exit;
+  return result;
 }
 
 //Check if a device is selected
 function device() {
   if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
     Matrix.loader.stop();
-    console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey,' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
+    console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     process.exit();
   }
 }
 
-// Check if a token is current
-function token(){
+/**
+ * token - Verifies token integrity and expiration
+ * returns {bool} Wether the token is valid or not
+ */
+function token() {
+  if (_.isEmpty(refresh)) refresh = true;
   var jwt = require('jsonwebtoken');
   var token = Matrix.config.user.token;
-  if ( _.isUndefined(token) ){
-    console.log(t('matrix.please_login').yellow);
-    process.exit();
-  } else {
+  var result = false;
+  if (_.isUndefined(token)) console.log(t('matrix.please_login').yellow);
+  else {
     var decode = jwt.decode(token, { complete: true });
-    if ( decode.payload.exp < Math.round( new Date().getTime() / 1000 ) ){
-      debug('Token Expired.');
-      console.log(t('matrix.please_login').yellow);
-      return false
-      //process.exit();
-    } else {
-      debug('Token ok!'.green)
-      return true;
+    
+    if (_.isEmpty(decode)) debug('Incorrect token format');
+    else {
+      if (decode.payload.exp < Math.round(new Date().getTime() / 1000))
+        debug('Token Expired.');
+      else
+        result = true;
     }
-   }
+  }
+  if (!result) console.log(t('matrix.please_login').yellow);
+  else debug('Token ok!'.green);
+
+  return result;
 }
 
 function isCurrentDevice(deviceId) {
@@ -51,7 +77,7 @@ function isCurrentDevice(deviceId) {
 //Returns a specific code for each case
 function firebaseError(err) {
   if (err) {
-    if(err.hasOwnProperty('code')){
+    if (err.hasOwnProperty('code')) {
       if (err.code == 'auth/invalid-custom-token') {
         return 1;
       } else if (err.code == 'auth/network-request-failed') {
@@ -73,7 +99,7 @@ module.exports = {
   device: device,
   user: user,
   token: token,
-  config: function(config){
+  config: function (config) {
     var configHelper = require('matrix-app-config-helper')
     return configHelper.validate(config);
   },

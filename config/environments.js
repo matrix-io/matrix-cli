@@ -1,16 +1,16 @@
 module.exports = { //export environments 
 
   local: {
-    api: 'http://dev-demo.admobilize.com',
+    api: 'https://dev-demo.admobilize.com',
     mxss: 'http://localhost:3000'
   },
   local2: {
-    api: 'http://dev-demo.admobilize.com',
+    api: 'https://dev-demo.admobilize.com',
     mxss: 'http://localhost:3001'
   },
   dev: {
-    api: 'http://dev-demo.admobilize.com',
-    mxss: 'http://dev-mxss.admobilize.com',
+    api: 'https://dev-demo.admobilize.com',
+    mxss: 'https://dev-mxss.admobilize.com',
     appsBucket: 'dev-admobilize-matrix-apps'
   },
   rc: {
@@ -28,7 +28,7 @@ module.exports = { //export environments
     appsBucket: 'admobilize-matrix-apps'
   },
   hardcode: {
-    api: 'http://dev-demo.admobilize.com',
+    api: 'https://dev-demo.admobilize.com',
     mxss: 'http://104.197.139.81'
   }
 };

@@ -101,14 +101,15 @@ async.series([
       function(err) {
         if (err) { debug( 'firebase error', err)}
         var errorCode = Matrix.validate.firebaseError(err);
-        if (errorCode != 0) {
-          if (errorCode == 1) {
+        if (errorCode !== 0) {
+          if (errorCode === 1) {
             //TODO try to refresh token before failing
             Matrix.loader.stop();
             console.log('Invalid user, log in again'.yellow);
-            Matrix.helpers.logout(function() {
+            Matrix.helpers.logout(function () {
               process.exit();
             });
+            
           } else if (errorCode == 4) {
             console.log('Network timeout, please check your connection and try again'.yellow);
           } else {
