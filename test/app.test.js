@@ -21,8 +21,7 @@ describe('can manage apps', function() {
           NO_UPGRADE: true,
           NODE_ENV: 'dev',
           TEST_MODE: true,
-          //  DEBUG:'*',
-          DEBUG: '',
+          DEBUG: (process.env.hasOwnProperty('DEBUG')) ? '*' : ''
         },
         stdio: 'ignore'
       })
