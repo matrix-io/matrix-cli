@@ -16,7 +16,7 @@ en:
     help_account_profile: update user profile info
     help_logout: Log out of the MATRIX platform
     help_config: <app-name> (key=value) View and set application configuration
-    help_create: Creates a new scaffolding for a application
+    help_create: (name) Creates a new scaffolding for an application
     help_deploy: (name) Deploy application to the active device
     help_install_default: Install application
     help_install: <name> Install an app to selected MATRIX device
