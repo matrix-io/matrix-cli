@@ -107,8 +107,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
   function displayHelp() {
 
     console.log('\n> matrix set ¬\n');
-    console.log('\t         matrix set env [env] -', t('matrix.set.help_device').grey + ' ( production | rc | dev )'.grey)
-    console.log('\t         matrix set locale <locale> -', t('matrix.set.help_locale').grey)
+    console.log('\t         matrix set env (production|rc|dev) -', t('matrix.set.help_device').grey)
+    console.log('\t         matrix set locale (es|en) -', t('matrix.set.help_locale').grey)
     console.log('\n')
     process.exit(1);
   }

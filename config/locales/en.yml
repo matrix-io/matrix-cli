@@ -7,32 +7,34 @@ en:
     no_user_message: No user selected
     device_title: Device
     locale_title: Locale
-    help_login: Login to the MatrixOS platform
-    help_register: Create a MatrixOS platform user
+    env_title: Env
+    v_title: V
+    help_login: Login to the MATRIX platform
+    help_register: Create a MATRIX platform user
     help_register_device: register new device
     help_account: Manage user account details
     help_account_profile: update user profile info
-    help_logout: Log out of the MatrixOS platform
-    help_config: View and modify application configuration
-    help_create: Creates a new scaffolding for a MatrixOS Application
-    help_deploy: Uploads and deploys an app to the active MatrixOS
-    help_install_default: defaults to app
-    help_install: Install an app or sensor to active MatrixOS device
+    help_logout: Log out of the MATRIX platform
+    help_config: <app-name> (key=value) View and set application configuration
+    help_create: (name) Creates a new scaffolding for an application
+    help_deploy: (name) Deploy application to the active device
+    help_install_default: Install application
+    help_install: <name> Install an app to selected MATRIX device
     help_list: 'Information about your devices, applications and installs'
-    help_log: Logs output from selected MatrixOS and applications
+    help_log: Logs output from selected device and applications
     help_ping: Flash lights on selected Matrix device
-    help_reboot: Reboots the active MatrixOS device
-    help_remove: Remove a device from your account and delete all data
-    help_restart: Restarts an app running on the MatrixOS
-    help_search: Search for apps
-    help_set: 'Set environment settings, update application configuration, change cli locale'
-    help_sim: Manage local MatrixOS simulator with Docker
-    help_start: Starts an app running on the active MatrixOS
-    help_stop: Stops an app running on the active MatrixOS
-    help_trigger: Runs a CrossTalk event test
-    help_uninstall: Uninstall the app
-    help_update: Update to a specified version of a MatrixOS application
-    help_use: Indicate active device
+    help_reboot: Reboots the active device
+    help_remove: <device-id> Remove a device from your account
+    help_restart: <app-name> Restarts an app running on the device
+    help_search: <query> Search for apps
+    help_set: 'Set environment/locale'
+    help_sim: Manage local device simulator with Docker
+    help_start: <app-name> Starts an app running on the active device
+    help_stop:  <app-name> Stops an app running on the active device
+    help_trigger: <trigger> Runs a CrossTalk event test
+    help_uninstall: <app> Uninstall the app
+    help_update: <app-name> <version> Install a specific application version
+    help_use: <device-id>Indicate active device
     please_login: No user logged in
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`

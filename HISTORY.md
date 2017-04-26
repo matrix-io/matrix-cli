@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [unreleased]
+
+### Added
+- New application writes app name to package json
+
 ## [1.3.8]
 ### Fixed
 - Error message from firebase init

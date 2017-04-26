@@ -51,7 +51,7 @@ var run = function(cmd, options, done) {
     out = out.toString();
     output.push(out.split('\n'))
     if (process.env.hasOwnProperty('DEBUG')) {
-      console.log(out)
+      console.log(out);
     }
     // called for each line of out
     var respMatch = out.match(respondRegex);
@@ -83,6 +83,11 @@ var run = function(cmd, options, done) {
       }
     }
   })
+
+  // forward errors
+  proc.stderr.on('data', (e) => {
+    console.error(e.toString());
+  });
 
   proc.on('close', function(code) {
     console.log('finished'.green, cmd, code)
