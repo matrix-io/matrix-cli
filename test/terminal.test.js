@@ -90,7 +90,7 @@ describe('Matrix CLI Commands', function() {
           checks: t('matrix.please_login')
         }, done);
       });
-      it('restart', function(done) {
+      it.skip('restart', function(done) {
         fn.run('restart sensortest', {
           checks: t('matrix.please_login')
         }, done);

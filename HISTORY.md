@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## []
+### Fixed
+- Remove devices when test is done
+
 ## [1.3.9]
 ### Added
 - 
