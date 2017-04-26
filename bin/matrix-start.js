@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 require('./matrix-init');
 
-var debug = debugLog('sdk');
+var debug = debugLog('start');
 var commandTimeoutSeconds = 30;
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   var app = Matrix.pkgs[0];
