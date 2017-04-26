@@ -109,6 +109,9 @@ describe('Matrix CLI Commands', function() {
     before(fn.login);
 
     before(fn.useDevice);
+
+    // NOTE: This is for the whole test cycle, if you add other device requiring tests
+    // Move this to after that. devices are created in admin.test.js
     after(fn.removeDevice);
 
     it('should show user and device info in `matrix`', function(done) {

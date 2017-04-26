@@ -53,7 +53,10 @@ describe('has admin functions', function() {
   });
 
   describe('can make, list and delete devices', function() {
+
+    // NOTE: This device is global for the test suite. It will be destroyed in terminal.test.app
     before('`matrix register device`', fn.registerDevice);
+
     it('`matrix list devices`', function(done) {
       fn.run(
         'list devices', {
