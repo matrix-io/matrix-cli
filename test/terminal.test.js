@@ -109,6 +109,7 @@ describe('Matrix CLI Commands', function() {
     before(fn.login);
 
     before(fn.useDevice);
+    after(fn.removeDevice);
 
     it('should show user and device info in `matrix`', function(done) {
       fn.run('matrix', {
