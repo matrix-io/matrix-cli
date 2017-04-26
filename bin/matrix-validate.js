@@ -3,30 +3,38 @@
  * @param {bool} refresh If a token refresh should be executted. Defaults to true
  * @returns {bool} 
  */
-function user(refresh) {
+function user() {
   var result = false;
   if (_.isEmpty(Matrix.config.user)) {
     Matrix.loader.stop();
+    debug('No user found');
     console.log(t('matrix.please_login').yellow);
   } else {
     if (!token()) {
-      if (refresh) {
         if (!_.isEmpty(Matrix.config.user.refreshToken)) {
-          Matrix.api.refresh(Matrix.config.user.refreshToken, function (err, state) {
-            Matrix.loader.stop();
-            console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Token:', Matrix.config.user.refreshToken, 'Err:', err, 'State:', state);
-          });
+          var tokenData = Matrix.helpers.syncRefreshToken(Matrix.config.user.refreshToken);
+          if (!_.isEmpty(tokenData.err)) {
+            console.log('Token refresh failed!');
+          } else {
+            Matrix.config.user.token = tokenData.token;
+            var err = Matrix.helpers.syncSaveConfig();
+            if (!_.isEmpty(err)) console.error('Unable to save config file!'.red, err);
+            else result = true;
+          }
         } else {
           Matrix.loader.stop();
           console.log('Unable to refesh token!');
         } 
-      }
     } else {
       result = true;
     }
   }
 
-  if (!result) process.exit;
+  if (!result) {
+    debug('Invalid token and unable to refresh it');
+    console.log(t('matrix.please_login').yellow);
+    process.exit(1);
+  }
   return result;
 }
 
@@ -43,13 +51,12 @@ function device() {
  * token - Verifies token integrity and expiration
  * returns {bool} Wether the token is valid or not
  */
-function token() {
+function token(refresh) {
   if (_.isEmpty(refresh)) refresh = true;
   var jwt = require('jsonwebtoken');
   var token = Matrix.config.user.token;
   var result = false;
-  if (_.isUndefined(token)) console.log(t('matrix.please_login').yellow);
-  else {
+  if (!_.isUndefined(token)){
     var decode = jwt.decode(token, { complete: true });
     
     if (_.isEmpty(decode)) debug('Incorrect token format');
@@ -60,7 +67,7 @@ function token() {
         result = true;
     }
   }
-  if (!result) console.log(t('matrix.please_login').yellow);
+  if (!result) debug('Invalid token!');
   else debug('Token ok!'.green);
 
   return result;
