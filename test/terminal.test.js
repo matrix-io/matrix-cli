@@ -1,4 +1,3 @@
-
 var run = require('child_process').spawn;
 var exec = require('child_process').exec;
 var colors = require('colors');
@@ -7,141 +6,141 @@ var sinon = require('sinon');
 var Table = require('cli-table2');
 
 
-describe('Matrix CLI Commands', function () {
-  before(function (done) {
+describe('Matrix CLI Commands', function() {
+  before(function(done) {
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, done);
   })
 
-  describe('No login warnings', function () {
-    this.timeout(15000)
-    before(fn.logout)
-      it.skip('matrix', function (done) {
+  describe('No login warnings', function() {
+      this.timeout(15000)
+      before(fn.logout)
+      it.skip('matrix', function(done) {
         fn.run('matrix', {
           checks: t('matrix.no_user_message')
         }, done);
       });
 
 
-      it.skip('logout', function (done) {
+      it.skip('logout', function(done) {
 
         fn.run('matrix logout', {
           checks: 'No user logged in'
         }, done);
       });
 
-      it.skip('use', function (done) {
+      it.skip('use', function(done) {
         fn.run('use 123', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-      it('sim', function (done) {
+      it.skip('sim', function(done) {
         fn.run('sim init', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-      it('list', function (done) {
+      it('list', function(done) {
         fn.run('list all', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-      it.skip('set', function (done) {
+      it.skip('set', function(done) {
         fn.run('set config', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-      it('reboot', function (done) {
+      it.skip('reboot', function(done) {
         fn.run('reboot', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-      it('install', function (done) {
+      it('install', function(done) {
         fn.run('install sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-      it('config', function (done) {
+      it('config', function(done) {
         fn.run('config', {
           checks: t('matrix.please_login')
         }, done);
       });
-      it('uninstall', function (done) {
+      it('uninstall', function(done) {
         fn.run('uninstall sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
-      it('update', function (done) {
+      it('update', function(done) {
         fn.run('update sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-      it('start', function (done) {
+      it('start', function(done) {
         fn.run('start sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
-      it('stop', function (done) {
+      it('stop', function(done) {
         fn.run('stop sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
-      it('restart', function (done) {
+      it('restart', function(done) {
         fn.run('restart sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-      it('deploy', function (done) {
+      it('deploy', function(done) {
         fn.run('deploy sensortest', {
           checks: t('matrix.please_login')
         }, done);
       });
 
-  }) // FINISH CONTEXT Not logged in
+    }) // FINISH CONTEXT Not logged in
 
-  describe('Logged in {', function () {
+  describe('Logged in {', function() {
     this.timeout(60000);
     before(fn.login);
 
     before(fn.useDevice);
 
-    it('should show user and device info in `matrix`', function (done) {
+    it('should show user and device info in `matrix`', function(done) {
       fn.run('matrix', {
         checks: ['testuser']
       }, done);
     })
 
-    describe('use', function(){
-      it('should show help if no params specified', function(done){
+    describe('use', function() {
+      it('should show help if no params specified', function(done) {
         fn.run('use', {
           checks: t('matrix.use.command_help')
         }, done)
       })
 
-      it('should fail on an invalid device', function(done){
+      it('should fail on an invalid device', function(done) {
         fn.run('use xxx', {
           checks: t('matrix.use.invalid_nameid')
         }, done)
       })
     });
 
-    describe('config', function () {
-      it('can display application configuration', function (done) {
+    describe('config', function() {
+      it('can display application configuration', function(done) {
         fn.run('config matrix-test-app', {
           checks: ['matrix-test-app', 'description']
         }, done);
       })
-      it('can change application configuration', function (done){
+      it('can change application configuration', function(done) {
         fn.showLogs = true;
         fn.run('config matrix-test-app description=foobar', {
           checks: ['update: foobar'],
-          postCheck: function(done){
+          postCheck: function(done) {
             fn.run('config matrix-test-app', {
               checks: ['foobar']
             }, done);
