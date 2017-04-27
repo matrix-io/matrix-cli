@@ -13,7 +13,7 @@ function user(exit) {
     if (!token()) {
         if (!_.isEmpty(Matrix.config.user.refreshToken)) {
           var tokenData = Matrix.helpers.syncRefreshToken(Matrix.config.user.refreshToken);
-          if (!_.isEmpty(tokenData.err)) {
+          if (!_.isUndefined(tokenData.err || _.isEmpty(tokenData.token))) {
             console.log('Token refresh failed!');
           } else {
             Matrix.config.user.token = tokenData.token;
