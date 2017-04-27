@@ -1,11 +1,11 @@
 /**
- *
- * @param {bool} refresh If a token refresh should be executted. Defaults to true
+ * user - Checks if a valid user is set along with a valid user token, if invalid it refreshes it
+ * @param {bool} exit If the process should exit on failed user validation. Defaults to true
  * @returns {bool} 
  */
 function user(exit) {
-  if (_.isEmpty(exit)) exit = true;
   var result = false;
+  if (_.isEmpty(exit)) exit = true;
   if (_.isEmpty(Matrix.config.user)) {
     Matrix.loader.stop();
     debug('No user found');
@@ -38,13 +38,21 @@ function user(exit) {
   return result;
 }
 
-//Check if a device is selected
-function device() {
+/**
+ * device - Checks if a device is properly set
+ * @param {bool} exit If the process should exit on failed user validation. Defaults to true
+ * @returns {bool} 
+ */
+function device(exit) {
+  var result = true;
+  if (_.isEmpty(exit)) exit = true;
   if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
     Matrix.loader.stop();
     console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
-    process.exit();
+    result = false;
   }
+  if (!result && exit) process.exit();
+  return result;
 }
 
 /**
