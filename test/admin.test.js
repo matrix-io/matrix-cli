@@ -1,5 +1,3 @@
-var exec = require('child_process').exec;
-
 describe('has admin functions', function() {
   this.timeout(15000)
 
@@ -78,6 +76,18 @@ describe('has admin functions', function() {
 
   });
 
+  describe.skip('can refresh a token', function () { 
+    before('`matrix login`', fn.login);
+    it('`Refreshes an invalid token`', function (done) {
+      var userToken = fn.readConfig().user.token;
+      userToken = userToken.substring(1, userToken.length);
+      fn.updateConfig('user.token', userToken);
+      var userToken = fn.readConfig().user.token;
+      if (Matrix.validate.user(false)) done();
+      else done('Failed to refresh the user token');
+    });
+  });
+    
   describe('can logout', function() {
     it('`matrix logout`', fn.logout);
   })

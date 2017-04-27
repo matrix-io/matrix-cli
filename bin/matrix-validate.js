@@ -3,12 +3,12 @@
  * @param {bool} refresh If a token refresh should be executted. Defaults to true
  * @returns {bool} 
  */
-function user() {
+function user(exit) {
+  if (_.isEmpty(exit)) exit = true;
   var result = false;
   if (_.isEmpty(Matrix.config.user)) {
     Matrix.loader.stop();
     debug('No user found');
-    console.log(t('matrix.please_login').yellow);
   } else {
     if (!token()) {
         if (!_.isEmpty(Matrix.config.user.refreshToken)) {
@@ -33,7 +33,7 @@ function user() {
   if (!result) {
     debug('Invalid token and unable to refresh it');
     console.log(t('matrix.please_login').yellow);
-    process.exit(1);
+    if (exit) process.exit(1);
   }
   return result;
 }

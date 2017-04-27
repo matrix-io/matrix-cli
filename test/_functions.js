@@ -101,6 +101,11 @@ module.exports = {
   readConfig: function readConfig() {
     return JSON.parse(require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json'));
   },
+  updateConfig: function updateConfig(valuesObject) {
+    var fileContent = JSON.parse(require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json'));
+    fileContent = _.merge(valuesObject, fileContent);
+    return require('fs').writeFileSync(require('os').homedir() + '/.matrix/store.json', fileContent);
+  },
   login: function(done) {
     run('matrix login', {
       responses: [
@@ -181,7 +186,6 @@ module.exports = {
       checks: ['Logged Out Successfully'],
       postCheck: function(done) {
         var config = fn.readConfig();
-        var uids = _.keys(config.keepDevice);
         if (_.has(config, 'user')) {
           done('User Not Deleted on Logout')
         } else {
