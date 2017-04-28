@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
-var debug = debugLog('use');
 var async = require('async');
+var debug;
 
 async.series([
+  require('./matrix-init'),
   function(cb) {
+    debug = debugLog('use');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync

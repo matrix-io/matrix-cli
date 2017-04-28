@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
-var debug = debugLog('sim');
 var prompt = require('prompt');
 var p = require('child_process');
 
 var async = require('async');
+var debug;
 
 async.series([
+  require('./matrix-init'),
   function(cb) {
+    debug = debugLog('sim');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync

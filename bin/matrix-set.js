@@ -3,7 +3,6 @@
 require('./matrix-init');
 var debug = debugLog('set');
 
-
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
 
   if (!Matrix.pkgs.length || showTheHelp) {

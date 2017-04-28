@@ -121,6 +121,14 @@ module.exports = {
   isCurrentDevice: isCurrentDevice,
   firebaseError: firebaseError,
   // stubs to replace later @diego
-  deviceAsync: function(cb) { cb() },
-  userAsync: function(cb) { cb() },
+  deviceAsync: function(cb) {
+    cb()
+  },
+  userAsync: function(cb) {
+    if (user()) {
+      cb()
+    } else {
+      cb(t('matrix.please_login').yellow)
+    }
+  },
 };

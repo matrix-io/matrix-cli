@@ -1,15 +1,26 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
-var debug = debugLog('search');
+var async = require('async');
+var debug;
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
+async.series([
+  require('./matrix-init'),
+  function(cb) {
+    debug = debugLog('search');
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+  Matrix.validate.userAsync,
+  function(cb) {
+    Matrix.firebaseInit(cb)
+  }
+], function(err) {
+  if (err) return console.error(err);
 
   if (!Matrix.pkgs.length || showTheHelp) {
     return displayHelp();
   }
 
-  Matrix.validate.user(); //Make sure the user has logged in
+  // Matrix.validate.user(); //Make sure the user has logged in
   debug(Matrix.pkgs);
   var needle = Matrix.pkgs[0];
 
@@ -18,29 +29,27 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
   }
 
   Matrix.loader.start();
-  Matrix.firebaseInit(function() {
 
-    Matrix.helpers.trackEvent('app-search', { aid: needle });
+  Matrix.helpers.trackEvent('app-search', { aid: needle });
 
-    Matrix.firebase.app.search(needle, function(data) {
-      Matrix.loader.stop();
-      if (!_.isNull(data) && !_.isUndefined(data)) {
-        debug(data);
+  Matrix.firebase.app.search(needle, function(data) {
+    Matrix.loader.stop();
+    if (!_.isNull(data) && !_.isUndefined(data)) {
+      debug(data);
 
-        if (!_.isArray(data)) {
-          data = [data];
-        }
-
-        if (_.isEmpty(data)) {
-          console.log(t('matrix.search.no_results').green);
-        } else {
-          console.log(Matrix.helpers.displaySearch(data, needle));
-        }
-        process.exit();
-      } else {
-        console.log(t('matrix.search.no_results').green);
+      if (!_.isArray(data)) {
+        data = [data];
       }
-    });
+
+      if (_.isEmpty(data)) {
+        console.log(t('matrix.search.no_results').green);
+      } else {
+        console.log(Matrix.helpers.displaySearch(data, needle));
+      }
+      process.exit();
+    } else {
+      console.log(t('matrix.search.no_results').green);
+    }
     //Get versionId of appId with version X
   });
 

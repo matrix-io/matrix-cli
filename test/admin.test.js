@@ -76,7 +76,7 @@ describe('has admin functions', function() {
 
   });
 
-  describe.only('can refresh a token', function() {
+  describe.skip('can refresh a token', function() {
     before(fn.login);
     it('`Refreshes an invalid token`', function(done) {
       var userToken = fn.readConfig().user.token;

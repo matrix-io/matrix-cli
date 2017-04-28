@@ -1,12 +1,23 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
 var async = require('async');
-var debug = debugLog('publish');
-var fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps'; // /<AppName>/<version>.zip
 var publicationFinished = false;
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
+var debug, fireUrl;
+
+async.series([
+  require('./matrix-init'),
+  function(cb) {
+    debug = debugLog('publish');
+    fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps'; // /<AppName>/<version>.zip
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+  Matrix.validate.userAsync,
+  function(cb) {
+    Matrix.firebaseInit(cb)
+  }
+], function(err) {
+  if (err) return console.error(err);
 
   if (showTheHelp) {
     return displayHelp();
@@ -39,7 +50,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
     function(err, results) {
       if (!err && !_.isUndefined(results.data)) {
         if (!_.isUndefined(results.folder) && results.folder.hasOwnProperty('readme')) { //If it has a readme file
-          hasReadme = results.folder.readme; 
+          hasReadme = results.folder.readme;
         }
         var appDetails = results.data;
         debug('Using app details: ' + JSON.stringify(appDetails));
@@ -141,97 +152,93 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
     debug('Finished packaging ', appName);
     var downloadFileName = details.version + '.zip';
     details.file = fileUrl + '/' + appName + '/' + downloadFileName;
-    Matrix.firebaseInit(function(err) {
-      async.parallel([
-        function(next) {
-          if (hasReadme) {
-            Matrix.helpers.getUploadUrl(remoteReadmeFileName, appName, 'text', function(err, readmeUploadUrl) {
-              if (err) {
-                next(err);
-              } else {
-                Matrix.helpers.uploadPackage(pwd + '/' + localReadmeFileName, readmeUploadUrl, function(err) {
-                  next(err);
-                });
-              }
-            });
-          } else {
-            next();
-          }
-        },
-        function(next) {
-          Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function(err, uploadUrl) {
-            if (!err) {
-              Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function(err) {
+    async.parallel([
+      function(next) {
+        if (hasReadme) {
+          Matrix.helpers.getUploadUrl(remoteReadmeFileName, appName, 'text', function(err, readmeUploadUrl) {
+            if (err) {
+              next(err);
+            } else {
+              Matrix.helpers.uploadPackage(pwd + '/' + localReadmeFileName, readmeUploadUrl, function(err) {
                 next(err);
               });
-            } else {
-              console.error(err);
-              return process.exit(1);
             }
           });
+        } else {
+          next();
         }
-      ], function(err) {
-
-        var appData = Matrix.helpers.formAppData(details);
-
-        if (details.config.hasOwnProperty('galleryUrl')) {
-          iconUrl = details.config.galleryUrl;
-        }
-
-        if (hasReadme) {
-          appData.meta.readme = fileUrl + '/' + appName + '/' + remoteReadmeFileName;
-          debug('README URL: ' + appData.meta.readme);
-        }
-
-        Matrix.helpers.trackEvent('app-publish', { aid: appName });
-        //Listen for the app creation in appStore
-        Matrix.firebase.appstore.watchForAppCreated(appName, function(app) {
-          debug('app published>', app);
-          var publicationTimer = setInterval(function() {
-            if (publicationFinished) {
-              clearTimeout(publicationTimer);
-              console.log('Application ' + appName.green + ' published!');
-
-
-              endIt();
-            } else {
-              debug('Publication not finished')
-            }
-          }, 400);
-        });
-
-        //Send the app creation request
-        var events = {
-          error: function(err) { //error
-            if (err.hasOwnProperty('details')) {
-              console.log('App registration failed: '.red, err.details.error);
-            } else {
-              console.log('App registration failed: '.red, err.message);
-            }
-            debug(err);
-            process.exit();
-          },
-          finished: function() { //finished
-            Matrix.loader.stop();
-            console.log('App registered in appstore');
-            publicationFinished = true;
-          },
-          start: function() { //start
-            Matrix.loader.stop();
-            console.log('App registration formed...');
-            Matrix.loader.start();
-          },
-          progress: function() { //progress
-            Matrix.loader.stop();
-            console.log('App registration in progress...');
-            Matrix.loader.start();
+      },
+      function(next) {
+        Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function(err, uploadUrl) {
+          if (!err) {
+            Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function(err) {
+              next(err);
+            });
+          } else {
+            console.error(err);
+            return process.exit(1);
           }
-        };
+        });
+      }
+    ], function(err) {
 
-        Matrix.firebase.app.publish(Matrix.config.user.token, '', Matrix.config.user.id, appData, events);
+      var appData = Matrix.helpers.formAppData(details);
+
+      if (details.config.hasOwnProperty('galleryUrl')) {
+        iconUrl = details.config.galleryUrl;
+      }
+
+      if (hasReadme) {
+        appData.meta.readme = fileUrl + '/' + appName + '/' + remoteReadmeFileName;
+        debug('README URL: ' + appData.meta.readme);
+      }
+
+      Matrix.helpers.trackEvent('app-publish', { aid: appName });
+      //Listen for the app creation in appStore
+      Matrix.firebase.appstore.watchForAppCreated(appName, function(app) {
+        debug('app published>', app);
+        var publicationTimer = setInterval(function() {
+          if (publicationFinished) {
+            clearTimeout(publicationTimer);
+            console.log('Application ' + appName.green + ' published!');
+            endIt();
+          } else {
+            debug('Publication not finished')
+          }
+        }, 400);
       });
 
+      //Send the app creation request
+      var events = {
+        error: function(err) { //error
+          if (err.hasOwnProperty('details')) {
+            console.log('App registration failed: '.red, err.details.error);
+          } else {
+            console.log('App registration failed: '.red, err.message);
+          }
+          debug(err);
+          process.exit();
+        },
+        finished: function() { //finished
+          Matrix.loader.stop();
+          console.log('App registered in appstore');
+          publicationFinished = true;
+        },
+        start: function() { //start
+          Matrix.loader.stop();
+          console.log('App registration formed...');
+          Matrix.loader.start();
+        },
+        progress: function() { //progress
+          Matrix.loader.stop();
+          console.log('App registration in progress...');
+          Matrix.loader.start();
+        }
+      };
+
+      Matrix.firebase.app.publish(Matrix.config.user.token, '', Matrix.config.user.id, appData, events);
     });
+
   }
 
   function endIt() {
