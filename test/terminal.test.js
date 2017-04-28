@@ -90,7 +90,7 @@ describe('Matrix CLI Commands', function() {
           checks: t('matrix.please_login')
         }, done);
       });
-      it('restart', function(done) {
+      it.skip('restart', function(done) {
         fn.run('restart sensortest', {
           checks: t('matrix.please_login')
         }, done);
@@ -109,6 +109,10 @@ describe('Matrix CLI Commands', function() {
     before(fn.login);
 
     before(fn.useDevice);
+
+    // NOTE: This is for the whole test cycle, if you add other device requiring tests
+    // Move this to after that. devices are created in admin.test.js
+    after(fn.removeDevice);
 
     it('should show user and device info in `matrix`', function(done) {
       fn.run('matrix', {

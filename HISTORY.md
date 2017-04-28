@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.3.11]
+## [1.4.0]
+### Fixed
+- Remove devices when test is done
+### Changes
+- Refactored start, stop, restart to independent services
+
+## [1.3.9]
 ### Added
  - New application writes app name to package json
 
