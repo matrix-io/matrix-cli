@@ -3,7 +3,16 @@
 require('./matrix-init');
 var debug = debugLog('uninstall');
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
+var async = require('async');
+
+async.series([
+  function(cb) {
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+  Matrix.validate.userAsync,
+  Matrix.validate.deviceAsync
+], function(err) {
+  if (err) return console.error(err);
 
   if (!Matrix.pkgs.length || showTheHelp) {
     return displayHelp();
@@ -15,14 +24,14 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   console.log('____ | ' + t('matrix.uninstall.uninstalling') + ' ', target.green, ' ==> '.yellow, Matrix.config.device.identifier);
   Matrix.loader.start();
-  Matrix.firebaseInit(function () {
+  Matrix.firebaseInit(function() {
     var options = {
       name: target,
       deviceId: Matrix.config.device.identifier
     };
 
     //If the device has the app
-    Matrix.helpers.lookupAppId(target, function (err, appId) {
+    Matrix.helpers.lookupAppId(target, function(err, appId) {
       Matrix.loader.stop();
       if (err) {
         console.log('Error: '.red, err.message);
@@ -40,7 +49,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         Matrix.helpers.trackEvent('app-uninstall', { aid: target, did: Matrix.config.device.identifier });
 
         Matrix.firebase.app.uninstall(Matrix.config.user.token, Matrix.config.device.identifier, appId, {
-          error: function (err) {
+          error: function(err) {
             Matrix.loader.stop();
             if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) {
               console.error('\nUninstall Error'.red, err.details.error);
@@ -49,18 +58,19 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             }
             process.exit(1);
           },
-          finished: function () {
+          finished: function() {
             Matrix.loader.stop();
             console.log('Uninstall sent to device...'.green);
             process.exit(0);
           },
-          start: _.once(function () {
+          start: _.once(function() {
             Matrix.loader.stop();
             console.log('Uninstall request created');
             Matrix.loader.start();
           }),
-          progress: function (msg) {
-            if (_.isUndefined(msg)) msg = ''; else msg = ' ' + msg + ' ';
+          progress: function(msg) {
+            if (_.isUndefined(msg)) msg = '';
+            else msg = ' ' + msg + ' ';
             if (!progress) {
               progress = true;
               Matrix.loader.stop();

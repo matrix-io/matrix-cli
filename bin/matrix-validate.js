@@ -11,20 +11,20 @@ function user(exit) {
     debug('No user found');
   } else {
     if (!token()) {
-        if (!_.isEmpty(Matrix.config.user.refreshToken)) {
-          var tokenData = Matrix.helpers.syncRefreshToken(Matrix.config.user.refreshToken);
-          if (!_.isUndefined(tokenData.err || _.isEmpty(tokenData.token))) {
-            console.log('Token refresh failed!');
-          } else {
-            Matrix.config.user.token = tokenData.token;
-            var err = Matrix.helpers.syncSaveConfig();
-            if (!_.isEmpty(err)) console.error('Unable to save config file!'.red, err);
-            else result = true;
-          }
+      if (!_.isEmpty(Matrix.config.user.refreshToken)) {
+        var tokenData = Matrix.helpers.syncRefreshToken(Matrix.config.user.refreshToken);
+        if (!_.isUndefined(tokenData.err ||  _.isEmpty(tokenData.token))) {
+          console.log('Token refresh failed!');
         } else {
-          Matrix.loader.stop();
-          console.log('Unable to refesh token!');
-        } 
+          Matrix.config.user.token = tokenData.token;
+          var err = Matrix.helpers.syncSaveConfig();
+          if (!_.isEmpty(err)) console.error('Unable to save config file!'.red, err);
+          else result = true;
+        }
+      } else {
+        Matrix.loader.stop();
+        console.log('Unable to refesh token!');
+      }
     } else {
       result = true;
     }
@@ -64,9 +64,9 @@ function token(refresh) {
   var jwt = require('jsonwebtoken');
   var token = Matrix.config.user.token;
   var result = false;
-  if (!_.isUndefined(token)){
+  if (!_.isUndefined(token)) {
     var decode = jwt.decode(token, { complete: true });
-    
+
     if (_.isEmpty(decode)) debug('Incorrect token format');
     else {
       if (decode.payload.exp < Math.round(new Date().getTime() / 1000))
@@ -114,10 +114,13 @@ module.exports = {
   device: device,
   user: user,
   token: token,
-  config: function (config) {
+  config: function(config) {
     var configHelper = require('matrix-app-config-helper')
     return configHelper.validate(config);
   },
   isCurrentDevice: isCurrentDevice,
-  firebaseError: firebaseError
+  firebaseError: firebaseError,
+  // stubs to replace later @diego
+  deviceAsync: function(cb) { cb() },
+  userAsync: function(cb) { cb() },
 };
