@@ -7,7 +7,6 @@ function user(exit) {
   var result = false;
   if (_.isEmpty(exit)) exit = true;
   if (_.isEmpty(Matrix.config.user)) {
-    Matrix.loader.stop();
     debug('No user found');
   } else {
     if (!token()) {
@@ -22,7 +21,6 @@ function user(exit) {
           else result = true;
         }
       } else {
-        Matrix.loader.stop();
         console.log('Unable to refesh token!');
       }
     } else {
@@ -47,7 +45,6 @@ function device(exit) {
   var result = true;
   if (_.isEmpty(exit)) exit = true;
   if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
-    Matrix.loader.stop();
     console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     result = false;
   }
