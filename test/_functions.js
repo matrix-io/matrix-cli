@@ -181,6 +181,28 @@ module.exports = {
       }
     }, done);
   },
+  removeDevice: function(done) {
+    // if we haven't done the whole test, get deviceid from the config
+    if (!M.hasOwnProperty('DEVICE_ID')) {
+      console.log('No new device made. Using first entry from deviceMap')
+      var c = fn.readConfig();
+
+      M.DEVICE_ID = (c.device.hasOwnProperty('identifier')) ?
+        c.device.identifier :
+        Object.keys(c.deviceMap)[0];
+    }
+
+    console.log('Remove Device', M.DEVICE_ID);
+
+    run('matrix remove ' + M.DEVICE_ID, {
+      responses: [
+        ['test-device', 'y\n']
+      ],
+      checks: [
+        'Device successfully removed'
+      ]
+    }, done);
+  },
   logout: function(done) {
     run('matrix logout', {
       checks: ['Logged Out Successfully'],

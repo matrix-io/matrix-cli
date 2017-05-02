@@ -51,7 +51,10 @@ describe('has admin functions', function() {
   });
 
   describe('can make, list and delete devices', function() {
+
+    // NOTE: This device is global for the test suite. It will be destroyed in terminal.test.app
     before('`matrix register device`', fn.registerDevice);
+
     it('`matrix list devices`', function(done) {
       fn.run(
         'list devices', {
@@ -76,18 +79,21 @@ describe('has admin functions', function() {
 
   });
 
-  describe.skip('can refresh a token', function () { 
-    before('`matrix login`', fn.login);
-    it('`Refreshes an invalid token`', function (done) {
+  describe.skip('can refresh a token', function() {
+    before(fn.login);
+    it('`Refreshes an invalid token`', function(done) {
       var userToken = fn.readConfig().user.token;
+      console.log('ORIGINAL:', userToken); //DELETE ME
       userToken = userToken.substring(1, userToken.length);
+      console.log('MODIFIED:', userToken); //DELETE ME
       fn.updateConfig('user.token', userToken);
-      var userToken = fn.readConfig().user.token;
+      userToken = fn.readConfig().user.token; //DELETE ME
+      console.log('STORED:', userToken) //DELETE ME
       if (Matrix.validate.user(false)) done();
       else done('Failed to refresh the user token');
     });
   });
-    
+
   describe('can logout', function() {
     it('`matrix logout`', fn.logout);
   })

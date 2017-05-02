@@ -1,10 +1,19 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
 var prompt = require('prompt');
-var debug = debugLog('login');
+var async = require('async');
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
+var debug;
+
+async.series([
+  require('./matrix-init'),
+  function(cb) {
+    debug = debugLog('login');
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+], function(err) {
+  if (err) return console.error(err);
+
 
   var schema = {
     properties: {
@@ -41,7 +50,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   prompt.delimiter = '';
   prompt.message = 'Login -- ';
   prompt.start();
-  prompt.get(schema, function (err, result) {
+  prompt.get(schema, function(err, result) {
     Matrix.loader.start();
     if (err) {
       Matrix.loader.stop();
@@ -54,7 +63,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       }
     }
     if (!_.has(result, 'trackOk')) result.trackOk = oldTrack;
-    Matrix.helpers.login(result, function (err) {
+    Matrix.helpers.login(result, function(err) {
       process.exit();
     });
   });

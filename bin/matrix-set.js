@@ -3,7 +3,6 @@
 require('./matrix-init');
 var debug = debugLog('set');
 
-
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
 
   if (!Matrix.pkgs.length || showTheHelp) {
@@ -39,44 +38,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
     } else {
       console.error(t('matrix.set.env.valid_environments') + ' = [ dev, rc, production ]'.yellow)
     }
-
-  } else if (Matrix.pkgs.indexOf('config') === 0) {
-    return console.error('matrix set config has been depreciated');
-    Matrix.validate.user(); //Make sure the user has logged in
-    Matrix.validate.device(); //Make sure the user has logged in
-    var appName = Matrix.pkgs[1];
-    var configStr = Matrix.pkgs[2];
-    var key, val;
-
-    if (_.isUndefined(appName)) {
-      console.warn(t('matrix.set.config.no_app') + ': `matrix set config <appName> [key=value]` ')
-      process.exit(0);
-    }
-
-    if (!_.isUndefined(configStr) && configStr.match(/=/)) {
-      // key=value
-      key = configStr.split('=')[0].trim();
-      val = configStr.split('=')[1].trim();
-    } else {
-      console.warn(t('matrix.set.config.no_key_value') + ': `matrix set config <appName> [key=value]`');
-      process.exit(0);
-    }
-
-    // validate keys
-    key = _.snakeCase(key.toLowerCase());
-
-    var options = {
-      deviceId: Matrix.config.device.identifier,
-      name: appName,
-      key: key,
-      value: val
-    }
-
-    Matrix.api.app.configure(options, function(err, resp) {
-      if (err) console.error('Configure Set Error', err);
-      console.log('[' + options.deviceId + '](' + options.name + ')', options.key, '=', options.value);
-      Matrix.helpers.trackEvent('app-config-change', { aid: appName, did: Matrix.config.device.identifier }, process.exit);
-    });
 
   } else if (Matrix.pkgs.indexOf('locale') === 0) {
 

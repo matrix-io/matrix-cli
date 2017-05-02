@@ -3,8 +3,7 @@
  * @param {bool} exit If the process should exit on failed user validation. Defaults to true
  * @returns {bool} 
  */
-function userAsync() {
-  //TODO Possibly do a console.log(t('matrix.please_login').yellow); whenever validation fails
+function userAsync(cb) {
   if (_.isEmpty(Matrix.config.user)) {
     return cb(new Error('No user selected'));
   } else {
@@ -40,24 +39,22 @@ function user(exit) {
   var result = false;
   if (_.isEmpty(exit)) exit = true;
   if (_.isEmpty(Matrix.config.user)) {
-    Matrix.loader.stop();
     debug('No user found');
   } else {
     if (!token()) {
-        if (!_.isEmpty(Matrix.config.user.refreshToken)) {
-          var tokenData = Matrix.helpers.syncRefreshToken(Matrix.config.user.refreshToken);
-          if (!_.isUndefined(tokenData.err) || _.isEmpty(tokenData.token)) {
-            console.log('Token refresh failed!');
-          } else {
-            Matrix.config.user.token = tokenData.token;
-            var err = Matrix.helpers.syncSaveConfig();
-            if (!_.isEmpty(err)) console.error('Unable to save new user token!'.red, err);
-            else result = true;
-          }
+      if (!_.isEmpty(Matrix.config.user.refreshToken)) {
+        var tokenData = Matrix.helpers.syncRefreshToken(Matrix.config.user.refreshToken);
+        if (!_.isUndefined(tokenData.err) || _.isEmpty(tokenData.token)) {
+          console.log('Token refresh failed!');
         } else {
-          Matrix.loader.stop();
-          console.log('Unable to refesh token!');
-        } 
+          Matrix.config.user.token = tokenData.token;
+          var err = Matrix.helpers.syncSaveConfig();
+          if (!_.isEmpty(err)) console.error('Unable to save new user token!'.red, err);
+          else result = true;
+        }
+      } else {
+        console.log('Unable to refesh token!');
+      }
     } else {
       result = true;
     }
@@ -76,11 +73,13 @@ function user(exit) {
  * @param {bool} exit If the process should exit on failed user validation. Defaults to true
  * @returns {bool} 
  */
-function deviceAsync() {
-  
+function deviceAsync(cb) {
+  var err;
   if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
     console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
+    err = new Error(t('matrix.validate.no_device'));
   }
+  cb(err);
 }
 
 /**
@@ -92,7 +91,6 @@ function device(exit) {
   var result = true;
   if (_.isEmpty(exit)) exit = true;
   if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
-    Matrix.loader.stop();
     console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     result = false;
   }
@@ -109,9 +107,9 @@ function token(refresh) {
   var jwt = require('jsonwebtoken');
   var token = Matrix.config.user.token;
   var result = false;
-  if (!_.isUndefined(token)){
+  if (!_.isUndefined(token)) {
     var decode = jwt.decode(token, { complete: true });
-    
+
     if (_.isEmpty(decode)) debug('Incorrect token format');
     else {
       if (decode.payload.exp < Math.round(new Date().getTime() / 1000))
@@ -159,10 +157,17 @@ module.exports = {
   device: device,
   user: user,
   token: token,
-  config: function (config) {
+  config: function(config) {
     var configHelper = require('matrix-app-config-helper')
     return configHelper.validate(config);
   },
   isCurrentDevice: isCurrentDevice,
-  firebaseError: firebaseError
+  firebaseError: firebaseError,
+  deviceAsync: deviceAsync,
+  userAsync: function (cb) {
+    userAsync(function (err) {
+      if (err) console.log(t('matrix.please_login').yellow);
+      cb(err);
+    });
+  },
 };

@@ -4,10 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [unreleased]
+## [1.4.0]
+### Fixed
+- Remove devices when test is done
+### Changes
+- Refactored start, stop, restart to independent services
 
+## [1.3.9]
 ### Added
-- New application writes app name to package json
+- 
+ - New application writes app name to package json
+
+### Fixed
+- Missing error messages, removed stack traces.
+- Validate device is selected before issuing app control msg
+
+### Changed
+- New API addresses
+- More strict docopt help text
 
 ## [1.3.8]
 ### Fixed
