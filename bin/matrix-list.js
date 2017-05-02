@@ -3,21 +3,23 @@
 require('./matrix-init');
 var debug = debugLog('list');
 var async = require('async')
+Matrix.loader.start();
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
+//Initialization
+async.parallel({
+  localization: async.apply(Matrix.localization.init, Matrix.localesFolder, Matrix.config.locale),
+  user: Matrix.validate.userAsync, //Make sure the user has logged in  
+  if()
+}, function (err, results) {
 
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
-  }
-
-  Matrix.validate.user(); //Make sure the user has logged in
+  if (!Matrix.pkgs.length || showTheHelp) { return displayHelp(); }
   var target = Matrix.pkgs[0];
-  Matrix.loader.start();
+
   Matrix.firebaseInit(function () {
 
     if (target.match(/all/)) {
       Matrix.firebase.user.getAllApps(function (err, resp) {
-        Matrix.loader.stop();
+        Matrix.loader.sto p();
         if (_.isEmpty(resp)) {
           console.error(t('matrix.list.no_results'));
           process.exit(1);
@@ -129,4 +131,5 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
 
   // TODO: support config <app>
-});
+  }
+);

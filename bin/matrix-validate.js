@@ -3,6 +3,39 @@
  * @param {bool} exit If the process should exit on failed user validation. Defaults to true
  * @returns {bool} 
  */
+function userAsync() {
+  //TODO Possibly do a console.log(t('matrix.please_login').yellow); whenever validation fails
+  if (_.isEmpty(Matrix.config.user)) {
+    return cb(new Error('No user selected'));
+  } else {
+    if (!token()) {
+      if (!_.isEmpty(Matrix.config.user.refreshToken)) {
+        Matrix.helpers.refreshToken(Matrix.config.user.refreshToken, function (err, userToken) {
+          if (err || _.isEmpty(userToken)) {
+            return cb(new Error('Token refresh failed!'));
+          } else {
+            Matrix.config.user.token = tokenData.token;
+            Matrix.helpers.saveConfig(function (err) { 
+              if (!err) return cb();
+              else return cb(new Error('Unable to save new user token'));
+            });
+          }
+        });
+      } else {
+        return cb(new Error('Unable to refesh token!'));
+      }
+    } else {
+      return cb();
+    }
+  }
+}
+
+
+/**
+ * user - Checks if a valid user is set along with a valid user token, if invalid it refreshes it
+ * @param {bool} exit If the process should exit on failed user validation. Defaults to true
+ * @returns {bool} 
+ */
 function user(exit) {
   var result = false;
   if (_.isEmpty(exit)) exit = true;
@@ -13,12 +46,12 @@ function user(exit) {
     if (!token()) {
         if (!_.isEmpty(Matrix.config.user.refreshToken)) {
           var tokenData = Matrix.helpers.syncRefreshToken(Matrix.config.user.refreshToken);
-          if (!_.isUndefined(tokenData.err || _.isEmpty(tokenData.token))) {
+          if (!_.isUndefined(tokenData.err) || _.isEmpty(tokenData.token)) {
             console.log('Token refresh failed!');
           } else {
             Matrix.config.user.token = tokenData.token;
             var err = Matrix.helpers.syncSaveConfig();
-            if (!_.isEmpty(err)) console.error('Unable to save config file!'.red, err);
+            if (!_.isEmpty(err)) console.error('Unable to save new user token!'.red, err);
             else result = true;
           }
         } else {
@@ -36,6 +69,18 @@ function user(exit) {
     if (exit) process.exit(1);
   }
   return result;
+}
+
+/**
+ * device - Checks if a device is properly set
+ * @param {bool} exit If the process should exit on failed user validation. Defaults to true
+ * @returns {bool} 
+ */
+function deviceAsync() {
+  
+  if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
+    console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
+  }
 }
 
 /**
