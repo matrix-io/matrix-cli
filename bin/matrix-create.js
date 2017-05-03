@@ -11,17 +11,24 @@ var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('create');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
 
 ], function(err) {
-  if (err) return console.error(err);
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
+  }
 
   var app = Matrix.pkgs[0];
 
   if (parseInt(app) === app) {
+    Matrix.loader.stop();
     console.error(t('matrix.create.bad_numbers'))
     process.exit(1);
   }
@@ -38,6 +45,7 @@ async.series([
   // check if path already exists, refuse if so
   fs.access(process.cwd() + "/" + app, fs.F_OK, function(err) {
     if (!err) {
+      Matrix.loader.stop();
       console.error(t('matrix.create.error_creating') + ':', t('matrix.create.folder_exist'));
       process.exit(1);
     } else {
@@ -72,10 +80,9 @@ async.series([
         prompt.message += ' ( ' + app + ' ) ';
       }
 
+      Matrix.loader.stop();      
       prompt.start();
-
       prompt.get(ps, function(err, results) {
-
 
         if (err) {
           if (err.toString().indexOf('canceled') > 0) {

@@ -5,17 +5,11 @@ var debug = debugLog('set');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() {
 
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
-  }
+  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
   var locales = {
-    "en": {
-      name: "English"
-    },
-    "es": {
-      name: "Spanish"
-    }
+    'en': { name: 'English' },
+    'es': { name: 'Spanish' }
   };
 
   var environments = require('../config/environments.js');
@@ -23,7 +17,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
   if (Matrix.pkgs.indexOf('env') === 0) {
 
     var value = Matrix.pkgs[1];
-
     if (!_.isUndefined(value) && _.keys(environments).indexOf(value) !== -1) {
 
       Matrix.config.environment = _.assign(environments[value], { name: value });

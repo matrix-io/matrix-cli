@@ -5,30 +5,28 @@ var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('update');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync,
   Matrix.validate.deviceAsync,
   Matrix.firebaseInit
-], function(err) {
-  if (err) return console.error(err);
-
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
+], function (err) {
+  Matrix.loader.stop();
+  if (err) {
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
-  //Make sure the user has logged in
-  // Matrix.validate.user();
-  // Matrix.validate.device();
+  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
   var appName = Matrix.pkgs[0];
-
   console.log('____ | ' + t('matrix.update.upgrading_to') + ':' + t('matrix.update.latest_version') + ' ', appName, ' ==> '.yellow, Matrix.config.device.identifier);
 
   Matrix.loader.start();
-
 
   Matrix.firebase.app.search(appName, function(result) {
 

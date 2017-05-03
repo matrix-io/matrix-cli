@@ -2,18 +2,22 @@
 
 var prompt = require('prompt');
 var async = require('async');
-
 var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('login');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
 ], function(err) {
-  if (err) return console.error(err);
-
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
+  }
 
   var schema = {
     properties: {
@@ -41,14 +45,16 @@ async.series([
   }
 
   if (!_.isEmpty(Matrix.config.user)) {
+    Matrix.loader.stop();
     if (Matrix.validate.token() === false) {
-      console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);
+      console.log('The token has expired. Last session started:'.yellow, Matrix.config.user.username);
     } else {
-      console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
+      console.log(t('matrix.already_login').yellow + ':', Matrix.config.user.username);
     }
   }
   prompt.delimiter = '';
   prompt.message = 'Login -- ';
+  Matrix.loader.stop();
   prompt.start();
   prompt.get(schema, function(err, result) {
     Matrix.loader.start();

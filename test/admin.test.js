@@ -89,8 +89,10 @@ describe('has admin functions', function() {
       fn.updateConfig('user.token', userToken);
       userToken = fn.readConfig().user.token; //DELETE ME
       console.log('STORED:', userToken) //DELETE ME
-      if (Matrix.validate.user(false)) done();
-      else done('Failed to refresh the user token');
+      Matrix.validate.userAsync(function (err) { 
+        done(err);
+        //done('Failed to refresh the user token');
+      });
     });
   });
 

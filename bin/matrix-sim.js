@@ -2,38 +2,40 @@
 
 var prompt = require('prompt');
 var p = require('child_process');
-
 var async = require('async');
 var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('sim');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync
-], function(err) {
-  if (err) return console.error(err);
-
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
+], function (err) {
+  
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
+  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
   var cmd = Matrix.pkgs[0];
-
-  Matrix.validate.user(); //Make sure the user has logged in
 
   // matrix sim init
   if (cmd === 'init') {
 
     if (_.has(Matrix.config, 'sim.id')) {
+      Matrix.loader.stop();
       console.log('\n' + t('matrix.sim.init.device_already_initialized') + '.');
       console.log('\n' + t('matrix.sim.init.target_device') + ':\n');
       console.log('matrix use %s'.grey, Matrix.config.sim.id, '\n');
       process.exit();
     }
-    Matrix.loader.start();
+    
     // make sure device name, device id and userId are available
     var deviceId = 'sim-' + _.times(24, function() {
       return Math.round(Math.random() * 16).toString(16)
@@ -286,6 +288,7 @@ async.series([
   }
 
   function displayHelp() {
+    Matrix.loader.stop();
     console.log('\n> matrix sim ¬\n');
     console.log('\t               matrix sim upgrade -', t('matrix.sim.help_upgrade').grey)
     console.log('\t               matrix sim restore -', t('matrix.sim.help_restore').grey)

@@ -6,7 +6,8 @@ var async = require('async');
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('uninstall');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
@@ -15,23 +16,19 @@ async.series([
   function(cb) {
     Matrix.firebaseInit(cb)
   }
-], function(err) {
-  if (err) return console.error(err);
-
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
+], function (err) {
+  Matrix.loader.stop();
+  if (err) {
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
+  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
   var target = Matrix.pkgs[0];
-  Matrix.validate.user(); //Make sure the user has logged in
-  Matrix.validate.device(); //Make sure the user has logged in
 
   console.log('____ | ' + t('matrix.uninstall.uninstalling') + ' ', target.green, ' ==> '.yellow, Matrix.config.device.identifier);
   Matrix.loader.start();
-  var options = {
-    name: target,
-    deviceId: Matrix.config.device.identifier
-  };
 
   //If the device has the app
   Matrix.helpers.lookupAppId(target, function(err, appId) {

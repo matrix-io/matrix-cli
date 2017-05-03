@@ -1,31 +1,36 @@
 #!/usr/bin/env node
 
-var debug = debugLog('list');
+var debug, target;
 var async = require('async')
-var target;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
-    target = Matrix.pkgs[0];
-    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  function (cb) {
     Matrix.loader.start();
+    debug = debugLog('list');
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+  function (cb) {
+    if (!Matrix.pkgs.length || showTheHelp) { Matrix.loader.stop(); return displayHelp(); }
+    else {
+      target = Matrix.pkgs[0];
+      cb();
+    }
   },
   Matrix.validate.userAsync,
-  Matrix.firebaseInit(cb),
+  function (cb) { Matrix.firebaseInit(cb); },
   listAll,
+  listDevices,
   Matrix.validate.deviceAsync,
   listApps,
-  listDevices
   // user register does fb init for login, bad if we do that 2x
-], function(err) {
-  if (err) return console.error(err);
-
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
-  }
-
+], function (err) {
   Matrix.loader.stop();
+  if (err) { 
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
+  }
 
   console.log('Unknown parameter'.yellow + ' ' + target);
   displayHelp();
@@ -47,7 +52,6 @@ function listDevices(cb) {
 
     Matrix.firebase.device.list(function(devices) {
       debug('Device list found: ', devices)
-      var deviceIds = _.keys(devices);
 
       var deviceMap = {};
       Matrix.loader.stop();
@@ -130,11 +134,6 @@ function listAll(cb) {
       debug('Device List>', resp);
       console.log(Matrix.helpers.displayDeviceApps(resp));
 
-<<<<<<< HEAD
-  // TODO: support config <app>
-  }
-);
-=======
       // save for later
       Matrix.config.deviceMap = resp;
       Matrix.helpers.saveConfig(function() {
@@ -143,4 +142,3 @@ function listAll(cb) {
     });
   } else { cb(); }
 }
->>>>>>> eeb8232d5205b0106e20ac20e4235ab3c34427e5

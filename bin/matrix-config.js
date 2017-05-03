@@ -3,9 +3,11 @@
 var async = require('async');
 var debug;
 
+//TODO matrix config won't exit
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('config');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
@@ -16,22 +18,17 @@ async.series([
     Matrix.firebaseInit(cb)
   }
 ], function(err) {
-  if (err) return console.error(err);
-
-
-  // Matrix.validate.user(); //Make sure the user has logged in
-  // Matrix.validate.device(); //Make sure the user has logged in
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
+  }
 
   var options = {};
-
-  // app name
-  var target = Matrix.pkgs[0];
-
-  //target
-  var key = Matrix.pkgs[1];
-
-  // in case they don't use =
-  var value = Matrix.pkgs[2];
+  var target = Matrix.pkgs[0]; // app name
+  var key = Matrix.pkgs[1]; //target
+  var value = Matrix.pkgs[2]; // in case they don't use =
 
   // split on = if exists
   if (!_.isUndefined(key) && key.indexOf('=') > -1) {
@@ -55,6 +52,7 @@ async.series([
     value += ' ' + _.tail(_.tail(Matrix.pkgs)).join(' ');
   }
 
+  Matrix.loader.stop();
   console.log('App Path:'.blue, _.compact([target, key, value]).join('/').grey)
 
   if (Matrix.pkgs.indexOf('--watch') > -1 || Matrix.pkgs.indexOf('-w') > -1) {
@@ -67,7 +65,6 @@ async.series([
     // get form
 
     console.log(t('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
-
     Matrix.firebase.device.getConfig(handleResponse);
 
     // matrix config base

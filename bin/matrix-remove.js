@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-
 var debug;
 var async = require('async');
 
 async.series([
   require('./matrix-init'),
   function(cb) {
+    Matrix.loader.start();
     debug = debugLog('remove');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
@@ -15,14 +15,16 @@ async.series([
     Matrix.firebaseInit(cb)
   }
 ], function(err) {
-  if (err) return console.error(err);
-
-  Matrix.loader.start();
-  if (showTheHelp) {
-    return displayHelp();
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
-  var targetValue, progress, target;
+  if (showTheHelp) return displayHelp();
+
+  var progress, target;
   if (Matrix.pkgs.length < 1) { // No id specified
     Matrix.validate.device(); // Require a selected device
     target = Matrix.config.device.identifier;
@@ -33,9 +35,6 @@ async.series([
   } else {
     return displayHelp();
   }
-
-  // Matrix.validate.user(); // Need to be logged in
-
 
   var targetValue = _.findKey(Matrix.config.deviceMap, { name: target });
 

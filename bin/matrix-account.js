@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 var async = require('async');
-
 var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('account');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
@@ -17,11 +17,13 @@ async.series([
     Matrix.firebaseInit(cb)
   }
 ], function(err) {
-  if (err) return console.error(err);
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
+  }
 
-
-  Matrix.validate.user();
-  Matrix.loader.start();
   var target = Matrix.pkgs[0];
 
   if (Matrix.pkgs.length > 1) { //If more than one arg, incorrect format

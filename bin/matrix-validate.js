@@ -5,15 +5,16 @@
  */
 function userAsync(cb) {
   if (_.isEmpty(Matrix.config.user)) {
-    return cb(new Error('No user selected'));
+    return cb(new Error(t('matrix.please_login')));
   } else {
     if (!token()) {
       if (!_.isEmpty(Matrix.config.user.refreshToken)) {
         Matrix.helpers.refreshToken(Matrix.config.user.refreshToken, function (err, userToken) {
+          debug('Err:', err, ' Token:', userToken);
           if (err || _.isEmpty(userToken)) {
             return cb(new Error('Token refresh failed!'));
           } else {
-            Matrix.config.user.token = tokenData.token;
+            Matrix.config.user.token = userToken;
             Matrix.helpers.saveConfig(function (err) { 
               if (!err) return cb();
               else return cb(new Error('Unable to save new user token'));
@@ -47,6 +48,7 @@ function user(exit) {
         if (!_.isUndefined(tokenData.err) || _.isEmpty(tokenData.token)) {
           console.log('Token refresh failed!');
         } else {
+          debug('Token refreshed!');
           Matrix.config.user.token = tokenData.token;
           var err = Matrix.helpers.syncSaveConfig();
           if (!_.isEmpty(err)) console.error('Unable to save new user token!'.red, err);
@@ -76,7 +78,8 @@ function user(exit) {
 function deviceAsync(cb) {
   var err;
   if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
-    console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
+    Matrix.loader.stop();
+    console.error('matrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     err = new Error(t('matrix.validate.no_device'));
   }
   cb(err);
@@ -91,6 +94,7 @@ function device(exit) {
   var result = true;
   if (_.isEmpty(exit)) exit = true;
   if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
+    Matrix.loader.stop();
     console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     result = false;
   }
@@ -141,10 +145,12 @@ function firebaseError(err) {
       } else if (err.code == 'auth/network-request-failed') {
         return 4;
       } else {
+        Matrix.loader.stop();
         console.log('Authentication error (' + err.code + '): ', err.message);
         return 2;
       }
     } else {
+      Matrix.loader.stop();
       console.log('Authentication error: ', err);
       return 3;
     }
@@ -164,10 +170,5 @@ module.exports = {
   isCurrentDevice: isCurrentDevice,
   firebaseError: firebaseError,
   deviceAsync: deviceAsync,
-  userAsync: function (cb) {
-    userAsync(function (err) {
-      if (err) console.log(t('matrix.please_login').yellow);
-      cb(err);
-    });
-  },
+  userAsync: userAsync,
 };

@@ -5,30 +5,37 @@ var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('search');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+  function (next) {
+    if (!Matrix.pkgs.length || showTheHelp) { 
+      Matrix.loader.stop();
+      console.log('\n> matrix search ¬\n');
+      console.log('\t                 matrix search <app> -', t('matrix.search.help').grey)
+      console.log('\n')
+      process.exit(1);
+    }
+    next();
   },
   Matrix.validate.userAsync,
   function(cb) {
     Matrix.firebaseInit(cb)
   }
 ], function(err) {
-  if (err) return console.error(err);
-
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
-  // Matrix.validate.user(); //Make sure the user has logged in
   debug(Matrix.pkgs);
+
   var needle = Matrix.pkgs[0];
-
-  if (needle.length <= 2) {
-    return console.error(t('matrix.search.small_needle') + '.')
-  }
-
-  Matrix.loader.start();
+  if (needle.length <= 2) return console.error(t('matrix.search.small_needle') + '.')
 
   Matrix.helpers.trackEvent('app-search', { aid: needle });
 
@@ -53,10 +60,4 @@ async.series([
     //Get versionId of appId with version X
   });
 
-  function displayHelp() {
-    console.log('\n> matrix search ¬\n');
-    console.log('\t                 matrix search <app> -', t('matrix.search.help').grey)
-    console.log('\n')
-    process.exit(1);
-  }
 });

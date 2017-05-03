@@ -8,7 +8,7 @@ async.series([
   require('./matrix-init'),
   function (cb) {
     Matrix.loader.start();
-    debug = debugLog('stop');
+    debug = debugLog('restart');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync,
@@ -28,17 +28,17 @@ async.series([
   var app = Matrix.pkgs[0];
   if (_.isUndefined(app) || !_.isString(app)) {
     Matrix.loader.stop();
-    console.log('\n> matrix stop <app> - ' + t('matrix.help_stop').grey + '\n');
+    console.log('\n> matrix restart <app> - ' + t('matrix.help_restart').grey + '\n');
     process.exit(1);
   }
 
-  Matrix.helpers.trackEvent('app-stop', { aid: app, did: Matrix.config.device.identifier });
+  Matrix.helpers.trackEvent('app-restart', { aid: app, did: Matrix.config.device.identifier });
 
   Matrix.api.device.setId(Matrix.config.device.identifier);
   Matrix.loader.stop();
-  console.log(t('matrix.stop.stopping_app') + ': ', app, Matrix.config.device.identifier);
+  console.log(t('matrix.restart.restarting_app') + ': ', app, Matrix.config.device.identifier);
   Matrix.loader.start();
-
+  
   //Get the app id for name
   Matrix.firebase.app.getIDForName(app, function (err, appId) {
     if (err) {
@@ -53,24 +53,29 @@ async.series([
       Matrix.loader.stop();
 
       if (_.isUndefined(app)) {
-        console.log('\n> matrix stop ¬\n');
-        console.log('\t    matrix stop <app> -', t('matrix.stop.help', { app: '<app>' }).grey)
+        console.log('\n> matrix restart ¬\n');
+        console.log('\t    matrix restart <app> -', t('matrix.restart.help', { app: '<app>' }).grey)
         Matrix.endIt();
 
-        //If the status of the app is different of active doesn't execute de stop command
+        //If the status of the app is different of active doesn't execute de restart command
       } else if (status !== 'active') {
-        console.log(t('matrix.stop.stop_app_status_error') + ':', app);
+        console.log(t('matrix.restart.restart_app_status_error') + ':', app);
         Matrix.endIt();
       } else {
-        console.log(t('matrix.stop.stopping_app') + ': ', app);
+        console.log(t('matrix.restart.restarting_app') + ': ', app);
         var commandTimeout;
-        
+
         Matrix.loader.start();
 
         //Watch the app status and verify if the behavior it's right
         Matrix.firebase.app.watchStatus(appId, function (status) {
-          //stop command status behavior(active -> inactive)
-          if (status === 'inactive') {
+          //restart command status behavior(active -> inactive -> active)
+          if (status === 'active') {
+            Matrix.loader.stop();
+            clearTimeout(commandTimeout);
+            console.log(t('matrix.restart.restart_app_successfully') + ':', app);
+            Matrix.endIt();
+          } else if (status === 'inactive') {
             Matrix.loader.stop();
             clearTimeout(commandTimeout);
             console.log(t('matrix.stop.stop_app_successfully') + ':', app);
@@ -78,18 +83,18 @@ async.series([
           }
         });
 
-        //Send the stop command
-        Matrix.api.app.stop(app, Matrix.config.device.identifier, function (err) {
+        //Send the restart command
+        Matrix.api.app.restart(app, function (err, res) {
           if (err) {
             Matrix.loader.stop();
-            console.log(t('matrix.stop.stop_app_error') + ':', app, ' (' + err.message.red + ')');
+            console.log(t('matrix.restart.restart_app_error') + ':', app, ' (' + err.message.red + ')');
             Matrix.endIt();
           }
 
-          //add timeout to start command
+          //add timeout to restart command
           commandTimeout = setTimeout(function () {
             Matrix.loader.stop();
-            console.log(t('matrix.stop.stop_timeout'));
+            console.log(t('matrix.restart.restart_timeout'));
             Matrix.endIt();
           }, commandTimeoutSeconds * 1000);
 
@@ -97,5 +102,5 @@ async.series([
       }
     });
   });
-  
+
 });

@@ -9,10 +9,10 @@ var debug, fileUrl;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('deploy');
     fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps'; // /<AppName>/<version>.zip
-    Matrix.loader.start();
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync,
@@ -22,15 +22,14 @@ async.series([
     Matrix.firebaseInit(cb)
   }
 ], function(err) {
-  if (err) return console.error(err);
-
-
-  if (showTheHelp) {
-    return displayHelp();
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
-  // Matrix.validate.user(); //Make sure the user has logged in
-  // Matrix.validate.device(); //Make sure the user has logged in
+  if (showTheHelp) return displayHelp();
 
   var appName = Matrix.pkgs[0];
   var pwd = process.cwd();
@@ -67,6 +66,7 @@ async.series([
         });
 
       } else {
+        Matrix.loader.stop();
         console.error(err.message.red);
       }
     });

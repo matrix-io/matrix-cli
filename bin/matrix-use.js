@@ -5,22 +5,24 @@ var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('use');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync
-], function(err) {
-  if (err) return console.error(err);
-
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
+], function (err) {
+  Matrix.loader.stop();
+  if (err) {
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
+  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
+
   var target = Matrix.pkgs.join(' ');
-
   var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: target });
-
   var nameProvided = true;
 
   if (_.isEmpty(targetDeviceId)) {
@@ -34,16 +36,18 @@ async.series([
     }
   }
 
-  // Matrix.validate.user();
-
+  Matrix.loader.start();  
   // still API dependent, TODO: depreciate to firebase
   Matrix.api.device.register(targetDeviceId, function(err, state) {
 
-    if (err) return console.log(err);
-    if (state.status === "OK") {
-      if (!nameProvided) {
-        target = Matrix.helpers.lookupDeviceName(target);
-      }
+    if (err) {
+      Matrix.loader.stop();
+      console.error(err.message);
+      debug('Error:', err);
+      return process.exit(1);
+    }
+    if (state.status === 'OK') {
+      if (!nameProvided) target = Matrix.helpers.lookupDeviceName(target);
 
       // Save the device token
       Matrix.config.device = {}
@@ -58,16 +62,15 @@ async.series([
         function write(cb) {
           Matrix.helpers.saveConfig(cb);
         }
-      ], function() {
+      ], function () {
+        Matrix.loader.stop();
         console.log('Now using device:'.grey, target, 'ID:'.grey, targetDeviceId);
         process.exit()
       })
 
 
       //Create the object for keep device after session expired
-      if (!Matrix.config.keepDevice) {
-        Matrix.config.keepDevice = {};
-      }
+      if (!Matrix.config.keepDevice) Matrix.config.keepDevice = {};
 
       //Create key for the current user into the object for keep device after session expired
       if (!_.has(Matrix.config.keepDevice, Matrix.config.user.id)) {

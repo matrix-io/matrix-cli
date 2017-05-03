@@ -5,34 +5,30 @@ var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('install');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync,
   Matrix.validate.deviceAsync,
   // user register does fb init for login, bad if we do that 2x
-  function(cb) {
+  function (cb) {
     Matrix.firebaseInit(cb)
   }
-], function(err) {
-  if (err) return console.error(err);
-
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
+], function (err) {
+  Matrix.loader.stop();
+  if (err) {
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
-
-  var cmd = Matrix.pkgs[0];
-
+  
+  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
   var appName = Matrix.pkgs[0];
   var version = Matrix.pkgs[1];
-
-
-  //Make sure the user has logged in
-  // Matrix.validate.user();
-  // Matrix.validate.device();
-
+  
   // TODO lookup policy from config file, pass to function
   console.log('____ | ' + t('matrix.install.installing') + ' ', appName, ' ==> '.yellow, Matrix.config.device.identifier)
 
@@ -51,9 +47,7 @@ async.series([
     //Validate if the version exist and get the version Id
     if (version) {
       versionId = _.findKey(result.versions, function(appVersion, versionId) {
-        if (appVersion.version === version) {
-          return true;
-        }
+        if (appVersion.version === version) return true;
       });
       //If the version doesn't exist show the error and end the process
       if (_.isUndefined(versionId)) {

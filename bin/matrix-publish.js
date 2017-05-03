@@ -2,12 +2,12 @@
 
 var async = require('async');
 var publicationFinished = false;
-
-var debug, fireUrl;
+var debug;
 
 async.series([
   require('./matrix-init'),
-  function(cb) {
+  function (cb) {
+    Matrix.loader.start();
     debug = debugLog('publish');
     fileUrl = 'https://storage.googleapis.com/' + Matrix.config.environment.appsBucket + '/apps'; // /<AppName>/<version>.zip
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
@@ -17,15 +17,15 @@ async.series([
     Matrix.firebaseInit(cb)
   }
 ], function(err) {
-  if (err) return console.error(err);
-
-  if (showTheHelp) {
-    return displayHelp();
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
-  Matrix.validate.user(); //Make sure the user has logged in
+  if (showTheHelp) return displayHelp();
 
-  Matrix.loader.start();
   var appName = Matrix.pkgs[0];
   var pwd = process.cwd();
 
@@ -102,9 +102,11 @@ async.series([
             });
           }
 
-        }, function(e) { console.error(e) }, function() {
+        }, function (e) { console.error(e) }, function () {
+          Matrix.loader.start();
           Matrix.helpers.zipAppFolder(pwd, destinationFilePath, function(err) {
             if (err) {
+              Matrix.loader.stop();
               console.error('Error zipping app folder: ' + err.message.red);
               process.exit();
             } else {
@@ -140,6 +142,7 @@ async.series([
         });
 
       } else {
+        Matrix.loader.stop();
         console.log('App configuration error, please adjust it and try again'.yellow);
         console.error(err.message.red);
       }
@@ -175,18 +178,22 @@ async.series([
               next(err);
             });
           } else {
+            Matrix.loader.stop();
             console.error(err);
             return process.exit(1);
           }
         });
       }
     ], function(err) {
+      if (err) {
+        Matrix.loader.stop();
+        console.error(err.message);
+        debug('Error:', err);
+        process.exit(1);
+      }
 
       var appData = Matrix.helpers.formAppData(details);
-
-      if (details.config.hasOwnProperty('galleryUrl')) {
-        iconUrl = details.config.galleryUrl;
-      }
+      if (details.config.hasOwnProperty('galleryUrl')) iconUrl = details.config.galleryUrl;
 
       if (hasReadme) {
         appData.meta.readme = fileUrl + '/' + appName + '/' + remoteReadmeFileName;
@@ -250,6 +257,7 @@ async.series([
   }
 
   function displayHelp() {
+    Matrix.loader.stop();
     console.log('\n> matrix publish ¬\n');
     console.log('\t    matrix publish <app> -', t('matrix.publish.help').grey, { app: '<app>' })
     console.log('\n')
