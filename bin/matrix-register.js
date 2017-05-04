@@ -86,58 +86,68 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 description: result.description,
               };
 
-              // fire off worker
-              Matrix.firebase.device.add(deviceObj, events)
+              var duplicateDevices = _.values(Matrix.config.deviceMap).filter(function(d) {
+                return d.name === result.name;
+              });
 
-              // wrap this up
-              Matrix.firebase.user.watchForDeviceAdd(function(d){
-                var deviceId = d.key;
+              if(duplicateDevices.length === 0) {
+                // fire off worker
+                Matrix.firebase.device.add(deviceObj, events)
 
-                if ( !_.isEmpty(deviceId) && deviceIds.indexOf(deviceId) === -1 ){
-                  debug('new device on user record!');
-                  Matrix.loader.stop();
-                  console.log('New Device'.green, deviceId);
-                  Matrix.helpers.trackEvent('device-register', { did: deviceId });
+                // wrap this up
+                Matrix.firebase.user.watchForDeviceAdd(function(d){
+                  var deviceId = d.key;
 
-                  // // add to local ref
-                  // Matrix.config.device.deviceMap = _.merge({}, Matrix.config.device.appMap, d.val() );
-                  // Matrix.helpers.saveConfig();
-
-
-                  // fetch secret
-                  // this part will be automated in the future. idk how.
-                  Matrix.loader.start();
-                  Matrix.api.device.getSecret(deviceId, function (err, secret) {
+                  if ( !_.isEmpty(deviceId) && deviceIds.indexOf(deviceId) === -1 ){
+                    debug('new device on user record!');
                     Matrix.loader.stop();
-                    if (err) {
-                      console.error('Secret Error: ', err);
-                      process.exit(1);
-                    } else if (_.isUndefined(secret)) {
-                      console.error('No secret found: ', secret);
-                      process.exit(1);
-                    }
+                    console.log('New Device'.green, deviceId);
+                    Matrix.helpers.trackEvent('device-register', { did: deviceId });
 
-                    // return the secret
-                    console.log('\nSave your *device id* and *device secret*'.green)
-                    console.log('You will not be able to see the secret for this device again'.grey)
-
-                    console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
-                    console.log('export MATRIX_DEVICE_ID='+ deviceId);
-                    console.log('export MATRIX_DEVICE_SECRET='+ secret.results.deviceSecret )
-
-                    console.log();
-                    console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey );
-                    console.log('\nSet up `matrix` CLI to target this device\n'.grey);
-                    console.log('matrix use', deviceId);
-                    console.log('or'.grey)
-                    console.log('matrix use', result.name);
-                    console.log();
-                    Matrix.helpers.refreshDeviceMap(process.exit)
-                  })
-                }
+                    // // add to local ref
+                    // Matrix.config.device.deviceMap = _.merge({}, Matrix.config.device.appMap, d.val() );
+                    // Matrix.helpers.saveConfig();
 
 
-              })
+                    // fetch secret
+                    // this part will be automated in the future. idk how.
+                    Matrix.loader.start();
+                    Matrix.api.device.getSecret(deviceId, function (err, secret) {
+                      Matrix.loader.stop();
+                      if (err) {
+                        console.error('Secret Error: ', err);
+                        process.exit(1);
+                      } else if (_.isUndefined(secret)) {
+                        console.error('No secret found: ', secret);
+                        process.exit(1);
+                      }
+
+                      // return the secret
+                      console.log('\nSave your *device id* and *device secret*'.green)
+                      console.log('You will not be able to see the secret for this device again'.grey)
+
+                      console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
+                      console.log('export MATRIX_DEVICE_ID='+ deviceId);
+                      console.log('export MATRIX_DEVICE_SECRET='+ secret.results.deviceSecret )
+
+                      console.log();
+                      console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey );
+                      console.log('\nSet up `matrix` CLI to target this device\n'.grey);
+                      console.log('matrix use', deviceId);
+                      console.log('or'.grey)
+                      console.log('matrix use', result.name);
+                      console.log();
+                      Matrix.helpers.refreshDeviceMap(process.exit)
+                    })
+                  }
+
+
+                })
+              } else {
+                console.error('Device name should be unique!');
+                process.exit(1);
+              }
+            //
               // #watchDeviceAdd
               //
             });
@@ -153,7 +163,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       // # prompt
     }
   } else {
-    
+
     processPromptData(function (err, userData) {
       if (err) {
         console.log('Error: ', err);
@@ -203,13 +213,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             username: userData.username,
             password: userData.password,
             trackOk: userData.profile.trackOk
-          } 
+          }
           Matrix.helpers.login(userOptions, function (err) {
             if (err) {
               Matrix.loader.stop();
               console.log('Unable to login, your account was created but the profile info couldn\'t be updated'.red);
               process.exit(1);
-            } 
+            }
 
             Matrix.helpers.profile.update(userData.profile, function (err) {
               Matrix.loader.stop();
@@ -223,7 +233,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             });
           });
         }
-      }); 
+      });
     });
   }
 });
