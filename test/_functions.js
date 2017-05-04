@@ -46,8 +46,7 @@ var run = function(cmd, options, done) {
   var output = [];
   var finished = false;
 
-  // TODO: Debug uses stderr
-  proc.stdout.on('data', function(out) {
+  var handleOutput = function(out) {
     out = out.toString();
     output.push(out.split('\n'))
     if (process.env.hasOwnProperty('DEBUG')) {
@@ -82,12 +81,12 @@ var run = function(cmd, options, done) {
         done();
       }
     }
-  })
+  }
+  // TODO: Debug uses stderr
+  proc.stdout.on('data', handleOutput );
 
   // forward errors
-  proc.stderr.on('data', (e) => {
-    console.error(e.toString());
-  });
+  proc.stderr.on('data', handleOutput );
 
   proc.on('close', function(code) {
     console.log('finished'.green, cmd, code)
