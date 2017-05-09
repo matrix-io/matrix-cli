@@ -29,8 +29,10 @@ Matrix.config = _.assign(Matrix.config, Matrix.helpers.getConfig());
 Matrix.validate = require('./matrix-validate');
 
 // do user monitoring
-if (_.has(Matrix.config, 'user.trackOk') && Matrix.config.user.trackOk === true) {
+if (_.has(Matrix.config, 'trackUserOk')) {
   process.env.TRACKOK = 'true';
+} else {
+  Matrix.config.trackUserOk = {};
 }
 
 // These are used to override if there is no environment set in config

@@ -18,18 +18,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   };
 
-  var oldTrack;
-  // if user has not answered tracking question before
-  if (!_.has(Matrix.config, 'user.trackOk')) {
-    schema.properties.trackOk = {
-      description: "Share usage information? (Y/n)",
-      default: 'y',
-      pattern: /y|n|yes|no|Y|N/,
-      message: "Please answer y or n."
-    };
-  } else {
-    oldTrack = Matrix.config.user.trackOk;
-  }
+  var user = {};
 
   if (!_.isEmpty(Matrix.config.user)) {
     if (Matrix.validate.token() === false) {
@@ -40,22 +29,58 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   }
   prompt.delimiter = '';
   prompt.message = 'Login -- ';
-  prompt.start();
-  prompt.get(schema, function (err, result) {
-    Matrix.loader.start();
-    if (err) {
-      Matrix.loader.stop();
-      if (err.toString().indexOf('canceled') > 0) {
-        console.log('');
-        process.exit();
+  async.waterfall([
+    function(callback) {
+      prompt.start();
+      prompt.get(schema, function (err, result) {
+        user.username = result.username;
+        user.password = result.password;
+        if (err) {
+          Matrix.loader.stop();
+          if (err.toString().indexOf('canceled') > 0) callback('');
+          else callback("Error: " + err);
+        }
+        callback(null, user);
+      });
+    }, function (user, callback) {
+      var oldTrack;
+      var schemaTrack = { properties: { } };
+      // if user has not answered tracking question before
+      if (!_.has(Matrix.config, 'trackUserOk')) {
+        schemaTrack.properties.trackOk = {
+          description: "Share usage information? (Y/n)",
+          default: 'y',
+          pattern: /y|n|yes|no|Y|N/,
+          message: "Please answer y or n."
+        };
+      } else if(_.isUndefined(Matrix.config.trackUserOk[user.username])) {
+        schemaTrack.properties.trackOk = {
+          description: "Share usage information? (Y/n)",
+          default: 'y',
+          pattern: /y|n|yes|no|Y|N/,
+          message: "Please answer y or n."
+        };
       } else {
-        console.log("Error: ", err);
-        process.exit();
+        oldTrack = Matrix.config.trackUserOk[user.username];
       }
-    }
-    if (!_.has(result, 'trackOk')) result.trackOk = oldTrack;
-    Matrix.helpers.login(result, function (err) {
-      process.exit();
-    });
-  });
+      callback(null, user, schemaTrack, oldTrack);
+    }, function(user, schemaTrack, oldTrack, callback) {
+      prompt.start();
+      prompt.get(schemaTrack, function (err, result) {
+        Matrix.loader.start();
+        if (err) {
+          Matrix.loader.stop();
+          if (err.toString().indexOf('canceled') > 0) callback('');
+          else callback("Error: " + err);
+        }
+        user.trackOk = _.has(result, 'trackOk') ? result.trackOk : oldTrack;
+        Matrix.helpers.login(user, function (err) {
+          callback();
+        });
+      }); //get
+    } //function
+  ], function(err){
+    if(err) console.log(err);
+    process.exit();
+  }); //async
 });
