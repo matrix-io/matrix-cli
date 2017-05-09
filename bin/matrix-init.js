@@ -29,7 +29,7 @@ Matrix.config = _.assign(Matrix.config, Matrix.helpers.getConfig());
 Matrix.validate = require('./matrix-validate');
 
 // do user monitoring
-if (_.has(Matrix.config, 'trackUserOk')) {
+if (_.has(Matrix.config, 'trackUserOk') && Matrix.config.user.trackOk) {
   process.env.TRACKOK = 'true';
 } else {
   Matrix.config.trackUserOk = {};
