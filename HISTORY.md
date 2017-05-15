@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.3.9]
 ### Added
-- 
  - New application writes app name to package json
 
 ### Fixed
