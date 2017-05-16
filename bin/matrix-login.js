@@ -5,82 +5,66 @@ var prompt = require('prompt');
 var debug = debugLog('login');
 
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-
-  var schema = {
-    properties: {
-      username: {
-        required: true,
-        pattern: /\S+@\S+\.\S+/
-      },
-      password: {
-        hidden: true
-      }
-    }
-  };
-
-  var user = {};
-
   if (!_.isEmpty(Matrix.config.user)) {
     if (Matrix.validate.token() === false) {
       console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);
     } else {
-      console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
+      console.log(t('matrix.already_login').yellow + ' ' + Matrix.config.user.username);
     }
   }
-  prompt.delimiter = '';
-  prompt.message = 'Login -- ';
-  async.waterfall([
-    function(callback) {
-      prompt.start();
-      prompt.get(schema, function (err, result) {
-        user.username = result.username;
-        user.password = result.password;
-        if (err) {
-          Matrix.loader.stop();
-          if (err.toString().indexOf('canceled') > 0) callback('');
-          else callback("Error: " + err);
-        }
-        callback(null, user);
+  var Rx = require('rx');
+  var prompts = new Rx.Subject();
+  var user = {};
+
+  var track = false;
+
+  require('inquirer').prompt(prompts).ui.process.subscribe(function(ans) {
+    if (ans.name === 'username') {
+      user.username = ans.answer;
+      track = _.isUndefined(Matrix.config.trackOk[user.username]);
+    }
+    else if (ans.name === 'password') user.password = ans.answer;
+    else if (ans.name === 'track') user.trackOk = ans.answer;
+
+    if (!track && !_.isUndefined(user.password)){
+      Matrix.loader.start();
+      Matrix.helpers.login(user, function(err) {
+        Matrix.loader.stop();
+        prompts.onCompleted();
+        process.exit();
       });
-    }, function (user, callback) {
-      var oldTrack;
-      var schemaTrack = { properties: { } };
-      // if user has not answered tracking question before
-      if (!_.has(Matrix.config, 'trackUserOk')) {
-        schemaTrack.properties.trackOk = {
-          description: "Share usage information? (Y/n)",
-          default: 'y',
-          pattern: /y|n|yes|no|Y|N/,
-          message: "Please answer y or n."
-        };
-      } else if(_.isUndefined(Matrix.config.trackUserOk[user.username])) {
-        schemaTrack.properties.trackOk = {
-          description: "Share usage information? (Y/n)",
-          default: 'y',
-          pattern: /y|n|yes|no|Y|N/,
-          message: "Please answer y or n."
-        };
-      } else {
-        oldTrack = Matrix.config.trackUserOk[user.username];
+    } else if (track && !_.isUndefined(user.trackOk)){
+      Matrix.loader.start();
+      Matrix.helpers.login(user, function(err) {
+        Matrix.loader.stop();
+        prompts.onCompleted();
+        process.exit();
+      });
+    }
+  });
+
+  prompts.onNext({
+    name: 'username',
+    message: 'Login --'
+  });
+  prompts.onNext({
+    name: 'password',
+    type: 'password',
+    message: 'Password --'
+  });
+
+  var oldTrack = false;
+  prompts.onNext({
+    name: 'track',
+    default: 'y',
+    validade: function(answer) {
+      var pattern = new RegExp(/y|n|yes|no|Y|N/);
+      if (!_.isNull(pattern.exec(answer))) return true;
+      return "Please answer y or n.";
+      },
+    message: "Share usage information? (Y/n)",
+    when: function() {
+      return track;
       }
-      callback(null, user, schemaTrack, oldTrack);
-    }, function(user, schemaTrack, oldTrack, callback) {
-      prompt.start();
-      prompt.get(schemaTrack, function (err, result) {
-        Matrix.loader.start();
-        if (err) {
-          Matrix.loader.stop();
-          if (err.toString().indexOf('canceled') > 0) callback('');
-          else callback("Error: " + err);
-        }
-        user.trackOk = _.has(result, 'trackOk') ? result.trackOk : oldTrack;
-        Matrix.helpers.login(user, function (err) {
-          callback();
-        });
-      }); //get
-    } //function
-  ], function(err){
-    if(err) console.log(err);
-    process.exit();
-  }); //async
+    });
 });
