@@ -86,7 +86,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 description: result.description,
               };
 
-              var duplicateDevices = Object.values(Matrix.config.deviceMap).filter(function(d) {
+              var duplicateDevices = _.values(Matrix.config.deviceMap).filter(function(d) {
                 return d.name === result.name;
               });
 
