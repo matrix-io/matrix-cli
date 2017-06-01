@@ -81,12 +81,12 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
         if ( _.isUndefined(app)){
           // no app name defined
-          app = results.name.replace(/\s/g, '-');
+          app = results.name;
         } else {
           // app name defined
           results.name = app;
         }
-
+        results.shortName = results.name.replace(/\s/g, '-');
         //Add a display name
         results.displayName = _.startCase(results.name);
 
