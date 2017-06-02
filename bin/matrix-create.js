@@ -86,7 +86,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           // app name defined
           results.name = app;
         }
-
+        results.shortName = results.name.replace(/\s/g, '-');
         //Add a display name
         results.displayName = _.startCase(results.name);
 
@@ -105,7 +105,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
           .on('end', function onFinishedExtract(){
 
             Matrix.helpers.trackEvent('app-create', { aid: app });
-             
+
             Matrix.loader.stop();
 
             fs.writeFileSync(app + '/config.yaml', '\n' + configString, { flag: 'a'});

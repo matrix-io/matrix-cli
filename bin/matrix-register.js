@@ -86,6 +86,15 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                 description: result.description,
               };
 
+              var duplicateDevices = _.values(Matrix.config.deviceMap).filter(function(d) {
+                return d.name === result.name;
+              });
+
+              if (duplicateDevices.length != 0){
+                console.error('Device name should be unique!');
+                process.exit(1);
+              }
+
               // fire off worker
               Matrix.firebase.device.add(deviceObj, events)
 
@@ -135,8 +144,6 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
                     Matrix.helpers.refreshDeviceMap(process.exit)
                   })
                 }
-
-
               })
               // #watchDeviceAdd
               //
@@ -153,7 +160,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       // # prompt
     }
   } else {
-    
+
     processPromptData(function (err, userData) {
       if (err) {
         console.log('Error: ', err);
@@ -203,13 +210,13 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             username: userData.username,
             password: userData.password,
             trackOk: userData.profile.trackOk
-          } 
+          }
           Matrix.helpers.login(userOptions, function (err) {
             if (err) {
               Matrix.loader.stop();
               console.log('Unable to login, your account was created but the profile info couldn\'t be updated'.red);
               process.exit(1);
-            } 
+            }
 
             Matrix.helpers.profile.update(userData.profile, function (err) {
               Matrix.loader.stop();
@@ -223,7 +230,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
             });
           });
         }
-      }); 
+      });
     });
   }
 });

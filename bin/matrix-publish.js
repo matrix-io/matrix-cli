@@ -27,19 +27,19 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function() 
     pwd += '/' + appName + '/';
   }
 
-  var destinationFilePath = __dirname + '/../' + appName + '.zip';
+  var destinationFilePath = require('os').homedir() + '/.matrix/' + appName + '.zip';
   var packageContent;
   var hasReadme = false;
 
   async.parallel({
-      folder: async.apply(Matrix.helpers.checkAppFolder, pwd),
-      code: async.apply(Matrix.helpers.checkAppCode, pwd),
-      data: async.apply(Matrix.helpers.collectAppData, appName, pwd)
-    },
+    folder: async.apply(Matrix.helpers.checkAppFolder, pwd),
+    code: async.apply(Matrix.helpers.checkAppCode, pwd),
+    data: async.apply(Matrix.helpers.collectAppData, appName, pwd)
+  },
     function(err, results) {
       if (!err && !_.isUndefined(results.data)) {
         if (!_.isUndefined(results.folder) && results.folder.hasOwnProperty('readme')) { //If it has a readme file
-          hasReadme = results.folder.readme; 
+          hasReadme = results.folder.readme;
         }
         var appDetails = results.data;
         debug('Using app details: ' + JSON.stringify(appDetails));
