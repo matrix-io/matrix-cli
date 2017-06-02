@@ -50,6 +50,29 @@ describe('has admin functions', function() {
     it('`matrix login`', fn.login);
   });
 
+  describe('can refresh a token', function () {
+    //before('`matrix login`', fn.login);
+    //it('`matrix logs in`', fn.login);
+    it('`Refreshes an invalid token`', function (done) {
+      var config = fn.readConfig();
+      if (config.hasOwnProperty('user')) {
+        var userToken = config.user.token;
+        userToken = userToken.substring(1, userToken.length);
+        fn.updateConfig({ 'user': { token: userToken } });
+        config = fn.readConfig();
+        userToken = config.user.token;
+        Matrix.config.user = config.user; //May help?
+        Matrix.validate.userAsync(function (err) {
+          done(err);
+          //done('Failed to refresh the user token');
+        });
+      } else {
+        var err = new Error('No logged in user!');
+        done(err);
+      }
+    });
+  });
+
   describe('can make, list and delete devices', function() {
 
     // NOTE: This device is global for the test suite. It will be destroyed in terminal.test.app
@@ -77,23 +100,6 @@ describe('has admin functions', function() {
     })
 
 
-  });
-
-  describe.skip('can refresh a token', function() {
-    before(fn.login);
-    it('`Refreshes an invalid token`', function(done) {
-      var userToken = fn.readConfig().user.token;
-      console.log('ORIGINAL:', userToken); //DELETE ME
-      userToken = userToken.substring(1, userToken.length);
-      console.log('MODIFIED:', userToken); //DELETE ME
-      fn.updateConfig('user.token', userToken);
-      userToken = fn.readConfig().user.token; //DELETE ME
-      console.log('STORED:', userToken) //DELETE ME
-      Matrix.validate.userAsync(function (err) { 
-        done(err);
-        //done('Failed to refresh the user token');
-      });
-    });
   });
 
   describe('can logout', function() {

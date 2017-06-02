@@ -32,6 +32,7 @@ es:
     help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
     help_ping: Luces de activación en el dispositivo seleccionado
     help_remove: Eliminar un dispositivo de su cuenta y eliminar todos los datos
+    help_upgrade: Actualizar CLI en su computadora local
     please_login: 'No se ha iniciado sesión con un usuario, Por favor'
     set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
     validate:

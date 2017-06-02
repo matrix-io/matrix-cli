@@ -89,12 +89,17 @@ async.series([
             error: function(err) {
               Matrix.loader.stop();
               clearTimeout(deleteTimeout); //Remove timeout
-              if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) { //Report error
-                console.error('\n' + t('matrix.remove.error').red + ': ', err.details.error);
-              } else {
-                console.error('\n' + t('matrix.remove.error').red + ': ', err);
+              if (err) {
+                if (err.hasOwnProperty('state') && err.state === 'device-deprovisioning-in-progress') {
+                  debug('Deprovisioning device step... ignore this');
+                } else if (err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) { //Report error
+                  console.error('\n' + t('matrix.remove.error').red + ': ', err.details.error);
+                  process.exit(1); //Stop exectuion
+                } else {
+                  console.error('\n' + t('matrix.remove.error').red + ': ', err);
+                  process.exit(1); //Stop exectuion
+                }
               }
-              process.exit(1); //Stop exectuion
             },
             finished: function() {
               clearTimeout(deleteTimeout); //Remove timeout
@@ -140,7 +145,7 @@ async.series([
 
   function displayHelp() {
     Matrix.loader.stop();
-    console.log('\n> matrix remove ¬\n');;
+    console.log('\n> matrix remove ¬\n');
     console.log('\t    matrix remove -', t('matrix.remove.help_selected').grey);
     console.log('\t    matrix remove <id> -', t('matrix.remove.help_id', { id: '<id>' }).grey);
     console.log('\n');

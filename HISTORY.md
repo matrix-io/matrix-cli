@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## []
+### Fixed
+- Device deprovisioning is handled on remove
+
+## [1.5]
+### Changed
+- Prevented duplicate device names
+
+### Added 
+- `matrix upgrade` command to show how to upgrade cli
+
+### Fixed
+- Make sure to update policy on deploy
+
 ## [1.4.0]
 ### Fixed
 - Remove devices when test is done
@@ -12,7 +26,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.3.9]
 ### Added
-- 
  - New application writes app name to package json
 
 ### Fixed

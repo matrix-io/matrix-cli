@@ -103,7 +103,7 @@ module.exports = {
   updateConfig: function updateConfig(valuesObject) {
     var fileContent = JSON.parse(require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json'));
     fileContent = _.merge(valuesObject, fileContent);
-    return require('fs').writeFileSync(require('os').homedir() + '/.matrix/store.json', fileContent);
+    return require('fs').writeFileSync(require('os').homedir() + '/.matrix/store.json', JSON.stringify(fileContent));
   },
   login: function(done) {
     run('matrix login', {
@@ -125,15 +125,17 @@ module.exports = {
     }, done);
   },
   registerDevice: function(done) {
+    var seed = Math.round(Math.random() * 1000000);
+
     run('matrix register device', {
       responses: [
-        ['device name', 'test-device\n'],
+        ['device name', 'test-device-' + seed + '\n'],
         ['device description', 'test-description\n']
       ],
       checks: [
         'MATRIX_DEVICE_ID',
         'MATRIX_DEVICE_SECRET',
-        'matrix use test-device'
+        'matrix use test-device-' + seed
       ],
       postCheck: function(done, output) {
         output = _.flatten(output);
@@ -172,7 +174,7 @@ module.exports = {
         }
         var did = config.device.identifier;
         var name = config.deviceMap[did].name;
-        if (name === 'test-device') {
+        if (name.indexOf('test-device') > -1) {
           done();
         } else {
           done('Finished, but bad device map')

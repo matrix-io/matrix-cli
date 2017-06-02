@@ -34,6 +34,7 @@ en:
     help_trigger: <trigger> Runs a CrossTalk event test
     help_uninstall: <app> Uninstall the app
     help_update: <app-name> <version> Install a specific application version
+    help_upgrade: Updates CLI on your local computer
     help_use: <device-id>Indicate active device
     please_login: No user logged in
     expired: Expired session > `matrix login`

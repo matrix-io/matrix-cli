@@ -103,7 +103,7 @@ async.series([
           // app name defined
           results.name = app;
         }
-
+        results.shortName = results.name.replace(/\s/g, '-');
         //Add a display name
         results.displayName = _.startCase(results.name);
 

@@ -111,6 +111,23 @@ async.series([
                 }
               };
 
+              var deviceObj = {
+                type: 'matrix',
+                osVersion: '0',
+                version: require(__dirname + '/../package.json').version,
+                name: result.name,
+                description: result.description,
+              };
+
+              var duplicateDevices = _.values(Matrix.config.deviceMap).filter(function(d) {
+                return d.name === result.name;
+              });
+
+              if (duplicateDevices.length != 0){
+                console.error('Device name should be unique!');
+                process.exit(1);
+              }
+
               // fire off worker
               Matrix.firebase.device.add(deviceObj, events);
 
@@ -161,11 +178,92 @@ async.series([
                 }
               })
               // #watchDeviceAdd
-            }); // #getAllDevices
-          });
-        }); // # prompt
-      });
+              //
+            });
+            // #getAllDevices
+            //
+          })
+          // ##firebaseInit
+
+        });
+
+
+      })
+      // # prompt
     }
+  } else {
+
+    processPromptData(function (err, userData) {
+      if (err) {
+        console.log('Error: ', err);
+        process.exit();
+      }
+      if (userData.password !== userData.confirmPassword) {
+        return console.error('Passwords didn\'t match');
+      }
+      /** set the creds **/
+      Matrix.config.user = {
+        username: userData.username,
+        password: userData.password
+      };
+
+      Matrix.config.user.jwt_token = true;
+
+      Matrix.config.client = {};
+      debug('Client', Matrix.options);
+
+      Matrix.loader.start();
+      Matrix.api.register.user(userData.username, userData.password, Matrix.options.clientId, function (err, out) {
+        /*500 server died
+        400 bad request
+          user exists
+          missing parameter
+        401*/
+        if (err) {
+          Matrix.loader.stop();
+          if (err.hasOwnProperty('status_code')) {
+            if (err.status_code === 500) {
+              console.log('Server unavailable, please try again later');
+            } else if (err.status_code === 400) {
+              console.log('Unable to create user ' + userData.username + ', user already exists');
+            } else {
+              console.log('Unknown error (' + err.status_code + '): ', err);
+            }
+          } else {
+            if (err.hasOwnProperty('code') && err.code == 'ENOTFOUND') {
+              console.error('Unable to reach server, please try again later');
+            } else {
+              console.error('Unknown error: ', err);
+            }
+          }
+          process.exit();
+        } else {
+          var userOptions = {
+            username: userData.username,
+            password: userData.password,
+            trackOk: userData.profile.trackOk
+          }
+          Matrix.helpers.login(userOptions, function (err) {
+            if (err) {
+              Matrix.loader.stop();
+              console.log('Unable to login, your account was created but the profile info couldn\'t be updated'.red);
+              process.exit(1);
+            }
+
+            Matrix.helpers.profile.update(userData.profile, function (err) {
+              Matrix.loader.stop();
+              debug('User', Matrix.config.user, out);
+              if (err) {
+                console.log('Unable to update profile, your account was created but the profile information couldn\'t be updated'.yellow);
+                process.exit(1);
+              }
+              console.log('User ' + userData.username + ' successfully created');
+              process.exit();
+            });
+          });
+        }
+      });
+    });
   }
 });
 

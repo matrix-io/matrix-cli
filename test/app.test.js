@@ -120,7 +120,7 @@ describe('can manage apps', function() {
         }
       }, done)
     })
-    this.timeout(15000)
+    this.timeout(45000)
     it('`matrix deploy`', function(done) {
       fn.run('matrix deploy matrix-test-app', {
         checks: 'Application installation SUCCESS'
