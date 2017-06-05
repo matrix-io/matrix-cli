@@ -1,23 +1,33 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
-var debug = debugLog('use');
+var async = require('async');
+var debug;
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-
-  if (!Matrix.pkgs.length || showTheHelp) {
-    return displayHelp();
+async.series([
+  require('./matrix-init'),
+  function (cb) {
+    Matrix.loader.start();
+    debug = debugLog('use');
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+  Matrix.validate.userAsync
+], function (err) {
+  Matrix.loader.stop();
+  if (err) {
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
+  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
+
   var target = Matrix.pkgs.join(' ');
-
-  var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name : target });
-
+  var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: target });
   var nameProvided = true;
 
-  if ( _.isEmpty(targetDeviceId) ) {
+  if (_.isEmpty(targetDeviceId)) {
     // not a name, must be a key?
-    if ( _.has(Matrix.config.deviceMap, target)){
+    if (_.has(Matrix.config.deviceMap, target)) {
       targetDeviceId = target;
       nameProvided = false;
     } else {
@@ -26,37 +36,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     }
   }
 
-
-  // Matrix.firebaseInit(function () {
-  //
-  //   Matrix.firebase.user.checkDevice( target, function (err, deviceapps) {
-  //     if (err) return console.error(err);
-  //     if ( _.isNull(deviceapps)){
-  //       return console.log('Device Not Attached to User Record');
-  //     } else {
-  //       Matrix.firebase.device.lookup( target, function(device){
-  //         if (_.isNull(device)){
-  //           return console.log('Device not in Devices Record, Exists in User Record')
-  //         }
-  //         console.log(device);
-  //       })
-  //     }
-  //   })
-  //
-  // })
-  //
-  //
-  Matrix.validate.user();
-
-
+  Matrix.loader.start();  
   // still API dependent, TODO: depreciate to firebase
   Matrix.api.device.register(targetDeviceId, function(err, state) {
 
-    if (err) return console.log(err);
-    if (state.status === "OK"){
-      if ( !nameProvided ){
-        target = Matrix.helpers.lookupDeviceName(target);
-      }
+    if (err) {
+      Matrix.loader.stop();
+      console.error(err.message);
+      debug('Error:', err);
+      return process.exit(1);
+    }
+    if (state.status === 'OK') {
+      if (!nameProvided) target = Matrix.helpers.lookupDeviceName(target);
 
       // Save the device token
       Matrix.config.device = {}
@@ -64,38 +55,37 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       Matrix.config.device.token = state.results.device_token;
 
       async.parallel([
-        function track(cb){
+        function track(cb) {
           // track
           Matrix.helpers.trackEvent('device-use', { did: targetDeviceId }, cb);
         },
-        function write(cb){
+        function write(cb) {
           Matrix.helpers.saveConfig(cb);
         }
-      ], function(){
+      ], function () {
+        Matrix.loader.stop();
         console.log('Now using device:'.grey, target, 'ID:'.grey, targetDeviceId);
         process.exit()
       })
 
 
       //Create the object for keep device after session expired
-      if(!Matrix.config.keepDevice){
-        Matrix.config.keepDevice = {};
-      }
+      if (!Matrix.config.keepDevice) Matrix.config.keepDevice = {};
 
       //Create key for the current user into the object for keep device after session expired
-      if(!_.has(Matrix.config.keepDevice, Matrix.config.user.id)){
-        Matrix.config.keepDevice[ Matrix.config.user.id]={};
+      if (!_.has(Matrix.config.keepDevice, Matrix.config.user.id)) {
+        Matrix.config.keepDevice[Matrix.config.user.id] = {};
       }
       //Put the data into the object for keep device after session expired
-      Matrix.config.keepDevice[ Matrix.config.user.id].identifier = Matrix.config.device.identifier;
-      Matrix.config.keepDevice[ Matrix.config.user.id].name = target;
+      Matrix.config.keepDevice[Matrix.config.user.id].identifier = Matrix.config.device.identifier;
+      Matrix.config.keepDevice[Matrix.config.user.id].name = target;
       //Save config
 
 
     } else {
       debug('Matrix Use Error Object:', state);
-      if ( state.error === 'access_token not valid.' ) {
-        console.log(t('matrix.use.not_authorized').red, '\n', t('matrix.use.invalid_token'), '. ' , t('matrix.use.try').grey, 'matrix login')
+      if (state.error === 'access_token not valid.') {
+        console.log(t('matrix.use.not_authorized').red, '\n', t('matrix.use.invalid_token'), '. ', t('matrix.use.try').grey, 'matrix login')
       } else {
         console.error('Error', state.status_code.red, state.error);
       }
@@ -104,8 +94,8 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   });
 });
 
-  function displayHelp() {
-    console.log('\n> matrix use ¬ \n');
-    console.log('\t                 matrix use <deviceid> -', t('matrix.use.command_help').grey)
-    console.log('\n')
-  }
+function displayHelp() {
+  console.log('\n> matrix use ¬ \n');
+  console.log('\t                 matrix use <deviceid> -', t('matrix.use.command_help').grey)
+  console.log('\n')
+}

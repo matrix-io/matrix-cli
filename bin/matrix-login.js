@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
 var prompt = require('prompt');
-var debug = debugLog('login');
+var async = require('async');
+var debug;
 
+<<<<<<< HEAD
 Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
   if (!_.isEmpty(Matrix.config.user)) {
     if (Matrix.validate.token() === false) {
@@ -11,6 +12,21 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
     } else {
       console.log(t('matrix.already_login').yellow + ' ' + Matrix.config.user.username);
     }
+=======
+async.series([
+  require('./matrix-init'),
+  function (cb) {
+    Matrix.loader.start();
+    debug = debugLog('login');
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+], function(err) {
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
+>>>>>>> dev
   }
 
   var schema = {
@@ -28,15 +44,21 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var user = {};
 
   if (!_.isEmpty(Matrix.config.user)) {
+    Matrix.loader.stop();
     if (Matrix.validate.token() === false) {
+<<<<<<< HEAD
       console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);		       console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);
+=======
+      console.log('The token has expired. Last session started:'.yellow, Matrix.config.user.username);
+>>>>>>> dev
     } else {
-      console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
+      console.log(t('matrix.already_login').yellow + ':', Matrix.config.user.username);
     }
   }
 
   prompt.delimiter = '';
   prompt.message = 'Login -- ';
+<<<<<<< HEAD
 
   async.waterfall([
     function(callback){
@@ -93,5 +115,25 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   ], function(err){
     if (err) console.log(err);
     process.exit();
+=======
+  Matrix.loader.stop();
+  prompt.start();
+  prompt.get(schema, function(err, result) {
+    Matrix.loader.start();
+    if (err) {
+      Matrix.loader.stop();
+      if (err.toString().indexOf('canceled') > 0) {
+        console.log('');
+        process.exit();
+      } else {
+        console.log("Error: ", err);
+        process.exit();
+      }
+    }
+    if (!_.has(result, 'trackOk')) result.trackOk = oldTrack;
+    Matrix.helpers.login(result, function(err) {
+      process.exit();
+    });
+>>>>>>> dev
   });
 });
