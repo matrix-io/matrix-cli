@@ -154,8 +154,4 @@ function init(finished) {
 
 }
 
-<<<<<<< HEAD
-})
-=======
 module.exports = init;
->>>>>>> dev
