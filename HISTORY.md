@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## []
+## [1.6]
 ### Fixed
 - Device deprovisioning is handled on remove
+- New devices make shortName (cli-safe)
+  
+  ### Added
+- Refresh token if expired. Thanks @diegoribero
 
 ## [1.5]
 ### Changed
