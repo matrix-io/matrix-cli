@@ -43,7 +43,7 @@ async.series([
   Matrix.firebase.app.getIDForName(app, function (err, appId) {
     if (err) {
       Matrix.loader.stop();
-      console.error(err.message);
+      console.log(t('matrix.stop.app_undefined'));
       return Matrix.endIt(1, 0);
     }
     debug('appId>', appId);
