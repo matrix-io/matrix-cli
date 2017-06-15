@@ -213,7 +213,7 @@ en:
     start:
       help: start the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
-      app_undefined: 'this app doesn`t exist' #
+      app_undefined: 'This app doesn`t exist' #
       starting_app: 'Starting'
       start_app_successfully: 'Started'
       start_app_error: 'Unable to start'
@@ -222,7 +222,7 @@ en:
     stop:
       help: stop the application %{app}
       application_unspecified: 'specify [ app(name) ] ' #
-      app_undefined: 'this app doesn`t exist' #
+      app_undefined: 'This app doesn`t exist' #
       stopping_app: 'Stopping'
       stop_app_successfully: 'Stopped'
       stop_app_error: 'Unable to stop'
