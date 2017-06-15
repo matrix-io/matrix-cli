@@ -36,9 +36,6 @@ async.series([
 
   Matrix.api.device.setId(Matrix.config.device.identifier);
     
-  Matrix.loader.stop();
-  console.log(t('matrix.restart.restarting_app') + ': ', app, Matrix.config.device.identifier);
-  Matrix.loader.start();
 
   Matrix.firebase.app.getIDForName(app, function(err, appId) {
     if (err) {
@@ -65,8 +62,9 @@ async.series([
       } else {
         
         var commandTimeout;
-        
 
+        Matrix.loader.stop();
+        console.log(t('matrix.restart.restarting_app') + ': ', app, Matrix.config.device.identifier);
         Matrix.loader.start();
         // Keep track of previous app status
         var wasInactive;
@@ -77,8 +75,8 @@ async.series([
           // Restart command status behavior(active -> inactive -> active)
           if (status === 'active' && wasInactive == true) {
             
-            Matrix.loader.stop();
             clearTimeout(commandTimeout);
+            Matrix.loader.stop();
             console.log(t('matrix.restart.restart_app_successfully') + ':', app);
             wasInactive = false;
             Matrix.endIt();
@@ -88,7 +86,7 @@ async.series([
             Matrix.loader.stop();
             console.log(t('matrix.stop.stop_app_successfully') + ':', app);
             wasInactive = true;
-
+            Matrix.loader.start();
           }   
 
         });
