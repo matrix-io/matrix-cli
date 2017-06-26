@@ -26,7 +26,7 @@ async.series([
   // user register does fb init for login, bad if we do that 2x
 ], function (err) {
   Matrix.loader.stop();
-  if (err) { 
+  if (err) {
     console.error(err.message.red);
     debug('Error:', err.message);
     return process.exit(1);
@@ -109,7 +109,7 @@ function listApps(cb) {
       //Retrieve status for each app
       async.forEach(Object.keys(apps), function(appId, done) {
         Matrix.firebase.app.getStatus(appId, function(status) {
-          if (!_.isUndefined(status)) status = "inactive"; //Set default status to inactive
+          if (_.isUndefined(status)) status = "inactive"; //Set default status to inactive
           debug("Status Watch: " + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
           apps[appId].status = status;
           done();
