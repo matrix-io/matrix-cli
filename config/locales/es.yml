@@ -191,7 +191,7 @@ es:
       app_failed_to_start: 'Fallo al iniciar la aplicación' #
     stop:
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
-      app_undefined: 'esta aplicacion no existe' #
+      app_undefined: 'Esta aplicacion no existe' #
       stopping_app: 'Deteniendo'
       stop_app_successfully: 'Detenida'
     restart:
