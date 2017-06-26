@@ -1,17 +1,34 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
-var debug = debugLog('create');
 var fs = require('fs');
 var tar = require('tar');
 var prompt = require('prompt');
 var yaml = require('js-yaml');
 var pwd = process.cwd();
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
+var async = require('async')
+
+var debug;
+
+async.series([
+  require('./matrix-init'),
+  function (cb) {
+    Matrix.loader.start();
+    debug = debugLog('create');
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+
+], function(err) {
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
+  }
 
   var app = Matrix.pkgs[0];
 
-  if ( parseInt(app) === app ){
+  if (parseInt(app) === app) {
+    Matrix.loader.stop();
     console.error(t('matrix.create.bad_numbers'))
     process.exit(1);
   }
@@ -28,6 +45,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   // check if path already exists, refuse if so
   fs.access(process.cwd() + "/" + app, fs.F_OK, function(err) {
     if (!err) {
+      Matrix.loader.stop();
       console.error(t('matrix.create.error_creating') + ':', t('matrix.create.folder_exist'));
       process.exit(1);
     } else {
@@ -53,19 +71,18 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
       prompt.delimiter = '';
       prompt.message = 'Create new application -- ';
 
-      var ps = [ descP, keyP ];
+      var ps = [descP, keyP];
 
-      if (_.isUndefined(app)){
+      if (_.isUndefined(app)) {
         // nop app mentioned
         ps.unshift(nameP)
       } else {
-        prompt.message += ' ( ' + app +' ) ';
+        prompt.message += ' ( ' + app + ' ) ';
       }
 
+      Matrix.loader.stop();      
       prompt.start();
-
-      prompt.get(ps, function(err, results){
-
+      prompt.get(ps, function(err, results) {
 
         if (err) {
           if (err.toString().indexOf('canceled') > 0) {
@@ -79,7 +96,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
         debug(results);
 
-        if ( _.isUndefined(app)){
+        if (_.isUndefined(app)) {
           // no app name defined
           app = results.name;
         } else {
@@ -93,26 +110,26 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
         // write the config yaml
         configString = yaml.safeDump(results);
 
-        debug('Writing config...',  configString);
+        debug('Writing config...', configString);
 
         Matrix.loader.start();
 
         var extractor = tar.Extract({
-          path: pwd + "/" + app,
-          strip: 1
-        })
+            path: pwd + "/" + app,
+            strip: 1
+          })
           .on('error', onError)
-          .on('end', function onFinishedExtract(){
+          .on('end', function onFinishedExtract() {
 
             Matrix.helpers.trackEvent('app-create', { aid: app });
 
             Matrix.loader.stop();
 
-            fs.writeFileSync(app + '/config.yaml', '\n' + configString, { flag: 'a'});
+            fs.writeFileSync(app + '/config.yaml', '\n' + configString, { flag: 'a' });
 
-            changeNameP = require( pwd + "/" + app + '/package.json');
+            changeNameP = require(pwd + "/" + app + '/package.json');
             changeNameP.name = app;
-            Matrix.helpers.changeName(changeNameP, pwd + "/" + app + '/package.json', function (err) {
+            Matrix.helpers.changeName(changeNameP, pwd + "/" + app + '/package.json', function(err) {
               if (err) {
                 console.error('Error updating package.json file: ' + err.message.red);
                 process.exit(1);
@@ -137,7 +154,7 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
 
   function displayHelp() {
     console.log('\n> matrix create ¬\n');
-    console.log('\t    matrix create <app> -', t('matrix.create.help', { app: '<app>'}).grey)
+    console.log('\t    matrix create <app> -', t('matrix.create.help', { app: '<app>' }).grey)
     console.log('\n')
     process.exit(1);
   }

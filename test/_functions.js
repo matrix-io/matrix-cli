@@ -46,8 +46,7 @@ var run = function(cmd, options, done) {
   var output = [];
   var finished = false;
 
-  // TODO: Debug uses stderr
-  proc.stdout.on('data', function(out) {
+  var handleOutput = function(out) {
     out = out.toString();
     output.push(out.split('\n'))
     if (process.env.hasOwnProperty('DEBUG')) {
@@ -82,12 +81,12 @@ var run = function(cmd, options, done) {
         done();
       }
     }
-  })
+  }
+  // TODO: Debug uses stderr
+  proc.stdout.on('data', handleOutput );
 
   // forward errors
-  proc.stderr.on('data', (e) => {
-    console.error(e.toString());
-  });
+  proc.stderr.on('data', handleOutput );
 
   proc.on('close', function(code) {
     console.log('finished'.green, cmd, code)
@@ -100,6 +99,11 @@ module.exports = {
   run: run,
   readConfig: function readConfig() {
     return JSON.parse(require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json'));
+  },
+  updateConfig: function updateConfig(valuesObject) {
+    var fileContent = JSON.parse(require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json'));
+    fileContent = _.merge(valuesObject, fileContent);
+    return require('fs').writeFileSync(require('os').homedir() + '/.matrix/store.json', JSON.stringify(fileContent));
   },
   login: function(done) {
     run('matrix login', {
@@ -205,7 +209,6 @@ module.exports = {
       checks: ['Logged Out Successfully'],
       postCheck: function(done) {
         var config = fn.readConfig();
-        var uids = _.keys(config.keepDevice);
         if (_.has(config, 'user')) {
           done('User Not Deleted on Logout')
         } else {

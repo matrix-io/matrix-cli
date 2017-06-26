@@ -1,16 +1,22 @@
 #!/usr/bin/env node
 
-require('./matrix-init');
 var prompt = require('prompt');
-var debug = debugLog('login');
+var async = require('async');
+var debug;
 
-Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function () {
-  if (!_.isEmpty(Matrix.config.user)) {
-    if (Matrix.validate.token() === false) {
-      console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);
-    } else {
-      console.log(t('matrix.already_login').yellow + ' ' + Matrix.config.user.username);
-    }
+async.series([
+  require('./matrix-init'),
+  function (cb) {
+    Matrix.loader.start();
+    debug = debugLog('login');
+    Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+  },
+], function(err) {
+  if (err) {
+    Matrix.loader.stop();
+    console.error(err.message.red);
+    debug('Error:', err.message);
+    return process.exit(1);
   }
 
   var schema = {
@@ -28,10 +34,11 @@ Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, function ()
   var user = {};
 
   if (!_.isEmpty(Matrix.config.user)) {
+    Matrix.loader.stop();
     if (Matrix.validate.token() === false) {
-      console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);		       console.log("The token has expired. Last session started :".yellow, ' ', Matrix.config.user.username);
+      console.log('The token has expired. Last session started:'.yellow, Matrix.config.user.username);
     } else {
-      console.log(t('matrix.already_login').yellow, ' ', Matrix.config.user.username);
+      console.log(t('matrix.already_login').yellow + ':', Matrix.config.user.username);
     }
   }
 
