@@ -24,7 +24,7 @@ async.series([
     debug('Error:', err.message);
     return process.exit(1);
   }
-  
+
   var app = Matrix.pkgs[0];
   if (_.isUndefined(app) || !_.isString(app)) {
     Matrix.loader.stop();
@@ -43,7 +43,7 @@ async.series([
   Matrix.firebase.app.getIDForName(app, function(err, appId) {
     if (err) {
       Matrix.loader.stop();
-      console.error(err.message);
+      console.error(t('matrix.start.app_undefined').red);
       return Matrix.endIt(1, 0);
     }
     debug('appId>', appId);
@@ -75,6 +75,7 @@ async.series([
             clearTimeout(commandTimeout);
             console.log(t('matrix.start.start_app_successfully') + ': ', app);
             Matrix.endIt();
+
           } else if (status === 'error') {
             Matrix.loader.stop();
             clearTimeout(commandTimeout);

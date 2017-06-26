@@ -185,7 +185,7 @@ es:
       error_updating: Error actualizando #
     start:
       application_unspecified: 'especifique [ app(name) ] ' #
-      app_undefined: 'esta aplicación no existe' #
+      app_undefined: 'Esta aplicación no existe' #
       starting_app: 'Iniciando'
       start_app_successfully: 'Iniciada'
       app_failed_to_start: 'Fallo al iniciar la aplicación' #
