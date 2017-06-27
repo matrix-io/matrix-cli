@@ -7,7 +7,6 @@ var debug;
 async.series([
   require('./matrix-init'),
   function (cb) {
-    Matrix.loader.start();
     debug = debugLog('login');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
