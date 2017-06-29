@@ -243,24 +243,8 @@ async.series([
             password: userData.password,
             trackOk: userData.profile.trackOk
           }
-          Matrix.helpers.login(userOptions, function (err) {
-            if (err) {
-              Matrix.loader.stop();
-              console.log('Unable to login, your account was created but the profile info couldn\'t be updated'.red);
-              process.exit(1);
-            }
 
-            Matrix.helpers.profile.update(userData.profile, function (err) {
-              Matrix.loader.stop();
-              debug('User', Matrix.config.user, out);
-              if (err) {
-                console.log('Unable to update profile, your account was created but the profile information couldn\'t be updated'.yellow);
-                process.exit(1);
-              }
-              console.log('User ' + userData.username + ' successfully created');
-              process.exit();
-            });
-          });
+        login(userData, userOptions);
         }
       });
     });
@@ -304,6 +288,37 @@ function processPromptData(cb) {
   });
 }
 
+function login(userData, userOptions){
+  async.series([
+    function(cb){
+      Matrix.helpers.logout(function(){
+        debug('Cleaning old data...');
+      });
+      cb(null);
+    }, function(cb) {
+      Matrix.helpers.login(userOptions, function (err) {
+        if (err) {
+          Matrix.loader.stop();
+          cb('Unable to login, your account was created but the profile info couldn\'t be updated'.red);
+        }
+
+        Matrix.helpers.profile.update(userData.profile, function (err) {
+          Matrix.loader.stop();
+          debug('User', Matrix.config.user, out);
+          if (err) {
+            cb('Unable to update profile, your account was created but the profile information couldn\'t be updated'.yellow);
+          }
+          cb('User ' + userData.username + ' successfully created');
+        });
+        cb(null);
+      });
+    }
+  ], function(err){
+    if (err) console.log(err);
+    process.exit(1);
+  });
+}
+
 function handleBasicRegister(cb) {
   // continue flow
   if (Matrix.pkgs.length !== 0) return cb();
@@ -313,7 +328,7 @@ function handleBasicRegister(cb) {
       console.log('Error: ', err);
       process.exit();
     }
-    
+
     if (userData.password !== userData.confirmPassword) {
       return console.error('Passwords didn\'t match');
     }
@@ -361,24 +376,7 @@ function handleBasicRegister(cb) {
         }
 
         //login does fb init :(
-        Matrix.helpers.login(userOptions, function(err) {
-          if (err) {
-            Matrix.loader.stop();
-            console.log('Unable to login, your account was created but the profile info couldn\'t be updated'.red);
-            process.exit(1);
-          }
-
-          Matrix.helpers.profile.update(userData.profile, function(err) {
-            Matrix.loader.stop();
-            debug('User', Matrix.config.user, out);
-            if (err) {
-              console.log('Unable to update profile, your account was created but the profile information couldn\'t be updated'.yellow);
-              process.exit(1);
-            }
-            console.log('User ' + userData.username + ' successfully created');
-            process.exit();
-          });
-        });
+        login(userData, userOptions);
       }
     });
   });
