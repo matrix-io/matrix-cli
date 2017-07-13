@@ -120,21 +120,18 @@ async.series([
                   process.exit(1);
                   //It must first go through the pending state (nowInstalling) and then back to inactive
                 } else if (nowInstalling && status === 'inactive') {
-                  clearTimeout(deviceTimeout);
-                  var deploymentTimer = setInterval(function() {
-                    if (deploymentFinished) {
-                      clearTimeout(deploymentTimer);
-                      console.log('Application ' + appName.green + ' was successfully installed!');
-                      console.log(t('matrix.install.app_install_success').green);
-                      // clear out zip file
-                      // require('child_process').execSync('rm ' + destinationFilePath);
-                      // debug( destinationFilePath, 'removed');
-                      endIt();
-                    }
-                  }, 400);
+                  //agrouping on a function so can call it on status active
+                  timerDeployment(deviceTimeout, deploymentFinished);
                 } else if (status === 'active') {
-                  console.log('App running already, not good.')
-                  process.exit(1);
+                  console.log('App running already, re-deploying and starting app!');
+                  Matrix.api.app.stop(appName, Matrix.config.device.identifier, function(err) {
+                    if (err) {
+                      Matrix.loader.stop();
+                      console.log(t('matrix.stop.stop_app_error') + ':', app, ' (' + err.message.red + ')');
+                      process.exit(1);
+                    }
+                  });
+                  timerDeployment(deviceTimeout, deploymentFinished);
                 } else if (status === 'pending') {
                   nowInstalling = true
                   console.log('Installing ' + appName + ' on device...');
@@ -198,6 +195,21 @@ async.series([
       }
     });
 
+  }
+
+  function timerDeployment(deviceTimeout, deploymentFinished){
+    clearTimeout(deviceTimeout);
+    var deploymentTimer = setInterval(function() {
+      if (deploymentFinished) {
+        clearTimeout(deploymentTimer);
+        console.log('Application ' + appName.green + ' was successfully installed!');
+        console.log(t('matrix.install.app_install_success').green);
+        // clear out zip file
+        // require('child_process').execSync('rm ' + destinationFilePath);
+        // debug( destinationFilePath, 'removed');
+        endIt();
+      }
+    }, 400);
   }
 
   function endIt() {
