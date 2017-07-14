@@ -199,6 +199,7 @@ es:
       app_undefined: 'este dispositivo no existe' #
       restarting_app: 'Reiniciando'
       restart_app_successfully: 'Reiniciada'
+      restart_app_error: 'Fallo a reiniciar la aplicación'
       #DEVELOPMENT
     create:
       name_undefined: 'Debe especificar un nombre de aplicación'
