@@ -130,8 +130,8 @@ async.series([
                       console.log(t('matrix.stop.stop_app_error') + ':', app, ' (' + err.message.red + ')');
                       process.exit(1);
                     }
+                    timerDeployment(deviceTimeout, deploymentFinished);
                   });
-                  timerDeployment(deviceTimeout, deploymentFinished);
                 } else if (status === 'pending') {
                   nowInstalling = true
                   console.log('Installing ' + appName + ' on device...');
