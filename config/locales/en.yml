@@ -270,6 +270,9 @@ en:
       app_undefined: 'could not do deploy' #
     publish:
       help: Publishes the approved app %{app} on the app store
+    unpublish:
+      unpublishing: Unpublishing #
+      help: Unpublish the app %{app} from the app store #
     trigger:
       no_specified_test: 'error: missing required argument' #
       defined_test_doesn`t_exist: 'test doesn`t exist' #

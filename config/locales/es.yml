@@ -228,6 +228,11 @@ es:
       application_unspecified: 'especifique [ aplicacion ]' #?
       deploy_app_successfully: 'despliegue de la aplicacion satisfactoria' #?
       app_undefined: 'aplicacion indefinida' #?
+    publish:
+      help: Publica la aplicacion aprobada %{app} en la tienda de aplicaciones
+    unpublish:
+      unpublishing: Cancelar la publicacion #
+      help_app: Anula la publicacion de la aplicacion %{app} de la tienda de aplicaciones #
     trigger:
       no_specified_test: 'prueba indefinida' #?
       defined_test_doesn`t_exist: 'la prueba especificada no existe' #?
