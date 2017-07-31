@@ -43,7 +43,7 @@ async.series([
         console.log('\n This app does not belongs to this user!'.red);
         process.exit(1);
       } else {
-        console.log('\nApp found... ');
+        console.log('\n App found... ');
 
         var progress;
         Matrix.loader.start();
