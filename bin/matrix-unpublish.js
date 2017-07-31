@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var asunc = require('async');
+var async = require('async');
 var unpublicationFinished = false;
 var debug;
 
@@ -31,30 +31,24 @@ async.series([
   Matrix.loader.start();
 
   //get app id
-  Matrix.firebase.app.getIDForName(name, function(err, appId) {
+  Matrix.firebase.app.search(target, function(err, data) {
     Matrix.loader.stop();
     if (err) {
       console.log('Error: '.red, err.message);
       process.exit();
     }
-    if (!appId) {
+    if (!data) {
       console.log('\nApp not found... ');
       process.exit(1);
-    } else {
-
+    } else if (data.acl.ownerId === Matrix.config.user.id){
       console.log('\nApp found... ');
-
-      if (appId !== Matrix.config.user.id) {
-        console.log('\n This app does not belongs to this user. Please try to unpublish logged at the right user!'.red);
-        process.exit(1);
-      }
 
       var progress;
       Matrix.loader.start();
 
       Matrix.helpers.trackEvent('app-unpublish', { aid: target, did: Matrix.config.device.identifier });
 
-      Matrix.firebase.app.unpublish(Matrix.config.user.token, Matrix.config.user.id, appId, {
+      Matrix.firebase.app.unpublish(Matrix.config.user.token, Matrix.config.user.id, data.id, {
         error: function (err) {
           Matrix.loader.stop();
           if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) {
@@ -66,7 +60,7 @@ async.series([
         },
         finished: function() {
           Matrix.loader.stop();
-          console.log('Unpublish sent to appstore...'.green);
+          console.log('Unpublishing app...'.green);
           process.exit(0);
         },
         start: _.once(function() {
@@ -86,6 +80,9 @@ async.series([
           }
         }
       });
+    } else {
+      console.log('\n This app does not belongs to this user. Please try to unpublish logged at the right user!'.red);
+      process.exit(1);
     }
 
 
