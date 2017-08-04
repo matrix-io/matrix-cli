@@ -185,13 +185,13 @@ es:
       error_updating: Error actualizando #
     start:
       application_unspecified: 'especifique [ app(name) ] ' #
-      app_undefined: 'esta aplicación no existe' #
+      app_undefined: 'Esta aplicación no existe' #
       starting_app: 'Iniciando'
       start_app_successfully: 'Iniciada'
       app_failed_to_start: 'Fallo al iniciar la aplicación' #
     stop:
       application_unspecified: 'especifique [ aplicacion(nombre) ] ' #
-      app_undefined: 'esta aplicacion no existe' #
+      app_undefined: 'Esta aplicacion no existe' #
       stopping_app: 'Deteniendo'
       stop_app_successfully: 'Detenida'
     restart:
@@ -199,6 +199,7 @@ es:
       app_undefined: 'este dispositivo no existe' #
       restarting_app: 'Reiniciando'
       restart_app_successfully: 'Reiniciada'
+      restart_app_error: 'Fallo a reiniciar la aplicación'
       #DEVELOPMENT
     create:
       name_undefined: 'Debe especificar un nombre de aplicación'
@@ -227,6 +228,11 @@ es:
       application_unspecified: 'especifique [ aplicacion ]' #?
       deploy_app_successfully: 'despliegue de la aplicacion satisfactoria' #?
       app_undefined: 'aplicacion indefinida' #?
+    publish:
+      help: Publica la aplicacion aprobada %{app} en la tienda de aplicaciones
+    unpublish:
+      unpublishing: Cancelar la publicacion #
+      help_app: Anula la publicacion de la aplicacion %{app} de la tienda de aplicaciones #
     trigger:
       no_specified_test: 'prueba indefinida' #?
       defined_test_doesn`t_exist: 'la prueba especificada no existe' #?

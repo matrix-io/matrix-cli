@@ -46,8 +46,7 @@ var run = function(cmd, options, done) {
   var output = [];
   var finished = false;
 
-  // TODO: Debug uses stderr
-  proc.stdout.on('data', function(out) {
+  var handleOutput = function(out) {
     out = out.toString();
     output.push(out.split('\n'))
     if (process.env.hasOwnProperty('DEBUG')) {
@@ -82,12 +81,12 @@ var run = function(cmd, options, done) {
         done();
       }
     }
-  })
+  }
+  // TODO: Debug uses stderr
+  proc.stdout.on('data', handleOutput );
 
   // forward errors
-  proc.stderr.on('data', (e) => {
-    console.error(e.toString());
-  });
+  proc.stderr.on('data', handleOutput );
 
   proc.on('close', function(code) {
     console.log('finished'.green, cmd, code)
@@ -100,6 +99,11 @@ module.exports = {
   run: run,
   readConfig: function readConfig() {
     return JSON.parse(require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json'));
+  },
+  updateConfig: function updateConfig(valuesObject) {
+    var fileContent = JSON.parse(require('fs').readFileSync(require('os').homedir() + '/.matrix/store.json'));
+    fileContent = _.merge(valuesObject, fileContent);
+    return require('fs').writeFileSync(require('os').homedir() + '/.matrix/store.json', JSON.stringify(fileContent));
   },
   login: function(done) {
     run('matrix login', {
@@ -121,15 +125,17 @@ module.exports = {
     }, done);
   },
   registerDevice: function(done) {
+    var seed = Math.round(Math.random() * 1000000);
+
     run('matrix register device', {
       responses: [
-        ['device name', 'test-device\n'],
+        ['device name', 'test-device-' + seed + '\n'],
         ['device description', 'test-description\n']
       ],
       checks: [
         'MATRIX_DEVICE_ID',
         'MATRIX_DEVICE_SECRET',
-        'matrix use test-device'
+        'matrix use test-device-' + seed
       ],
       postCheck: function(done, output) {
         output = _.flatten(output);
@@ -168,7 +174,7 @@ module.exports = {
         }
         var did = config.device.identifier;
         var name = config.deviceMap[did].name;
-        if (name === 'test-device') {
+        if (name.indexOf('test-device') > -1) {
           done();
         } else {
           done('Finished, but bad device map')
@@ -203,7 +209,6 @@ module.exports = {
       checks: ['Logged Out Successfully'],
       postCheck: function(done) {
         var config = fn.readConfig();
-        var uids = _.keys(config.keepDevice);
         if (_.has(config, 'user')) {
           done('User Not Deleted on Logout')
         } else {
