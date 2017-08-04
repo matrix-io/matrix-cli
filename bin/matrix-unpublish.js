@@ -6,17 +6,17 @@ var debug;
 
 async.series([
   require('./matrix-init'),
-  function (cb) {
+  function(cb) {
     Matrix.loader.start();
     debug = debugLog('unpublish');
     fileUrl = 'https://storage.googlapis.com/' + Matrix.config.environment.appsBucket + '/apps';
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync,
-  function (cb) {
+  function(cb) {
     Matrix.firebaseInit(cb);
   }
-], function (err) {
+], function(err) {
   if (err) {
     Matrix.loader.stop();
     console.error(err.message.red);
@@ -34,7 +34,7 @@ async.series([
   Matrix.firebase.app.search(target, function(data) {
 
     Matrix.loader.stop();
-    if (_.isEmpty(data)){
+    if (_.isEmpty(data)) {
       console.log('\n App not found!');
       process.exit(1);
     } else {
@@ -51,8 +51,8 @@ async.series([
         Matrix.helpers.trackEvent('app-unpublish', { aid: target, did: Matrix.config.device.identifier });
 
         console.log('____ | ' + t('matrix.unpublish.unpublishing'));
-        Matrix.firebase.app.unpublish(Matrix.config.user.token, Matrix.config.user.id, data.id, {
-          error: function (err) {
+        Matrix.firebase.app.unpublish(Matrix.config.user.token, data.id, {
+          error: function(err) {
             Matrix.loader.stop();
             if (err && err.hasOwnProperty('details') && err.details.hasOwnProperty('error')) {
               console.error('\n Unpublish Error'.red, err.details.error);
