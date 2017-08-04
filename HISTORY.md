@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+## [1.7]
+### Fixed
+- Deploying app while running no longer leaves pending
+- List apps now displays online status correctly
+- Can now deploy apps in appstore
+- `matrix restart` now restarts apps
+- Registering a new user clears old device
+
 ## [1.6.1]
 ### Added
 - Unpublish application
