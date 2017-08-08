@@ -8,6 +8,9 @@ node_js:
   - "6.4"
   - "5"
   - "4"
+os:
+  - linux
+  - osx
 sudo: required
 env:
   - CXX=g++-4.8
