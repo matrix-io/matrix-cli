@@ -18,10 +18,10 @@ async.series([
   Matrix.validate.userAsync,
   Matrix.validate.deviceAsync,
   // user register does fb init for login, bad if we do that 2x
-  function(cb) {
+  function (cb) {
     Matrix.firebaseInit(cb)
   }
-], function(err) {
+], function (err) {
   if (err) {
     Matrix.loader.stop();
     console.error(err.message.red);
@@ -46,16 +46,16 @@ async.series([
   var destinationFilePath = require('os').homedir() + '/.matrix/' + appName + '.zip';
 
   async.parallel({
-      folder: async.apply(Matrix.helpers.checkAppFolder, pwd),
-      code: async.apply(Matrix.helpers.checkAppCode, pwd),
-      data: async.apply(Matrix.helpers.collectAppData, appName, pwd)
-    },
-    function(err, results) {
+    folder: async.apply(Matrix.helpers.checkAppFolder, pwd),
+    code: async.apply(Matrix.helpers.checkAppCode, pwd),
+    data: async.apply(Matrix.helpers.collectAppData, appName, pwd)
+  },
+    function (err, results) {
       if (!err && !_.isUndefined(results.data)) {
         var appDetails = results.data;
         debug('Using app details: ' + JSON.stringify(appDetails));
 
-        Matrix.helpers.zipAppFolder(pwd, destinationFilePath, function(err) {
+        Matrix.helpers.zipAppFolder(pwd, destinationFilePath, function (err) {
           if (err) {
             Matrix.loader.stop();
             console.error('Error zipping app folder: ' + err.message.red);
@@ -96,9 +96,9 @@ async.series([
     console.log('Successfully validated configuration file');
     Matrix.loader.start();
 
-    Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function(err, uploadUrl) {
+    Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function (err, uploadUrl) {
       if (!err) {
-        Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function(err) {
+        Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
 
           var appData = Matrix.helpers.formAppData(details);
           appData.override = true; //If true the appstore won't check for uniqueness
@@ -106,13 +106,13 @@ async.series([
           var deployedAppId, workerTimeout, deviceTimeout;
           var nowInstalling = false;
           //Listen for the app installation in device (appId from users>devices>apps)
-          Matrix.firebase.app.watchNamedUserApp(appName, function(app, appId) {
+          Matrix.firebase.app.watchNamedUserApp(appName, function (app, appId) {
             debug('App install ' + appId + ' activity');
             if (!_.isUndefined(appId) && _.isUndefined(deployedAppId)) {
               debug('App id ' + appId + ' identified');
               deployedAppId = appId;
               //Listen for the status change (deviceapps)
-              Matrix.firebase.app.watchStatus(deployedAppId, function(status) {
+              Matrix.firebase.app.watchStatus(deployedAppId, function (status) {
                 debug('App deployed with status > ' + status);
                 Matrix.loader.stop();
                 if (status === 'error') {
@@ -121,7 +121,7 @@ async.series([
                   //It must first go through the pending state (nowInstalling) and then back to inactive
                 } else if (nowInstalling && status === 'inactive') {
                   clearTimeout(deviceTimeout);
-                  var deploymentTimer = setInterval(function() {
+                  var deploymentTimer = setInterval(function () {
                     if (deploymentFinished) {
                       clearTimeout(deploymentTimer);
                       console.log('Application ' + appName.green + ' was successfully installed!');
@@ -133,7 +133,7 @@ async.series([
                     }
                   }, 400);
                 } else if (status === 'active') {
-                  console.log('App running already, not good.')
+                  console.log('App running already, will attempt restart.')
                   process.exit(1);
                 } else if (status === 'pending') {
                   nowInstalling = true
@@ -145,7 +145,7 @@ async.series([
           });
 
           //Start timeout in case the workers aren't up'
-          workerTimeout = setTimeout(function() {
+          workerTimeout = setTimeout(function () {
             console.log('Server response timeout, please try again later'.yellow);
             process.exit(1);
           }, workerTimeoutSeconds * 1000);
@@ -158,7 +158,7 @@ async.series([
           };
 
           Matrix.firebase.app.deploy(options, {
-            error: function(err) {
+            error: function (err) {
               clearTimeout(workerTimeout);
               if (err.hasOwnProperty('details')) {
                 console.log('App deployment failed: '.red, err.details.error);
@@ -167,24 +167,24 @@ async.series([
               }
               process.exit();
             },
-            finished: function() {
+            finished: function () {
               clearTimeout(workerTimeout);
               Matrix.loader.stop();
               console.log('Deploying to device...');
               //Start timeout in case the workers aren't up'
-              deviceTimeout = setTimeout(function() {
+              deviceTimeout = setTimeout(function () {
                 console.log(t('matrix.install.device_install_timeout').yellow);
                 process.exit(1);
               }, deviceTimeoutSeconds * 1000);
               Matrix.loader.start();
               deploymentFinished = true;
             },
-            start: function() {
+            start: function () {
               Matrix.loader.stop();
               console.log('Requesting deploy...');
               Matrix.loader.start();
             },
-            progress: function() {
+            progress: function () {
               Matrix.loader.stop();
               console.log('Processing deployment parameters...');
               Matrix.loader.start();
@@ -201,8 +201,8 @@ async.series([
   }
 
   function endIt() {
-    setTimeout(function() {
-      process.nextTick(function() {
+    setTimeout(function () {
+      process.nextTick(function () {
         process.exit(0);
       })
     }, 1000)
