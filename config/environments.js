@@ -14,7 +14,7 @@ module.exports = { //export environments
     appsBucket: 'dev-admobilize-matrix-apps'
   },
   rc: {
-    api: 'https://rc-api.admobilize.com',
+    api: 'https://api.admobilize.com',
     mxss: 'https://mxss.admobilize.com',
     appsBucket: 'admobilize-matrix-apps'
   },
@@ -23,7 +23,7 @@ module.exports = { //export environments
     mxss: 'https://stage-mxss.admobilize.com'
   },
   production: {
-    api: 'https://demo.admobilize.com',
+    api: 'https://api.admobilize.com',
     mxss: 'https://mxss.admobilize.com',
     appsBucket: 'admobilize-matrix-apps'
   },
