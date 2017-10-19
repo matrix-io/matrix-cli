@@ -73,9 +73,10 @@ function init(finished) {
     },
     function (cb) {
       if (!_.has(Matrix.config.environment, 'name')) {
-        debug('No env set, using rc default');
+        // temp for hackathon
+        debug('No env set, using dev default. Go VISA-MATRIX Hackathon 2017 participants!');
         Matrix.config.environment = {
-          name: process.env.NODE_ENV || 'production',
+          name: process.env.NODE_ENV || 'dev',
           api: options.apiUrl,
           mxss: options.mxssUrl,
           appsBucket: options.appsBucket
