@@ -142,6 +142,7 @@ async.series([
             console.log('      README.MD'.grey, '-', t('matrix.create.description_developer'))
             console.log('       index.js'.grey, '-', t('matrix.create.description_index'))
             console.log('   package.json'.grey, '-', t('matrix.create.description_package'))
+            process.exit(1);
           });
 
         fs.createReadStream(__dirname + "/../baseapp.tar")
