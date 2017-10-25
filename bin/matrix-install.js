@@ -44,7 +44,7 @@ async.series([
     }
 
     var versionId;
-    //Validate if the version exist and get the version Id
+    //Validate if the version exists and get the version Id
     if (version) {
       versionId = _.findKey(result.versions, function(appVersion, versionId) {
         if (appVersion.version === version) return true;
@@ -56,34 +56,38 @@ async.series([
         return process.exit();
       }
     } else {
-      //If in the command doesn't set the version use a current version of app
+      //If the command didn't set a version use current app version
       versionId = result.meta.currentVersion;
     }
 
     debug('VERSION: '.blue, versionId, 'APP: '.blue, appName);
 
-    var options = {
-      policy: result.versions[versionId].policy,
-      name: appName,
-      id: result.id,
-      versionId: versionId
-    }
+    Matrix.helpers.promptSettings(function (err, clearSettings) {
 
-    Matrix.helpers.trackEvent('app-install', { aid: appName, did: Matrix.config.device.identifier });
-
-    Matrix.helpers.installApp(options, function(err) {
-      Matrix.loader.stop();
-      if (err) {
-        console.log(err);
-        process.exit(1);
+      var options = {
+        policy: result.versions[versionId].policy,
+        name: appName,
+        id: result.id,
+        versionId: versionId,
+        clearSettingsOnUpdate: clearSettings
       }
 
-      console.log(t('matrix.install.app_install_success').green);
-      process.exit(0);
+      Matrix.helpers.trackEvent('app-install', { aid: appName, did: Matrix.config.device.identifier });
+
+      Matrix.helpers.installApp(options, function(err) {
+        Matrix.loader.stop();
+        if (err) {
+          console.log(err);
+          process.exit(1);
+        }
+
+        console.log(t('matrix.install.app_install_success').green);
+        process.exit(0);
+      });
+
     });
 
   });
-
 
   function displayHelp() {
     console.log('\n> matrix install ¬\n');
