@@ -76,7 +76,7 @@ function init(finished) {
         // temp for hackathon
         debug('No env set, using dev default. Go VISA-MATRIX Hackathon 2017 participants!');
         Matrix.config.environment = {
-          name: process.env.NODE_ENV || 'dev',
+          name: process.env.NODE_ENV || 'production',
           api: options.apiUrl,
           mxss: options.mxssUrl,
           appsBucket: options.appsBucket
