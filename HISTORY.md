@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+##[1.7.2]
+### Fixed
+- Matrix create exits cleanly
 ## [1.7.1]
 ### Changed
 - New installs start on produciton environment
