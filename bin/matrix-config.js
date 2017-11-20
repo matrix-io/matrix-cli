@@ -64,7 +64,9 @@ async.series([
   } else if (_.isUndefined(target)) {
     // get form
 
-    console.log(t('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
+    Matrix.config.devices.forEach(device => {
+      console.log(t('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
+    })
     Matrix.firebase.device.getConfig(handleResponse);
 
     // matrix config base
@@ -97,7 +99,11 @@ async.series([
       debug('appId>', appId);
       console.log('Application', target, '\nconfig value:', key, '\nupdate:', value)
       Matrix.firebase.app.setConfigKey(appId, key, value, function() {
-        Matrix.helpers.trackEvent('app-config-change', { aid: target, did: Matrix.config.device.identifier }, process.exit);
+        async.each(Matrix.config.devices, (device, cb) => {
+          Matrix.helpers.trackEvent('app-config-change', { aid: target, did: device.identifier }, cb);
+        }, (err) => {
+          process.exit(1);
+        })
       });
     })
 

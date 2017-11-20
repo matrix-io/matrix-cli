@@ -110,7 +110,9 @@ function listApps(cb) {
       async.forEach(Object.keys(apps), function(appId, done) {
         Matrix.firebase.app.getStatus(appId, function(status) {
           if (_.isUndefined(status)) status = "inactive"; //Set default status to inactive
-          debug("Status Watch: " + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
+          Matrix.config.devices.forEach(device => {
+            debug("Status Watch: " + Matrix.config.user.id + '>' + device.identifier + '>' + appId + '>' + status);
+          });
           apps[appId].status = status;
           done();
         });

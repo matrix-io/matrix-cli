@@ -85,6 +85,23 @@ function deviceAsync(cb) {
   cb(err);
 }
 
+
+/**
+ * checkGroup - Checks if a group is properly set
+ * @param {bool} exit If the process should exit on failed user validation. Defaults to true
+ * @returns {bool} 
+ */
+function checkGroupAsync(cb) {
+  var err;
+  // fix if
+  if (Matrix.config.groupName == null) {
+    Matrix.loader.stop();
+    console.error('matrix use <groupName>'.grey, ' - > '.yellow + t('matrix.validate.select_group').yellow)
+    err = new Error(t('matrix.validate.no_group'));
+  }
+  cb(err);
+}
+
 /**
  * device - Checks if a device is properly set
  * @param {bool} exit If the process should exit on failed user validation. Defaults to true
@@ -171,4 +188,5 @@ module.exports = {
   firebaseError: firebaseError,
   deviceAsync: deviceAsync,
   userAsync: userAsync,
+  checkGroupAsync
 };

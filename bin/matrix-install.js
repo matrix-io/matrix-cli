@@ -30,7 +30,9 @@ async.series([
   var version = Matrix.pkgs[1];
   
   // TODO lookup policy from config file, pass to function
-  console.log('____ | ' + t('matrix.install.installing') + ' ', appName, ' ==> '.yellow, Matrix.config.device.identifier)
+  Matrix.config.devices.forEach(device => {
+    console.log('____ | ' + t('matrix.install.installing') + ' ', appName, ' ==> '.yellow, device.identifier)
+  }); 
 
   Matrix.loader.start();
   //Search the app to install
@@ -69,7 +71,9 @@ async.series([
       versionId: versionId
     }
 
-    Matrix.helpers.trackEvent('app-install', { aid: appName, did: Matrix.config.device.identifier });
+    Matrix.config.devices.forEach(device => {
+      Matrix.helpers.trackEvent('app-install', { aid: appName, did: device.identifier });
+    });
 
     Matrix.helpers.installApp(options, function(err) {
       Matrix.loader.stop();

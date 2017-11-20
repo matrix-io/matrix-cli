@@ -2,6 +2,9 @@
 
 var async = require('async');
 var debug;
+var target;
+var deviceIds = [];
+var isGroup = false;
 
 async.series([
   require('./matrix-init'),
@@ -10,8 +13,33 @@ async.series([
     debug = debugLog('use');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
-  Matrix.validate.userAsync
-], function (err) {
+  Matrix.validate.userAsync,
+  function (cb) { Matrix.firebaseInit(cb); },
+  function (cb) {
+    target = Matrix.pkgs.join(' ');
+
+    Matrix.firebase.user.getUserGroups(function(err, groups) {
+      if (err) {
+        console.error(err.message);
+        debug('Error:', err);
+        return process.exit(1);
+      }
+
+      if (Object.keys(groups).find(key => key === target)) {
+        isGroup = true;
+
+        if (groups[target] instanceof Array) {
+          groups[target].forEach(device => {
+            if (device != null)
+              deviceIds.push(device);
+          });
+        }
+      }
+
+      return cb(null);
+    });
+  }
+], function (err, arr) {
   Matrix.loader.stop();
   if (err) {
     console.error(err.message.red);
@@ -21,81 +49,98 @@ async.series([
 
   if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
-  var target = Matrix.pkgs.join(' ');
   var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: target });
-  var nameProvided = true;
+
+  delete Matrix.config.groupName;
 
   if (_.isEmpty(targetDeviceId)) {
     // not a name, must be a key?
     if (_.has(Matrix.config.deviceMap, target)) {
-      targetDeviceId = target;
-      nameProvided = false;
-    } else {
-      console.log(target.red, t('matrix.use.invalid_nameid'))
+      deviceIds.push(target);
+    } else if (!isGroup) {
+      console.log(target.red, t('matrix.use.invalid_nameid_groupname'))
       process.exit(1);
+    } else {
+      console.log('Using group ' + target);
+      Matrix.config.groupName = target;
     }
+  }
+  else {
+    deviceIds.push(targetDeviceId);
   }
 
   Matrix.loader.start();  
-  // still API dependent, TODO: depreciate to firebase
-  Matrix.api.device.register(targetDeviceId, function(err, state) {
 
-    if (err) {
-      Matrix.loader.stop();
-      console.error(err.message);
-      debug('Error:', err);
-      return process.exit(1);
-    }
-    if (state.status === 'OK') {
-      if (!nameProvided) target = Matrix.helpers.lookupDeviceName(target);
+  Matrix.config.devices = []
 
-      // Save the device token
-      Matrix.config.device = {}
-      Matrix.config.device.identifier = targetDeviceId;
-      Matrix.config.device.token = state.results.device_token;
+  //Create the object for keep device after session expired
+  if (!Matrix.config.keepDevice) Matrix.config.keepDevice = {};
+  
+  //Create key for the current user into the object for keep device after session expired
+  if (!_.has(Matrix.config.keepDevice, Matrix.config.user.id)) {
+    Matrix.config.keepDevice[Matrix.config.user.id] = [];
+  }
 
-      async.parallel([
-        function track(cb) {
-          // track
-          Matrix.helpers.trackEvent('device-use', { did: targetDeviceId }, cb);
-        },
-        function write(cb) {
-          Matrix.helpers.saveConfig(cb);
-        }
-      ], function () {
+  async.each(deviceIds, (targetDeviceId, cb) => {
+    if (targetDeviceId == null) return cb(null);
+    // still API dependent, TODO: depreciate to firebase
+    Matrix.api.device.register(targetDeviceId, function(err, state) {
+      if (err) {
         Matrix.loader.stop();
-        console.log('Now using device:'.grey, target, 'ID:'.grey, targetDeviceId);
-        process.exit()
-      })
-
-
-      //Create the object for keep device after session expired
-      if (!Matrix.config.keepDevice) Matrix.config.keepDevice = {};
-
-      //Create key for the current user into the object for keep device after session expired
-      if (!_.has(Matrix.config.keepDevice, Matrix.config.user.id)) {
-        Matrix.config.keepDevice[Matrix.config.user.id] = {};
+        console.error(err.message);
+        debug('Error:', err);
+        return process.exit(1);
       }
-      //Put the data into the object for keep device after session expired
-      Matrix.config.keepDevice[Matrix.config.user.id].identifier = Matrix.config.device.identifier;
-      Matrix.config.keepDevice[Matrix.config.user.id].name = target;
-      //Save config
-
-
-    } else {
-      debug('Matrix Use Error Object:', state);
-      if (state.error === 'access_token not valid.') {
-        console.log(t('matrix.use.not_authorized').red, '\n', t('matrix.use.invalid_token'), '. ', t('matrix.use.try').grey, 'matrix login')
+      if (state.status === 'OK') {
+        target = Matrix.helpers.lookupDeviceName(targetDeviceId);
+  
+        // Save the device token
+        Matrix.config.devices.push({ 
+          identifier: targetDeviceId,
+          token: state.results.device_token 
+        });
+  
+        console.log('Using device:'.grey, target, 'ID:'.grey, targetDeviceId);
+        
+        //Put the data into the object for keep device after session expired
+        Matrix.config.keepDevice[Matrix.config.user.id].push({
+          identifier: Matrix.config.device.identifier,
+          name: target
+        });
+        
+        return cb(null);
       } else {
-        console.error('Error', state.status_code.red, state.error);
+        debug('Matrix Use Error Object:', state);
+        if (state.error === 'access_token not valid.') {
+          console.log(t('matrix.use.not_authorized').red, '\n', t('matrix.use.invalid_token'), '. ', t('matrix.use.try').grey, 'matrix login')
+        } else {
+          console.error('Error', state.status_code.red, state.error);
+        }
+        process.exit(1);
       }
+  
+    });
+  }, (err) => {
+    Matrix.loader.stop();
+    if (deviceIds.length === 0)
+      console.log('Empty Group. Add devices with matrix add <deviceId> ');
+    else {
+      deviceIds.forEach(device => {
+        Matrix.helpers.trackEvent('device-use', { did: targetDeviceId });
+      });
     }
-
+    console.log('Done.');
+    // Save config
+    Matrix.helpers.saveConfig((err) => {
+      process.exit(1);
+    });
   });
+  
 });
 
 function displayHelp() {
   console.log('\n> matrix use ¬ \n');
   console.log('\t                 matrix use <deviceid> -', t('matrix.use.command_help').grey)
+  console.log('\t                 matrix use <groupName> -', t('matrix.use.command_help_group').grey)
   console.log('\n')
 }

@@ -36,11 +36,14 @@ en:
     help_update: <app-name> <version> Install a specific application version
     help_upgrade: Updates CLI on your local computer
     help_use: <device-id>Indicate active device
+    help_group: 'Handle group commands' 
     please_login: No user logged in
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:
       no_device: No Device Selected
+      no_group: No Group Selected
+      select_group: select a group
       select_device_id: select a device id'
     #SETUP:
     account:
@@ -58,8 +61,10 @@ en:
       device_not_found: Device doesn`t exist #
       invalid_token: 'Your token is invalid'
       invalid_nameid: 'is not a device name or a device id'
+      invalid_nameid_groupname: 'is not a device name or device id or group name'
       try: 'Try'
       command_help: 'set active device to device id'
+      command_help_group: 'set active group'
     register:
       creating_device: 'Registering a new device.'
     remove:
@@ -147,6 +152,12 @@ en:
       help_groups: 'display groups of devices'
       help_apps: 'display apps on current device'
       help_all: 'display all devices with installed apps'
+    group:
+      help_create: 'create a new group'
+      help_list: 'list devices ids in <groupName>'
+      help_clear: 'remove all devices from a group'
+      help_add: 'add devices ids to a group'
+      help_remove: 'remove devices ids from a group'
     reboot:
         device_offline: device is not online # 
         rebooting: 'Device rebooting'

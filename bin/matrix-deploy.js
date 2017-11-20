@@ -73,7 +73,9 @@ async.series([
 
   function onEnd(details) {
 
-    Matrix.helpers.trackEvent('app-deploy', { aid: appName, did: Matrix.config.device.identifier });
+    async.each(Matrix.config.devices, (device, cb) => {
+      Matrix.helpers.trackEvent('app-deploy', { aid: target, did: device.identifier }, cb);
+    }, (err) => {});
 
     debug('Finished packaging ', appName);
     var downloadFileName = Matrix.config.user.id + '/' + appName.toLowerCase() + '-' + Math.round(Math.random() * Math.pow(10, 8)) + '.zip';
@@ -150,47 +152,51 @@ async.series([
             process.exit(1);
           }, workerTimeoutSeconds * 1000);
 
-          //Send the app deployment request
-          var options = {
-            deviceId: Matrix.config.device.identifier,
-            appData: appData,
-            userId: Matrix.config.user.id
-          };
+          
+          async.each(Matrix.config.devices, (device, cb) => {
+            //Send the app deployment request
+            var options = {
+              deviceId: device.identifier,
+              appData: appData,
+              userId: Matrix.config.user.id
+            };
 
-          Matrix.firebase.app.deploy(options, {
-            error: function (err) {
-              clearTimeout(workerTimeout);
-              if (err.hasOwnProperty('details')) {
-                console.log('App deployment failed: '.red, err.details.error);
-              } else {
-                console.log('App deployment failed: '.red, err.message);
+            Matrix.firebase.app.deploy(options, {
+              error: function (err) {
+                clearTimeout(workerTimeout);
+                if (err.hasOwnProperty('details')) {
+                  console.log('App deployment failed: '.red, err.details.error);
+                } else {
+                  console.log('App deployment failed: '.red, err.message);
+                }
+                process.exit();
+              },
+              finished: function () {
+                clearTimeout(workerTimeout);
+                Matrix.loader.stop();
+                console.log('Deploying to device...');
+                //Start timeout in case the workers aren't up'
+                deviceTimeout = setTimeout(function () {
+                  console.log(t('matrix.install.device_install_timeout').yellow);
+                  process.exit(1);
+                }, deviceTimeoutSeconds * 1000);
+                Matrix.loader.start();
+                deploymentFinished = true;
+              },
+              start: function () {
+                Matrix.loader.stop();
+                console.log('Requesting deploy...');
+                Matrix.loader.start();
+              },
+              progress: function () {
+                Matrix.loader.stop();
+                console.log('Processing deployment parameters...');
+                Matrix.loader.start();
               }
-              process.exit();
-            },
-            finished: function () {
-              clearTimeout(workerTimeout);
-              Matrix.loader.stop();
-              console.log('Deploying to device...');
-              //Start timeout in case the workers aren't up'
-              deviceTimeout = setTimeout(function () {
-                console.log(t('matrix.install.device_install_timeout').yellow);
-                process.exit(1);
-              }, deviceTimeoutSeconds * 1000);
-              Matrix.loader.start();
-              deploymentFinished = true;
-            },
-            start: function () {
-              Matrix.loader.stop();
-              console.log('Requesting deploy...');
-              Matrix.loader.start();
-            },
-            progress: function () {
-              Matrix.loader.stop();
-              console.log('Processing deployment parameters...');
-              Matrix.loader.start();
-            }
+            });
+          }, (err) => {
+            console.log("Done.");
           });
-
         });
       } else {
         console.error(err);

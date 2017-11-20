@@ -110,7 +110,8 @@ function init(finished) {
 
     Matrix.firebase = require('matrix-firebase');
     Matrix.firebaseInit = function initFirebase(cb) {
-      var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier : '';
+      // TODO: Make firebase use many devices at once 
+      var currentDevice = (!_.isEmpty(Matrix.config.devices) && !_.isEmpty(Matrix.config.devices[0].identifier)) ? Matrix.config.devices[0].identifier : '';
       debug('Firebase Init', Matrix.config.user.id, currentDevice);
       Matrix.firebase.init(
         Matrix.config.user.id,
