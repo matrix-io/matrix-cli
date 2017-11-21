@@ -51,10 +51,15 @@ function createGroup(cb) {
       displayHelp();
       process.exit(1);
     }
-
-    Matrix.firebase.user.setGroup(groupName, () => {
-      console.log(groupName+' Group created');
-      process.exit(1);
+    Matrix.firebase.user.getUserGroups((err, groups) => {
+      if (Object.keys(groups).find((key) => key === groupName)) {
+        console.log(groupName + ' Group already exists.')
+        process.exit(1);
+      }
+      Matrix.firebase.user.setGroup(groupName, () => {
+        console.log(groupName+' Group created');
+        process.exit(1);
+      });
     });
   }
   else {
@@ -71,22 +76,29 @@ function listGroup(cb) {
       process.exit(1);
     }
 
-    Matrix.firebase.user.getDevicesFromGroup(groupName ,(err, devices) => {
-      if (err) {
-        console.log(err);
+    Matrix.firebase.user.getUserGroups((err, groups) => {
+      if (!Object.keys(groups).find((key) => key === groupName)) {
+        console.log('No such group ' + groupName);
         process.exit(1);
       }
 
-      if (devices == null || _.isEmpty(devices)) {
-        console.log('Empty Group.');
+      Matrix.firebase.user.getDevicesFromGroup(groupName ,(err, devices) => {
+        if (err) {
+          console.log(err);
+          process.exit(1);
+        }
+  
+        if (devices == null || _.isEmpty(devices)) {
+          console.log('Empty Group.');
+          process.exit(1);
+        }
+  
+        console.log('Devices in group', groupName, ':');
+        devices.forEach(deviceId => {
+          console.log(deviceId + ' ' + Matrix.helpers.lookupDeviceName(deviceId));
+        });
         process.exit(1);
-      }
-
-      console.log('Devices in group ', groupName, ':');
-      devices.forEach(device => {
-        console.log(device.identifier, Matrix.helpers.lookupDeviceName(device.identifier));
       });
-      process.exit(1);
     });
   }
   else {
@@ -135,15 +147,20 @@ function addDevices(cb) {
       return arr.indexOf(deviceId) == index;
     });
 
-    Matrix.firebase.user.setGroup(Matrix.config.groupName, deviceIds, (err) => {
-      if (err) {
-        console.log(err);
-        process.exit(1);
-      }
+    Matrix.firebase.user.getDevicesFromGroup(Matrix.config.groupName, (err, oldDevicesIds) => {
+      var lengthAdded = deviceIds.length;
+      deviceIds = deviceIds.concat(oldDevicesIds);
 
-      console.log(deviceIds.length + ' devices added to group ' + Matrix.config.groupName);
-      process.exit(1);
-    })
+      Matrix.firebase.user.setGroup(Matrix.config.groupName, deviceIds, (err) => {
+        if (err) {
+          console.log(err);
+          process.exit(1);
+        }
+  
+        console.log(lengthAdded + ' device(s) added to group ' + Matrix.config.groupName);
+        process.exit(1);
+      });
+    });
 
   } else {
     cb();
@@ -172,17 +189,23 @@ function removeDevices(cb) {
       return arr.indexOf(deviceId) == index;
     });
 
-    Matrix.firebase.user.removeDevicesFromGroup(Matrix.config.groupName, deviceIds, (err) => {
-      if (err) {
-        console.log(err);
+    Matrix.firebase.user.getDevicesFromGroup(Matrix.config.groupName, (err, oldDevicesIds) => {
+      var oldLength = oldDevicesIds.length;
+
+      deviceIds = oldDevicesIds.filter(oldDeviceId => {
+        return !deviceIds.includes(oldDeviceId);
+      });
+
+      Matrix.firebase.user.setGroup(Matrix.config.groupName, deviceIds, (err) => {
+        if (err) {
+          console.log(err);
+          process.exit(1);
+        }
+
+        console.log( (oldLength - deviceIds.length) + ' device(s) removed from group ' + Matrix.config.groupName);
         process.exit(1);
-      }
-
-      console.log(deviceIds.length + ' devices removed from group ' + Matrix.config.groupName);
-      process.exit(1);
-    })
-
-    process.exit(1);
+      });
+    });
   }
   else {
     cb();
