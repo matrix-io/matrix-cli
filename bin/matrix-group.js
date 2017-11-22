@@ -52,7 +52,7 @@ function createGroup(cb) {
       process.exit(1);
     }
     Matrix.firebase.user.getUserGroups((err, groups) => {
-      if (Object.keys(groups).find((key) => key === groupName)) {
+      if (!_.isUndefined(groups) || !_.isNull(groups) ||  Object.keys(groups).find((key) => key === groupName)) {
         console.log(groupName + ' Group already exists.')
         process.exit(1);
       }
