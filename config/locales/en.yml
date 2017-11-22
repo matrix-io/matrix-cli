@@ -6,6 +6,7 @@ en:
     user_title: User
     no_user_message: No user selected
     device_title: Device
+    group_title: Group
     locale_title: Locale
     env_title: Env
     v_title: V

@@ -26,6 +26,9 @@ async.series([
   }
 
   var app = Matrix.pkgs[0];
+  // if device identifier null/undefined then it will receive 
+  if(_.isUndefined(Matrix.config.device.identifier) || _.isNull(Matrix.config.device.identifier)) Matrix.config.device.identifier = Matrix.config.devices;
+  
   if (_.isUndefined(app) || !_.isString(app)) {
     Matrix.loader.stop();
     console.log('\n> matrix start <app> - ' + t('matrix.help_start').grey + '\n');

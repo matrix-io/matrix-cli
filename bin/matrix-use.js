@@ -30,7 +30,7 @@ async.series([
 
         if (groups[target] instanceof Array) {
           groups[target].forEach(device => {
-            if (device != null)
+            if (device != null && device)
               deviceIds.push(device);
           });
         }
@@ -50,7 +50,6 @@ async.series([
   if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
   var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: target });
-
   delete Matrix.config.groupName;
 
   if (_.isEmpty(targetDeviceId)) {
@@ -63,6 +62,7 @@ async.series([
     } else {
       console.log('Using group ' + target);
       Matrix.config.groupName = target;
+      delete Matrix.config.device.identifier;
     }
   }
   else {
@@ -82,15 +82,17 @@ async.series([
   }
 
   async.each(deviceIds, (targetDeviceId, cb) => {
+
     if (targetDeviceId == null) return cb(null);
     // still API dependent, TODO: depreciate to firebase
     Matrix.api.device.register(targetDeviceId, function(err, state) {
       if (err) {
         Matrix.loader.stop();
-        console.error(err.message);
+        console.error(err.error);
         debug('Error:', err);
         return process.exit(1);
       }
+
       if (state.status === 'OK') {
         target = Matrix.helpers.lookupDeviceName(targetDeviceId);
   

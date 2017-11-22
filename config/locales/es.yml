@@ -5,6 +5,7 @@ es:
     streaming_title: Streaming
     user_title: Usuario
     device_title: Dispositivo
+    group_title: Grupo
     locale_title: Localización
     help_login: Iniciar sesión en la plataforma del MatrixOS
     help_register: Crea un usuario en la plataforma MatrixOS
