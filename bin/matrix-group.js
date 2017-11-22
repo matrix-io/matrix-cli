@@ -52,12 +52,12 @@ function createGroup(cb) {
       process.exit(1);
     }
     Matrix.firebase.user.getUserGroups((err, groups) => {
-      if (!_.isUndefined(groups) || !_.isNull(groups) ||  Object.keys(groups).find((key) => key === groupName)) {
+      if (!_.isNull(groups) &&  Object.keys(groups).find((key) => key === groupName)) {
         console.log(groupName + ' Group already exists.')
         process.exit(1);
       }
       Matrix.firebase.user.setGroup(groupName, () => {
-        console.log(groupName+' Group created');
+        console.log(groupName +' Group created');
         process.exit(1);
       });
     });
@@ -77,7 +77,7 @@ function listGroup(cb) {
     }
 
     Matrix.firebase.user.getUserGroups((err, groups) => {
-      if (!Object.keys(groups).find((key) => key === groupName)) {
+      if (!_.isNull(groups) &&  !Object.keys(groups).find((key) => key === groupName)) {
         console.log('No such group ' + groupName);
         process.exit(1);
       }
