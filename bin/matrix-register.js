@@ -119,14 +119,6 @@ async.series([
                 }
               };
 
-              var deviceObj = {
-                type: 'matrix',
-                osVersion: '0',
-                version: require(__dirname + '/../package.json').version,
-                name: result.name,
-                description: result.description,
-              };
-
               var duplicateDevices = _.values(Matrix.config.deviceMap).filter(function(d) {
                 return d.name === result.name;
               });
