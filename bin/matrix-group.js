@@ -52,7 +52,7 @@ function createGroup(cb) {
       process.exit(1);
     }
     Matrix.firebase.user.getUserGroups((err, groups) => {
-      if (Object.keys(groups).find((key) => key === groupName)) {
+      if (groups != null && Object.keys(groups).find((key) => key === groupName)) {
         console.log(groupName + ' Group already exists.')
         process.exit(1);
       }
@@ -77,7 +77,7 @@ function listGroup(cb) {
     }
 
     Matrix.firebase.user.getUserGroups((err, groups) => {
-      if (!Object.keys(groups).find((key) => key === groupName)) {
+      if (groups == null || !Object.keys(groups).find((key) => key === groupName)) {
         console.log('No such group ' + groupName);
         process.exit(1);
       }
@@ -148,8 +148,13 @@ function addDevices(cb) {
     });
 
     Matrix.firebase.user.getDevicesFromGroup(Matrix.config.groupName, (err, oldDevicesIds) => {
-      var lengthAdded = deviceIds.length;
+      oldDevicesIds = oldDevicesIds.filter(id => id);
       deviceIds = deviceIds.concat(oldDevicesIds);
+
+      // remove duplicates
+      deviceIds = deviceIds.filter((id, index, arr) => arr.indexOf(id) == index);
+      // remove not ids
+      deviceIds = deviceIds.filter((id, index, arr) => id);
 
       Matrix.firebase.user.setGroup(Matrix.config.groupName, deviceIds, (err) => {
         if (err) {
@@ -157,7 +162,7 @@ function addDevices(cb) {
           process.exit(1);
         }
   
-        console.log(lengthAdded + ' device(s) added to group ' + Matrix.config.groupName);
+        console.log( (deviceIds.length - oldDevicesIds.length) + ' device(s) added to group ' + Matrix.config.groupName);
         process.exit(1);
       });
     });

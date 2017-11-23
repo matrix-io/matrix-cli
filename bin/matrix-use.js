@@ -30,7 +30,7 @@ async.series([
 
         if (groups[target] instanceof Array) {
           groups[target].forEach(device => {
-            if (device != null)
+            if (device != null && device)
               deviceIds.push(device);
           });
         }
@@ -104,7 +104,7 @@ async.series([
         
         //Put the data into the object for keep device after session expired
         Matrix.config.keepDevice[Matrix.config.user.id].push({
-          identifier: Matrix.config.device.identifier,
+          identifier: targetDeviceId,
           name: target
         });
         
