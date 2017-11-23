@@ -51,143 +51,22 @@ async.series([
         console.log(t('matrix.register.creating_device'));
         Matrix.loader.start();
         // do device Registration
-        var deviceSchema = {
-          properties: {
-            name: {
-              required: true,
-              description: 'device name'
-            },
-            description: {
-              description: 'device description'
-            }
-            // for when this is ready
-            // serial: {
-            //   required: true
-            //   description: 'serial number'
-            // }
-          }
-        };
         Matrix.loader.stop();
         prompt.delimiter = '';
         prompt.message = 'Device Registration -- ';
         prompt.start();
 
-        //TODO: Async this cascade
-        prompt.get(deviceSchema, function (err, result) {
-          Matrix.loader.start();
-          // all of the below is untested - next line = matrix use
-          // Matrix.config.device.identifier = result.deviceId;
-
-          Matrix.helpers.saveConfig(function () {
-
-            Matrix.firebase.user.getAllDevices(function (devices) {
-
-              var deviceIds = _.keys(devices);
-              debug('Existing Device Ids', deviceIds)
-
-              var deviceObj = {
-                type: 'matrix',
-                osVersion: '0',
-                version: require(__dirname + '/../package.json').version,
-                name: result.name,
-                description: result.description
-              };
-
-              var events = {
-                error: function (err) {
-                  if (err.hasOwnProperty('state') && err.state == 'device-provisioning-in-progress') {
-                    debug('Provisioning device step... ignore this')
-                  } else {
-                    Matrix.loader.stop();
-                    console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
-                    process.exit();
-                  }
-                },
-                finished: function () {
-                  Matrix.loader.stop();
-                  console.log('Device registered successfully');
-                },
-                start: function () {
-                  Matrix.loader.stop();
-                  console.log('Device registration request formed...');
-                  Matrix.loader.start();
-                },
-                progress: function () {
-                  Matrix.loader.stop();
-                  console.log('Registering device...');
-                  Matrix.loader.start();
-                }
-              };
-
-              var duplicateDevices = _.values(Matrix.config.deviceMap).filter(function(d) {
-                return d.name === result.name;
-              });
-
-              if (duplicateDevices.length != 0){
-                console.error('Device name should be unique!');
-                process.exit(1);
-              }
-
-              // fire off worker
-              Matrix.firebase.device.add(deviceObj, events);
-
-              // wrap this up
-              Matrix.firebase.user.watchForDeviceAdd(function (d) {
-                var deviceId = d.key;
-                if (!_.isEmpty(deviceId) && deviceIds.indexOf(deviceId) === -1) {
-                  debug('new device on user record!');
-                  Matrix.loader.stop();
-                  console.log('New Device'.green, deviceId);
-                  Matrix.helpers.trackEvent('device-register', { did: deviceId });
-
-                  // // add to local ref
-                  // Matrix.config.device.deviceMap = _.merge({}, Matrix.config.device.appMap, d.val() );
-                  // Matrix.helpers.saveConfig();
-
-
-                  // fetch secret
-                  // this part will be automated in the future. idk how.
-                  Matrix.loader.start();
-                  Matrix.api.device.getSecret(deviceId, function (err, secret) {
-                    Matrix.loader.stop();
-                    if (err) {
-                      console.error('Secret Error: ', err);
-                      process.exit(1);
-                    } else if (_.isUndefined(secret)) {
-                      console.error('No secret found: ', secret);
-                      process.exit(1);
-                    }
-
-                    // return the secret
-                    console.log('\nSave your *device id* and *device secret*'.green)
-                    console.log('You will not be able to see the secret for this device again'.grey)
-
-                    console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
-                    console.log('export MATRIX_DEVICE_ID=' + deviceId);
-                    console.log('export MATRIX_DEVICE_SECRET=' + secret.results.deviceSecret)
-
-                    console.log();
-                    console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey);
-                    console.log('\nSet up `matrix` CLI to target this device\n'.grey);
-                    console.log('matrix use', deviceId);
-                    console.log('or'.grey)
-                    console.log('matrix use', result.name);
-                    console.log();
-                    Matrix.helpers.refreshDeviceMap(process.exit)
-                  })
-                }
-              })
-              // #watchDeviceAdd
-              //
-            });
-            // #getAllDevices
-            //
-          })
-          // ##firebaseInit
-
+        async.waterfall([
+          getDeviceInfo,
+          checkDeviceDuplicity,
+          sendCreationObjectToWorker,
+          watchDeviceAdd,
+        ], (err) => {
+          if (err) {
+            console.warn(err);
+            process.exit(1);
+          }
         });
-
-
       })
       // # prompt
     }
@@ -380,4 +259,136 @@ function handleBasicRegister(cb) {
       }
     });
   });
+}
+
+function getDeviceInfo(cb) {
+  const schema = {
+    properties: {
+      name: {
+        required: true,
+        description: 'device name'
+      },
+      description: {
+        description: 'device description'
+      }
+      // for when this is ready
+      // serial: {
+      //   required: true
+      //   description: 'serial number'
+      // }
+    }
+  };
+
+  prompt.get(schema, (err, result) => {
+    cb(null, result);
+  });
+}
+
+function checkDeviceDuplicity(data, cb) {
+  const duplicateDevices = _.values(Matrix.config.deviceMap).filter((device) => {
+    return device.name === data.name;
+  });
+
+  if (duplicateDevices.length != 0) {
+    cb('Device name should be unique!');
+  } else {
+    cb(null, data);
+  }
+}
+
+function sendCreationObjectToWorker(data, cb) {
+  const deviceObj = {
+    type: 'matrix',
+    osVersion: '0',
+    version: require(__dirname + '/../package.json').version,
+    name: data.name,
+    description: data.description
+  };
+
+  const events = {
+    error: function (err) {
+      if (err.hasOwnProperty('state') && err.state == 'device-provisioning-in-progress') {
+        debug('Provisioning device step... ignore this')
+      } else {
+        Matrix.loader.stop();
+        console.log('Error creating device '.red + deviceObj.name.yellow + ': '.red, err);
+        process.exit();
+      }
+    },
+    finished: function () {
+      Matrix.loader.stop();
+      console.log('Device registered successfully');
+    },
+    start: function () {
+      Matrix.loader.stop();
+      console.log('Device registration request formed...');
+      Matrix.loader.start();
+    },
+    progress: function () {
+      Matrix.loader.stop();
+      console.log('Registering device...');
+      Matrix.loader.start();
+    }
+  };
+
+  Matrix.firebase.device.add(deviceObj, events);
+  cb(null);
+}
+
+function watchDeviceAdd(cb) {
+  Matrix.loader.start();
+  Matrix.helpers.saveConfig(() => {
+    Matrix.firebase.user.getAllDevices((devices) => {
+      const devicesId = _.keys(devices);
+      debug('Existing Device Ids', devicesId);
+
+      Matrix.firebase.user.watchForDeviceAdd((device) => {
+        const deviceId = device.key;
+        device = device.val();
+        if (!_.isEmpty(deviceId) && devicesId.indexOf(deviceId) === -1) {
+          debug('new device on user record!');
+          Matrix.loader.stop();
+          console.log('New Device'.green, deviceId);
+          Matrix.helpers.trackEvent('device-register', { did: deviceId });
+    
+          // // add to local ref
+          // Matrix.config.device.deviceMap = _.merge({}, Matrix.config.device.appMap, d.val() );
+          // Matrix.helpers.saveConfig();
+    
+    
+          // fetch secret
+          // this part will be automated in the future. idk how.
+          Matrix.loader.start();
+          Matrix.api.device.getSecret(deviceId, function (err, secret) {
+            Matrix.loader.stop();
+            if (err) {
+              console.error('Secret Error: ', err);
+              process.exit(1);
+            } else if (_.isUndefined(secret)) {
+              console.error('No secret found: ', secret);
+              process.exit(1);
+            }
+    
+            // return the secret
+            console.log('\nSave your *device id* and *device secret*'.green)
+            console.log('You will not be able to see the secret for this device again'.grey)
+    
+            console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
+            console.log('export MATRIX_DEVICE_ID=' + deviceId);
+            console.log('export MATRIX_DEVICE_SECRET=' + secret.results.deviceSecret)
+    
+            console.log();
+            console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey);
+            console.log('\nSet up `matrix` CLI to target this device\n'.grey);
+            console.log('matrix use', deviceId);
+            console.log('or'.grey);
+            console.log('matrix use', device.name);
+            console.log();
+            Matrix.helpers.refreshDeviceMap(process.exit)
+          })
+        }
+      });
+    });
+  })
+  
 }
