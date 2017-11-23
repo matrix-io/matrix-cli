@@ -1,10 +1,18 @@
 #!/usr/bin/env node
 
+var program = require('commander');
 var prompt = require('prompt');
 var async = require('async');
 var debug;
 
 async.series([
+  function(cb) {
+    if (Matrix.config.environment.name === 'dev') {
+      program.option('-b, --bulk [value]', 'Automatically generates multiple devices')
+        .parse(process.argv);
+    }
+    cb();
+  },
   require('./matrix-init'),
   function (cb) {
     Matrix.loader.start();
