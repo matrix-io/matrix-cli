@@ -3,6 +3,7 @@
 var program = require('commander');
 var prompt = require('prompt');
 var async = require('async');
+var md5 = require('md5');
 var debug;
 
 async.series([
@@ -58,23 +59,27 @@ async.series([
         prompt.message = 'Device Registration -- ';
         prompt.start();
 
-        async.waterfall([
-          getDeviceInfo,
-          checkDeviceDuplicity,
-          sendCreationObjectToWorker
-        ], (err) => {
-          if (err) {
-            console.warn(err);
-            process.exit(1);
-          }
+        const repeatValue = program.bulk ? program.bulk : 1;
 
-          if (program.raw) {
-            watchDeviceAdd(pipeToFile);
-          } else {
-            watchDeviceAdd(printToUser);
-          }
-        });
-      })
+        for (let i = 0; i < repeatValue; i++) {
+          async.waterfall([
+            getDeviceInfo(program.bulk),
+            checkDeviceDuplicity,
+            sendCreationObjectToWorker
+          ], (err) => {
+            if (err) {
+              console.warn(err);
+              process.exit(1);
+            }
+
+            if (program.raw) {
+              watchDeviceAdd(pipeToFile);
+            } else {
+              watchDeviceAdd(printToUser);
+            }
+          });
+        }
+      });
       // # prompt
     }
   } else {
@@ -268,7 +273,15 @@ function handleBasicRegister(cb) {
   });
 }
 
-function getDeviceInfo(cb) {
+function getDeviceInfo(isBulk) {
+  if (isBulk) {
+    return generateDeviceInfo;
+  } else {
+    return getDeviceInfoFromUser;
+  }
+}
+
+function getDeviceInfoFromUser(cb) {
   const schema = {
     properties: {
       name: {
@@ -288,6 +301,13 @@ function getDeviceInfo(cb) {
 
   prompt.get(schema, (err, result) => {
     cb(null, result);
+  });
+}
+
+function generateDeviceInfo(cb) {
+  cb(null, {
+    name: md5(new Date()).substring(0,9),
+    description: null
   });
 }
 

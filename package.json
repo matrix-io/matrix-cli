@@ -42,6 +42,7 @@
     "matrix-app-config-helper": "git+https://github.com/matrix-io/matrix-app-config-helper.git",
     "matrix-firebase": "https://github.com/matrix-io/matrix-firebase/tarball/master",
     "matrix-node-sdk": "https://github.com/matrix-io/matrix-node-sdk/tarball/master",
+    "md5": "^2.2.1",
     "mocha": "^2.5.3",
     "moment": "^2.10.3",
     "ms": "^0.7.1",
