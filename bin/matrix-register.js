@@ -8,7 +8,9 @@ var debug;
 async.series([
   function(cb) {
     if (Matrix.config.environment.name === 'dev') {
-      program.option('-b, --bulk [value]', 'Automatically generates multiple devices')
+      program
+        .option('-b, --bulk [value]', 'Automatically generates multiple devices')
+        .option('-r, --raw', 'Print device id and secred in raw format for automation purpose')
         .parse(process.argv);
     }
     cb();
@@ -59,12 +61,17 @@ async.series([
         async.waterfall([
           getDeviceInfo,
           checkDeviceDuplicity,
-          sendCreationObjectToWorker,
-          watchDeviceAdd,
+          sendCreationObjectToWorker
         ], (err) => {
           if (err) {
             console.warn(err);
             process.exit(1);
+          }
+
+          if (program.raw) {
+            watchDeviceAdd(pipeToStdout);
+          } else {
+            watchDeviceAdd(printToUser);
           }
         });
       })
@@ -350,12 +357,12 @@ function watchDeviceAdd(cb) {
           Matrix.loader.stop();
           console.log('New Device'.green, deviceId);
           Matrix.helpers.trackEvent('device-register', { did: deviceId });
-    
+        
           // // add to local ref
           // Matrix.config.device.deviceMap = _.merge({}, Matrix.config.device.appMap, d.val() );
           // Matrix.helpers.saveConfig();
-    
-    
+        
+        
           // fetch secret
           // this part will be automated in the future. idk how.
           Matrix.loader.start();
@@ -368,27 +375,34 @@ function watchDeviceAdd(cb) {
               console.error('No secret found: ', secret);
               process.exit(1);
             }
-    
-            // return the secret
-            console.log('\nSave your *device id* and *device secret*'.green)
-            console.log('You will not be able to see the secret for this device again'.grey)
-    
-            console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
-            console.log('export MATRIX_DEVICE_ID=' + deviceId);
-            console.log('export MATRIX_DEVICE_SECRET=' + secret.results.deviceSecret)
-    
-            console.log();
-            console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey);
-            console.log('\nSet up `matrix` CLI to target this device\n'.grey);
-            console.log('matrix use', deviceId);
-            console.log('or'.grey);
-            console.log('matrix use', device.name);
-            console.log();
+
+            cb(deviceId, device.name, secret.results.deviceSecret);
+        
             Matrix.helpers.refreshDeviceMap(process.exit)
-          })
+          });
         }
       });
     });
-  })
-  
+  });
+}
+
+function printToUser(deviceId, deviceName, deviceSecret) {
+  console.log('\nSave your *device id* and *device secret*'.green)
+  console.log('You will not be able to see the secret for this device again'.grey)
+
+  console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
+  console.log('export MATRIX_DEVICE_ID=' + deviceId);
+  console.log('export MATRIX_DEVICE_SECRET=' + secret.results.deviceSecret)
+
+  console.log();
+  console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey);
+  console.log('\nSet up `matrix` CLI to target this device\n'.grey);
+  console.log('matrix use', deviceId);
+  console.log('or'.grey);
+  console.log('matrix use', device.name);
+  console.log();
+}
+
+function pipeToStdout(deviceId, deviceName, deviceSecret) {
+  console.log(deviceId + ' ' + deviceSecret);
 }
