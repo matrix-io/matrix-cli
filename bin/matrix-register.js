@@ -69,7 +69,7 @@ async.series([
           }
 
           if (program.raw) {
-            watchDeviceAdd(pipeToStdout);
+            watchDeviceAdd(pipeToFile);
           } else {
             watchDeviceAdd(printToUser);
           }
@@ -403,6 +403,6 @@ function printToUser(deviceId, deviceName, deviceSecret) {
   console.log();
 }
 
-function pipeToStdout(deviceId, deviceName, deviceSecret) {
-  console.log(deviceId + ' ' + deviceSecret);
+function pipeToFile(deviceId, deviceName, deviceSecret) {
+  Matrix.helpers.saveRawDeviceInfo(deviceId, deviceSecret);
 }
