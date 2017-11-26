@@ -112,10 +112,14 @@ function init(finished) {
     Matrix.firebaseInit = function initFirebase(cb) {
       // TODO: Make firebase use many devices at once 
       var currentDevice = (!_.isEmpty(Matrix.config.devices) && !_.isEmpty(Matrix.config.devices[0].identifier)) ? Matrix.config.devices[0].identifier : '';
-      debug('Firebase Init', Matrix.config.user.id, currentDevice);
+      var currentDevices = [];
+      if (!_.isEmpty(Matrix.config.devices)) {
+        currentDevices = Matrix.config.devices.map(d => d.identifier);
+      }
+      debug('Firebase Init', Matrix.config.user.id, currentDevices);
       Matrix.firebase.init(
         Matrix.config.user.id,
-        currentDevice,
+        currentDevices,
         Matrix.config.user.token,
         Matrix.config.environment.name,
         function (err) {

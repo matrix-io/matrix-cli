@@ -64,18 +64,27 @@ async.series([
   } else if (_.isUndefined(target)) {
     // get form
 
-    Matrix.config.devices.forEach(device => {
-      console.log(t('matrix.config.device_config') + ' ', Matrix.config.device.identifier);
-    })
     Matrix.firebase.device.getConfig(handleResponse);
-
     // matrix config base
   } else if (_.isUndefined(key)) {
 
-    Matrix.firebase.app.getIDForName(target, function(err, appId) {
+    Matrix.firebase.app.getIDForName(target, function(err, appIds) {
       if (err) return console.error(err);
-      debug('appId>', appId);
-      Matrix.firebase.app.getConfig(appId, handleResponse);
+      debug('appId>', appIds);
+
+      async.map(appIds, (appId, callback) => {
+        var did = Object.keys(appId)[0];
+        if (_.isEmpty(appId[did])) {
+          callback(null, { [did]: {}});
+        }
+        else {
+          Matrix.firebase.app.getConfig(did, appId[did], (err, data) => {
+            callback(null, { [did]: data });
+          });
+        }
+      }, (err, results) => {
+        handleResponse(err, results);
+      });
     })
 
   } else if (_.isUndefined(value)) {
@@ -83,37 +92,75 @@ async.series([
     //
     key = '/' + key.replace(/\./g, '/');
     debug('Firebase: '.blue, target)
-    Matrix.firebase.app.getIDForName(target, function(err, appId) {
+    Matrix.firebase.app.getIDForName(target, function(err, appIds) {
       if (err) return console.error(err);
-      debug('appId>', appId);
-      Matrix.firebase.app.getConfigKey(appId, key, handleResponse);
-    })
+      debug('appId>', appIds);
 
+      async.map(appIds, (appId, callback) => {
+        var did = Object.keys(appId)[0];
+        if (_.isEmpty(appId[did])) {
+          callback(null, { [did]: {}});
+        }
+        else {
+          Matrix.firebase.app.getConfigKey(did, appId[did], key, (err, data) => {
+            callback(null, { [did]: data });
+          });
+        }
+      }, (err, results) => {
+        handleResponse(err, results);
+      });
+    });
     // matrix config base keywords=test,keyword
   } else {
 
     debug('>>>', target, value);
 
-    Matrix.firebase.app.getIDForName(target, function(err, appId) {
+    Matrix.firebase.app.getIDForName(target, function(err, appIds) {
       if (err) return console.error(err);
-      debug('appId>', appId);
+      debug('appId>', appIds);
       console.log('Application', target, '\nconfig value:', key, '\nupdate:', value)
-      Matrix.firebase.app.setConfigKey(appId, key, value, function() {
-        async.each(Matrix.config.devices, (device, cb) => {
-          Matrix.helpers.trackEvent('app-config-change', { aid: target, did: device.identifier }, cb);
-        }, (err) => {
-          process.exit(1);
-        })
-      });
-    })
 
+      async.map(appIds, (appId, callback) => {
+        var did = Object.keys(appId)[0];
+        if (_.isEmpty(appId[did])) {
+          callback(null, { [did]: false});
+        }
+        else {
+          Matrix.firebase.app.setConfigKey(did, appId[did], key, value, () => {
+            callback(null, { [did]: true });
+          });
+        }
+      }, (err, results) => {
+        results.forEach(updated => {
+          var did = Object.keys(updated)[0];
+          if (updated[did]) {
+            Matrix.helpers.trackEvent('app-config-change', { aid: target, did: did });
+            console.log('Device ' + did.yellow + " config was updated.")
+          }
+          else {
+            console.log('Device ' + did.red + " doesn't have application " + target.blue)
+          }
+        });
+
+        process.exit();
+      });
+    });
   }
 
 
-  function handleResponse(err, app) {
+  function handleResponse(err, apps) {
     if (err) return console.error(t('matrix.helpers.config_error'), err);
-    if (_.isNull(app)) { console.error(t('matrix.helpers.config_error'), app) }
-    console.log(require('util').inspect(app, { depth: 3, colors: true }));
+    
+    apps.forEach(app => {
+      var did = Object.keys(app)[0];
+      if (_.isEmpty(app[did])) { console.log('Not found in device ' + did.red); }
+      else {
+        console.log(t('matrix.config.device_config') + ' ', did);
+        if (_.isNull(app[did])) { console.error(t('matrix.helpers.config_error'), app[did]) }
+        console.log(require('util').inspect(app[did], { depth: 3, colors: true }));
+      }
+    })
+
     process.exit();
   }
 

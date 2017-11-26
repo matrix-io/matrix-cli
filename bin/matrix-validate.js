@@ -77,7 +77,7 @@ function user(exit) {
  */
 function deviceAsync(cb) {
   var err;
-  if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
+  if (_.isEmpty(Matrix.config.devices) || Matrix.config.devices.filter(d => _.isUndefined(d.token)).length > 0) {
     Matrix.loader.stop();
     console.error('matrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     err = new Error(t('matrix.validate.no_device'));
@@ -110,7 +110,7 @@ function checkGroupAsync(cb) {
 function device(exit) {
   var result = true;
   if (_.isEmpty(exit)) exit = true;
-  if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
+  if (_.isEmpty(Matrix.config.devices) || Matrix.config.devices.filter(d => _.isUndefined(d.token)).length > 0) {
     Matrix.loader.stop();
     console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     result = false;

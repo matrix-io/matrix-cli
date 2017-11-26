@@ -21,6 +21,7 @@ async.series([
   function (cb) { Matrix.firebaseInit(cb); },
   listAll,
   listDevices,
+  listGroups,
   Matrix.validate.deviceAsync,
   listApps,
   // user register does fb init for login, bad if we do that 2x
@@ -100,6 +101,16 @@ function listApps(cb) {
   if (target.match(/app/)) {
     Matrix.firebase.app.list(function(err, apps) {
       Matrix.loader.stop();
+
+      apps = apps.reduce((acc, cur) => {
+        var deviceId = Object.keys(cur)[0];
+        Object.keys(cur[deviceId]).forEach(appKey => {
+          acc[appKey] = cur[deviceId][appKey];
+          acc[appKey]['deviceId'] = deviceId;
+        });
+        return acc;
+      }, {});
+
       if (err) {
         console.error('- ', t('matrix.list.app_list_error') + ':', err);
         process.exit(1);
@@ -108,11 +119,9 @@ function listApps(cb) {
 
       //Retrieve status for each app
       async.forEach(Object.keys(apps), function(appId, done) {
-        Matrix.firebase.app.getStatus(appId, function(status) {
+        Matrix.firebase.app.getStatus(apps[appId].deviceId, appId, function(status) {
           if (_.isUndefined(status)) status = "inactive"; //Set default status to inactive
-          Matrix.config.devices.forEach(device => {
-            debug("Status Watch: " + Matrix.config.user.id + '>' + device.identifier + '>' + appId + '>' + status);
-          });
+          debug("Status Watch: " + Matrix.config.user.id + '>' + apps[appId].deviceId + '>' + appId + '>' + status);
           apps[appId].status = status;
           done();
         });
@@ -141,6 +150,28 @@ function listAll(cb) {
       Matrix.helpers.saveConfig(function() {
         process.exit();
       })
+    });
+  } else { cb(); }
+}
+
+function listGroups(cb) {
+  if (target.match(/group/)) {
+    Matrix.firebase.user.getUserGroups(function(err, resp) {
+      Matrix.loader.stop();
+      if (_.isEmpty(resp)) {
+        console.error(t('matrix.list.no_results'));
+        process.exit(1);
+      }
+      debug('Groups List>', resp);
+      if (!resp) resp = [];
+      else {
+        resp = Object.keys(resp).map(groupName => {
+          var devices = resp[groupName].filter(item => item !== false);
+          return {name: groupName, devices: devices};
+        });
+      }
+      console.log(Matrix.helpers.displayGroups(resp));
+      process.exit(1);
     });
   } else { cb(); }
 }

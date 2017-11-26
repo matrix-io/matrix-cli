@@ -25,7 +25,7 @@ async.series([
         return process.exit(1);
       }
 
-      if (Object.keys(groups).find(key => key === target)) {
+      if (!_.isEmpty(groups) && Object.keys(groups).find(key => key === target)) {
         isGroup = true;
 
         if (groups[target] instanceof Array) {
@@ -82,7 +82,7 @@ async.series([
   }
 
   async.each(deviceIds, (targetDeviceId, cb) => {
-    if (targetDeviceId == null) return cb(null);
+    if (!targetDeviceId || targetDeviceId == null) return cb(null);
     // still API dependent, TODO: depreciate to firebase
     Matrix.api.device.register(targetDeviceId, function(err, state) {
       if (err) {
@@ -126,10 +126,10 @@ async.series([
       console.log('Empty Group. Add devices with matrix add <deviceId> ');
     else {
       deviceIds.forEach(device => {
-        Matrix.helpers.trackEvent('device-use', { did: targetDeviceId });
+        Matrix.helpers.trackEvent('device-use', { did: device });
       });
     }
-    console.log('Done.');
+    console.log('Done.'.green);
     // Save config
     Matrix.helpers.saveConfig((err) => {
       process.exit(1);
