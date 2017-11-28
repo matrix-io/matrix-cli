@@ -61,7 +61,8 @@ async.series([
 
         const repeatValue = program.bulk ? program.bulk : 1;
 
-        for (let i = 0; i < repeatValue; i++) {
+        async.times(repeatValue, function(n, next) {
+          console.log((n+1) + '/' + repeatValue);
           async.waterfall([
             getDeviceInfo(program.bulk),
             checkDeviceDuplicity,
@@ -73,12 +74,16 @@ async.series([
             }
 
             if (program.raw) {
-              watchDeviceAdd(pipeToFile);
+              watchDeviceAdd(pipeToFile, next);
             } else {
-              watchDeviceAdd(printToUser);
+              watchDeviceAdd(printToUser, next);
             }
           });
-        }
+        }, function(err, registrationStatus) {
+            if (registrationStatus.length == repeatValue) {
+            process.exit(0);
+          }
+        });
       });
       // # prompt
     }
@@ -362,7 +367,7 @@ function sendCreationObjectToWorker(data, cb) {
   cb(null);
 }
 
-function watchDeviceAdd(cb) {
+function watchDeviceAdd(printCallback, nextCallback) {
   Matrix.loader.start();
   Matrix.helpers.saveConfig(() => {
     Matrix.firebase.user.getAllDevices((devices) => {
@@ -396,9 +401,9 @@ function watchDeviceAdd(cb) {
               process.exit(1);
             }
 
-            cb(deviceId, device.name, secret.results.deviceSecret);
-        
-            Matrix.helpers.refreshDeviceMap(process.exit)
+            printCallback(deviceId, device.name, secret.results.deviceSecret);
+            Matrix.helpers.refreshDeviceMap();
+            nextCallback(null, 'ok');
           });
         }
       });
@@ -412,14 +417,14 @@ function printToUser(deviceId, deviceName, deviceSecret) {
 
   console.log('\nSave the following to ~/.envrc on your Pi\n'.grey)
   console.log('export MATRIX_DEVICE_ID=' + deviceId);
-  console.log('export MATRIX_DEVICE_SECRET=' + secret.results.deviceSecret)
+  console.log('export MATRIX_DEVICE_SECRET=' + deviceSecret)
 
   console.log();
   console.log('Make these available by running `source ~/.envrc` before running MATRIX OS'.grey);
   console.log('\nSet up `matrix` CLI to target this device\n'.grey);
   console.log('matrix use', deviceId);
   console.log('or'.grey);
-  console.log('matrix use', device.name);
+  console.log('matrix use', deviceName);
   console.log();
 }
 
