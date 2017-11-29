@@ -50,11 +50,8 @@ async.series([
   if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
   var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: target });
-<<<<<<< HEAD
   Matrix.config.device.identifier = targetDeviceId;
 
-=======
->>>>>>> d5c6916426b43b2a7681d3dce5e3eb332d9d3762
   delete Matrix.config.groupName;
 
   if (_.isEmpty(targetDeviceId)) {
@@ -87,12 +84,7 @@ async.series([
   }
 
   async.each(deviceIds, (targetDeviceId, cb) => {
-<<<<<<< HEAD
-    if (!targetDeviceId || targetDeviceId == null) return cb(null);
-=======
-
     if (targetDeviceId == null) return cb(null);
->>>>>>> d5c6916426b43b2a7681d3dce5e3eb332d9d3762
     // still API dependent, TODO: depreciate to firebase
     Matrix.api.device.register(targetDeviceId, function(err, state) {
       if (err) {

@@ -8,7 +8,6 @@ en:
     device_title: Device
     group_title: Group
     locale_title: Locale
-    group_title: Device Group
     env_title: Env
     v_title: V
     help_login: Login to the MATRIX platform

@@ -27,7 +27,7 @@ async.series([
 
   var app = Matrix.pkgs[0];
   // if device identifier null/undefined then it will receive 
-  if(_.isUndefined(Matrix.config.device.identifier) || _.isNull(Matrix.config.device.identifier)) Matrix.config.device.identifier = Matrix.config.devices;
+  if(Matrix.config.device.identifier == null) Matrix.config.device.identifier = Matrix.config.devices;
   
   if (_.isUndefined(app) || !_.isString(app)) {
     Matrix.loader.stop();
@@ -42,6 +42,8 @@ async.series([
   Matrix.helpers.trackEvent('app-start', { aid: app, did: Matrix.config.device.identifier });
 
   Matrix.api.device.setId(Matrix.config.device.identifier);
+  console.log(">>>>>>>>>>>>>>> ");
+  console.log(Matrix.config.device.identifier);
   Matrix.loader.stop();
   console.log(t('matrix.start.starting_app') + ': ', app, Matrix.config.device.identifier);
   Matrix.loader.start();
