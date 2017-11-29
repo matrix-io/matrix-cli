@@ -3,7 +3,7 @@
 const commandTimeoutSeconds = 30;
 var async = require('async');
 var debug;
-
+var util = require('util');
 async.series([
   require('./matrix-init'),
   function (cb) {
@@ -32,6 +32,10 @@ async.series([
     process.exit(1);
   }
 
+  //check if device.identifier exists
+  if (Matrix.config.device.identifier == null) Matrix.config.device.identifier = Matrix.config.devices;
+
+
   Matrix.helpers.trackEvent('app-start', { aid: app, did: Matrix.config.device.identifier });
 
   Matrix.api.device.setId(Matrix.config.device.identifier);
@@ -48,7 +52,7 @@ async.series([
     }
     debug('appId>', appId);
     //Get the current status of app
-    Matrix.firebase.app.getStatus(appId, function(status) {
+    Matrix.firebase.app.getStatus(_.keys(appId), _.values(appId), function(err, status) {
       debug('Get current status: ' + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
       Matrix.loader.stop();
 
@@ -66,9 +70,10 @@ async.series([
         var commandTimeout;
 
         Matrix.loader.start();
+        var aid = _.values(appId[0])[0];
 
         //Watch the app status and verify if the behavior it's right
-        Matrix.firebase.app.watchStatus(appId, function(status) {
+        Matrix.firebase.app.watchStatus(aid, function(status) {
           //stop command status behavior(inactive or error -> active)
           if (status === 'active') {
             Matrix.loader.stop();

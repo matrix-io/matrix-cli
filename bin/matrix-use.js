@@ -50,6 +50,7 @@ async.series([
   if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
   var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: target });
+  Matrix.config.device.identifier = targetDeviceId;
 
   delete Matrix.config.groupName;
 
@@ -63,6 +64,7 @@ async.series([
     } else {
       console.log('Using group ' + target);
       Matrix.config.groupName = target;
+      delete Matrix.config.device.identifier;
     }
   }
   else {
