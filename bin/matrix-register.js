@@ -73,16 +73,16 @@ async.series([
               process.exit(1);
             }
 
-            if (program.raw) {
-              watchDeviceAdd(pipeToFile, next);
-            } else {
-              watchDeviceAdd(printToUser, next);
-            }
+            next(null, 'ok');
           });
         }, function(err, registrationStatus) {
             if (registrationStatus.length == repeatValue) {
-            process.exit(0);
-          }
+              if (program.raw) {
+                watchDeviceAdd(pipeToFile);
+              } else {
+                watchDeviceAdd(printToUser);
+              }
+            }
         });
       });
       // # prompt
@@ -334,7 +334,8 @@ function sendCreationObjectToWorker(data, cb) {
     osVersion: '0',
     version: require(__dirname + '/../package.json').version,
     name: data.name,
-    description: data.description
+    description: data.description,
+    testMode : true
   };
 
   const events = {
@@ -367,7 +368,7 @@ function sendCreationObjectToWorker(data, cb) {
   cb(null);
 }
 
-function watchDeviceAdd(printCallback, nextCallback) {
+function watchDeviceAdd(callback, next) {
   Matrix.loader.start();
   Matrix.helpers.saveConfig(() => {
     Matrix.firebase.user.getAllDevices((devices) => {
@@ -401,9 +402,8 @@ function watchDeviceAdd(printCallback, nextCallback) {
               process.exit(1);
             }
 
-            printCallback(deviceId, device.name, secret.results.deviceSecret);
+            callback(deviceId, device.name, secret.results.deviceSecret);
             Matrix.helpers.refreshDeviceMap();
-            nextCallback(null, 'ok');
           });
         }
       });
@@ -429,5 +429,6 @@ function printToUser(deviceId, deviceName, deviceSecret) {
 }
 
 function pipeToFile(deviceId, deviceName, deviceSecret) {
+  console.log('saving device');
   Matrix.helpers.saveRawDeviceInfo(deviceId, deviceSecret);
 }
