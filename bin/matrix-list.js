@@ -171,7 +171,7 @@ function listGroups(cb) {
         });
       }
       console.log(Matrix.helpers.displayGroups(resp));
-      process.exit(1);
+      process.exit();
     });
   } else { cb(); }
 }

@@ -74,7 +74,7 @@ async.series([
   function onEnd(details) {
 
     async.each(Matrix.config.devices, (device, cb) => {
-      Matrix.helpers.trackEvent('app-deploy', { aid: target, did: device.identifier }, cb);
+      Matrix.helpers.trackEvent('app-deploy', { aid: appName, did: device.identifier }, cb);
     }, (err) => {});
 
     debug('Finished packaging ', appName);
@@ -98,6 +98,8 @@ async.series([
     console.log('Successfully validated configuration file');
     Matrix.loader.start();
 
+
+
     Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function (err, uploadUrl) {
       if (!err) {
         Matrix.helpers.uploadPackage(destinationFilePath, uploadUrl, function (err) {
@@ -105,53 +107,62 @@ async.series([
           var appData = Matrix.helpers.formAppData(details);
           appData.override = true; //If true the appstore won't check for uniqueness
 
-          var deployedAppId, workerTimeout, deviceTimeout;
-          var nowInstalling = false;
-          //Listen for the app installation in device (appId from users>devices>apps)
-          Matrix.firebase.app.watchNamedUserApp(appName, function (app, appId) {
-            debug('App install ' + appId + ' activity');
-            if (!_.isUndefined(appId) && _.isUndefined(deployedAppId)) {
-              debug('App id ' + appId + ' identified');
-              deployedAppId = appId;
-              //Listen for the status change (deviceapps)
-              Matrix.firebase.app.watchStatus(deployedAppId, function (status) {
-                debug('App deployed with status > ' + status);
-                Matrix.loader.stop();
-                if (status === 'error') {
-                  console.error(t('matrix.install.app_install_error'), ' ', app);
-                  process.exit(1);
-                  //It must first go through the pending state (nowInstalling) and then back to inactive
-                } else if (nowInstalling && status === 'inactive') {
-                  clearTimeout(deviceTimeout);
-                  var deploymentTimer = setInterval(function () {
-                    if (deploymentFinished) {
-                      clearTimeout(deploymentTimer);
-                      console.log('Application ' + appName.green + ' was successfully installed!');
-                      console.log(t('matrix.install.app_install_success').green);
-                      // clear out zip file
-                      // require('child_process').execSync('rm ' + destinationFilePath);
-                      // debug( destinationFilePath, 'removed');
-                      endIt();
-                    }
-                  }, 400);
-                } else if (status === 'active') {
-                  console.log('App running already, will attempt restart.')
-                  process.exit(1);
-                } else if (status === 'pending') {
-                  nowInstalling = true
-                  console.log('Installing ' + appName + ' on device...');
-                  Matrix.loader.start();
-                }
-              });
+          var deployedAppId, workersTimeout, deviceTimeout, deploymentFinished;
+          deviceTimeout = {};
+          deploymentFinished = {}
+          workersTimeout = {}
+          var nowInstalling = {};
+          //Listen for the app installation in each device (appId from users>devices>apps)
+          async.each(Matrix.config.devices, (device, callback) => {
+            var deviceId = device.identifier;            
+            var deviceName = Matrix.helpers.lookupDeviceName(deviceId);
+            nowInstalling[deviceId] = false;
+            deploymentFinished[deviceId] = false;
+            Matrix.firebase.app.watchNamedUserApp(deviceId, appName, function (app, appId) {
+              debug('App install ' + appId + ' activity at device '+ deviceId);
+              if (!_.isUndefined(appId) && _.isUndefined(deployedAppId)) {
+                debug('App id ' + appId + ' identified');
+                deployedAppId = appId;
+                //Listen for the status change (deviceapps)
+                Matrix.firebase.app.watchStatus(deviceId, deployedAppId, function (status) {
+                  debug('App deployed with status > ' + status + ' at device '+deviceName.green);
+                  Matrix.loader.stop();
+                  if (status === 'error') {
+                    console.error(t('matrix.install.app_install_error'), ' ', app, ' ', deviceName);
+                    return callback(null);
+                    //It must first go through the pending state (nowInstalling) and then back to inactive
+                  } else if (nowInstalling[deviceId] && status === 'inactive') {
+                    clearTimeout(deviceTimeout[deviceId]);
+                    var deploymentTimer = setInterval(function () {
+                      if (deploymentFinished[deviceId]) {
+                        clearTimeout(deploymentTimer);
+                        console.log(deviceName.green + ': Application ' + appName.green + ' was successfully installed!');
+                        console.log(deviceName.green+ ': ' + t('matrix.install.app_install_success').green);
+                        // clear out zip file
+                        // require('child_process').execSync('rm ' + destinationFilePath);
+                        // debug( destinationFilePath, 'removed');
+                        return callback(null);
+                      }
+                    }, 400);
+                  } else if (status === 'active') {
+                    console.log(deviceName.green + ': App running already, will attempt restart.');
+                    return callback(null);
+                  } else if (status === 'pending') {
+                    nowInstalling[deviceId] = true
+                    console.log(deviceName.green + ': Installing ' + appName + ' on device...');
+                    Matrix.loader.start();
+                  }
+                });
+              }
+            });
+          }, (err) => {
+            if (err) {
+              console.error(err);
+              process.exit(1);
             }
+            return endIt();
           });
-
-          //Start timeout in case the workers aren't up'
-          workerTimeout = setTimeout(function () {
-            console.log('Server response timeout, please try again later'.yellow);
-            process.exit(1);
-          }, workerTimeoutSeconds * 1000);
-
+          
           
           async.each(Matrix.config.devices, (device, cb) => {
             //Send the app deployment request
@@ -161,42 +172,48 @@ async.series([
               userId: Matrix.config.user.id
             };
 
+            var deviceName = Matrix.helpers.lookupDeviceName(device.identifier);
+
+            //Start timeout in case the workers aren't up'
+            workersTimeout[device.identifier] = setTimeout(function () {
+              console.log(deviceName.green + ': Server response timeout, please try again later'.yellow);
+              process.exit(1);
+            }, workerTimeoutSeconds * 1000);
+
             Matrix.firebase.app.deploy(options, {
               error: function (err) {
-                clearTimeout(workerTimeout);
+                clearTimeout(workersTimeout[device.identifier]);
                 if (err.hasOwnProperty('details')) {
-                  console.log('App deployment failed: '.red, err.details.error);
+                  console.log(deviceName.green + ': App deployment failed: '.red, err.details.error);
                 } else {
-                  console.log('App deployment failed: '.red, err.message);
+                  console.log(deviceName.green + ': App deployment failed: '.red, err.message);
                 }
-                process.exit();
+                return cb(null);
               },
               finished: function () {
-                clearTimeout(workerTimeout);
+                clearTimeout(workersTimeout[device.identifier]);
                 Matrix.loader.stop();
-                console.log('Deploying to device...');
+                console.log(deviceName.green + ': Deploying to device...');
                 //Start timeout in case the workers aren't up'
-                deviceTimeout = setTimeout(function () {
-                  console.log(t('matrix.install.device_install_timeout').yellow);
-                  process.exit(1);
+                deviceTimeout[device.identifier] = setTimeout(function () {
+                  console.log(deviceName.green + ': ' + t('matrix.install.device_install_timeout').yellow);
                 }, deviceTimeoutSeconds * 1000);
                 Matrix.loader.start();
-                deploymentFinished = true;
+                deploymentFinished[device.identifier] = true;
+                return cb(null);
               },
               start: function () {
                 Matrix.loader.stop();
-                console.log('Requesting deploy...');
+                console.log(deviceName.green + ': Requesting deploy...');
                 Matrix.loader.start();
               },
               progress: function () {
                 Matrix.loader.stop();
-                console.log('Processing deployment parameters...');
+                console.log(deviceName.green + ': Processing deployment parameters...');
                 Matrix.loader.start();
               }
             });
-          }, (err) => {
-            console.log("Done.");
-          });
+          }, (err) => {});
         });
       } else {
         console.error(err);
@@ -208,6 +225,8 @@ async.series([
 
   function endIt() {
     setTimeout(function () {
+      console.log("Done.".green);
+    
       process.nextTick(function () {
         process.exit(0);
       })
