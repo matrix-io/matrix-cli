@@ -42,8 +42,6 @@ async.series([
   Matrix.helpers.trackEvent('app-start', { aid: app, did: Matrix.config.device.identifier });
 
   Matrix.api.device.setId(Matrix.config.device.identifier);
-  console.log(">>>>>>>>>>>>>>> ");
-  console.log(Matrix.config.device.identifier);
   Matrix.loader.stop();
   console.log(t('matrix.start.starting_app') + ': ', app, Matrix.config.device.identifier);
   Matrix.loader.start();
