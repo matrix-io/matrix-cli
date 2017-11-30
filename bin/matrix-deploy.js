@@ -3,7 +3,7 @@
 var async = require('async');
 var deploymentFinished = false;
 var workerTimeoutSeconds = 30;
-var deviceTimeoutSeconds = 30;
+var deviceTimeoutSeconds = 80;
 
 var debug, fileUrl;
 
@@ -98,7 +98,7 @@ async.series([
     console.log('Successfully validated configuration file');
     Matrix.loader.start();
 
-
+    var installedCounter = 0;
 
     Matrix.helpers.getUploadUrl(downloadFileName, appName, 'zip', function (err, uploadUrl) {
       if (!err) {
@@ -107,16 +107,19 @@ async.series([
           var appData = Matrix.helpers.formAppData(details);
           appData.override = true; //If true the appstore won't check for uniqueness
 
-          var deployedAppId, workersTimeout, deviceTimeout, deploymentFinished;
+          var workersTimeout, deviceTimeout, deploymentFinished, didTimeout, nowInstalling;
           deviceTimeout = {};
+          didTimeout = {};
           deploymentFinished = {}
           workersTimeout = {}
-          var nowInstalling = {};
+          nowInstalling = {};
           //Listen for the app installation in each device (appId from users>devices>apps)
           async.each(Matrix.config.devices, (device, callback) => {
             var deviceId = device.identifier;            
             var deviceName = Matrix.helpers.lookupDeviceName(deviceId);
+            var deployedAppId;
             nowInstalling[deviceId] = false;
+            didTimeout[deviceId] = false;
             deploymentFinished[deviceId] = false;
             Matrix.firebase.app.watchNamedUserApp(deviceId, appName, function (app, appId) {
               debug('App install ' + appId + ' activity at device '+ deviceId);
@@ -136,8 +139,9 @@ async.series([
                     var deploymentTimer = setInterval(function () {
                       if (deploymentFinished[deviceId]) {
                         clearTimeout(deploymentTimer);
+                        installedCounter++;
                         console.log(deviceName.green + ': Application ' + appName.green + ' was successfully installed!');
-                        console.log(deviceName.green+ ': ' + t('matrix.install.app_install_success').green);
+                        console.log(deviceName.green+': '+t('matrix.install.app_install_success').green+" ("+installedCounter+"/"+Matrix.config.devices.length+")");
                         // clear out zip file
                         // require('child_process').execSync('rm ' + destinationFilePath);
                         // debug( destinationFilePath, 'removed');
@@ -151,11 +155,15 @@ async.series([
                     nowInstalling[deviceId] = true
                     console.log(deviceName.green + ': Installing ' + appName + ' on device...');
                     Matrix.loader.start();
+                  } 
+                  if (didTimeout[deviceId]) {
+                    return callback(null);
                   }
                 });
               }
             });
           }, (err) => {
+            Matrix.loader.stop();
             if (err) {
               console.error(err);
               process.exit(1);
@@ -188,7 +196,7 @@ async.series([
                 } else {
                   console.log(deviceName.green + ': App deployment failed: '.red, err.message);
                 }
-                return cb(null);
+                return cb(err);
               },
               finished: function () {
                 clearTimeout(workersTimeout[device.identifier]);
@@ -197,6 +205,7 @@ async.series([
                 //Start timeout in case the workers aren't up'
                 deviceTimeout[device.identifier] = setTimeout(function () {
                   console.log(deviceName.green + ': ' + t('matrix.install.device_install_timeout').yellow);
+                  didTimeout[device.identifier] = true;
                 }, deviceTimeoutSeconds * 1000);
                 Matrix.loader.start();
                 deploymentFinished[device.identifier] = true;
@@ -213,7 +222,11 @@ async.series([
                 Matrix.loader.start();
               }
             });
-          }, (err) => {});
+          }, (err) => {
+            if (err) {
+              process.exit(1);
+            }
+          });
         });
       } else {
         console.error(err);
