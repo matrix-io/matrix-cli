@@ -82,7 +82,6 @@ async.series([
         process.exit(1);
       }
 
-      console.log(t('matrix.install.app_install_success').green);
       process.exit(0);
     });
 
