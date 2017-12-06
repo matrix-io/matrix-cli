@@ -32,6 +32,9 @@ async.series([
     process.exit(1);
   }
 
+  //check if device.identifier exists
+  if (Matrix.config.device.identifier == null) Matrix.config.device.identifier = Matrix.config.devices;
+
   Matrix.helpers.trackEvent('app-stop', { aid: app, did: Matrix.config.device.identifier });
 
   Matrix.api.device.setId(Matrix.config.device.identifier);
@@ -48,16 +51,31 @@ async.series([
     }
     debug('appId>', appId);
     //Get the current status of app
-    Matrix.firebase.app.getStatus(appId, function (status) {
+    Matrix.firebase.app.getStatus(appId, function (err, status) {
       debug('Get current status: ' + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
       Matrix.loader.stop();
+
+      if (_.isArray(status)){
+        //new array with the difference of status, if there's any status different from active,
+        //then there's an app running, pending, with error or inactive  already
+        var differenceArray = _.difference(status, 'active');
+          //there's an app from one or more device(s)  not active
+          if (differenceArray.lenght > 0) {
+            console.log(t('matrix.stop.stop_app_status_error') + ':', app);
+            Matrix.endIt();
+          } else {
+            //all status are active so changing array status to a single string 'active'
+            status = status[0].toString();
+          }
+        //If the status of the app is different of active doesn't execute de stop command   
+      }
 
       if (_.isUndefined(app)) {
         console.log('\n> matrix stop ¬\n');
         console.log('\t    matrix stop <app> -', t('matrix.stop.help', { app: '<app>' }).grey)
         Matrix.endIt();
 
-        //If the status of the app is different of active doesn't execute de stop command
+        //If the status of the app is different of active doesn't execute de stop command   
       } else if (status !== 'active') {
         console.log(t('matrix.stop.stop_app_status_error') + ':', app);
         Matrix.endIt();
@@ -80,6 +98,7 @@ async.series([
 
         //Send the stop command
         Matrix.api.app.stop(app, Matrix.config.device.identifier, function (err) {
+
           if (err) {
             Matrix.loader.stop();
             console.log(t('matrix.stop.stop_app_error') + ':', app, ' (' + err.message.red + ')');
