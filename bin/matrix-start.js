@@ -31,6 +31,7 @@ async.series([
     console.log('\n> matrix start <app> - ' + t('matrix.help_start').grey + '\n');
     process.exit(1);
   }
+
   //did for get appId just one time 
   var deviceIdentifier = Matrix.config.device.identifier;
   if(Matrix.config.device.identifier == null) {
@@ -47,6 +48,7 @@ async.series([
   Matrix.loader.stop();
   console.log(t('matrix.start.starting_app') + ': ', app, Matrix.config.device.identifier);
   Matrix.loader.start();
+  
   //Get the app id for name
   Matrix.firebase.app.getIDForName(deviceIdentifier.identifier, app, function(err, appId) {
     if (err) {

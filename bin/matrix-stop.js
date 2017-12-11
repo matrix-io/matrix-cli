@@ -32,7 +32,17 @@ async.series([
     process.exit(1);
   }
 
-  Matrix.helpers.trackEvent('app-stop', { aid: app, did: Matrix.config.device.identifier });
+  //did for get appId just one time 
+  var deviceIdentifier = Matrix.config.device.identifier;
+  if(Matrix.config.device.identifier == null) {
+    Matrix.config.device.identifier = Matrix.config.devices;
+    deviceIdentifier = Matrix.config.device.identifier[0];
+    async.map(Matrix.config.device.identifier, function(data){
+      Matrix.helpers.trackEvent('app-stop', {aid: app, did: data.identifier});
+    });
+  } else {
+    Matrix.helpers.trackEvent('app-stop', { aid: app, did: Matrix.config.device.identifier });
+  }
 
   Matrix.api.device.setId(Matrix.config.device.identifier);
   Matrix.loader.stop();
@@ -40,7 +50,7 @@ async.series([
   Matrix.loader.start();
 
   //Get the app id for name
-  Matrix.firebase.app.getIDForName(app, function (err, appId) {
+  Matrix.firebase.app.getIDForName(deviceIdentifier.identifier, app, function (err, appId) {
     if (err) {
       Matrix.loader.stop();
       console.log(t('matrix.stop.app_undefined').red);
@@ -48,53 +58,56 @@ async.series([
     }
     debug('appId>', appId);
     //Get the current status of app
-    Matrix.firebase.app.getStatus(appId, function (status) {
-      debug('Get current status: ' + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
-      Matrix.loader.stop();
+    async.map(Matrix.config.device.identifier, function(did) {
+      Matrix.firebase.app.getStatus(did.identifier, appId, function (status) {
+        debug('Get current status: ' + Matrix.config.user.id + '>' + did.identifier + '>' + appId + '>' + status);
+        Matrix.loader.stop();
 
-      if (_.isUndefined(app)) {
-        console.log('\n> matrix stop ¬\n');
-        console.log('\t    matrix stop <app> -', t('matrix.stop.help', { app: '<app>' }).grey)
-        Matrix.endIt();
+        if (_.isUndefined(app)) {
 
-        //If the status of the app is different of active doesn't execute de stop command
-      } else if (status !== 'active') {
-        console.log(t('matrix.stop.stop_app_status_error') + ':', app);
-        Matrix.endIt();
-      } else {
-        console.log(t('matrix.stop.stopping_app') + ': ', app);
-        var commandTimeout;
-        
-        Matrix.loader.start();
+          console.log('\n> matrix stop ¬\n');
+          console.log('\t    matrix stop <app> -', t('matrix.stop.help', { app: '<app>' }).grey)
+          Matrix.endIt();
 
-        //Watch the app status and verify if the behavior it's right
-        Matrix.firebase.app.watchStatus(appId, function (status) {
-          //stop command status behavior(active -> inactive)
-          if (status === 'inactive') {
-            Matrix.loader.stop();
-            clearTimeout(commandTimeout);
-            console.log(t('matrix.stop.stop_app_successfully') + ':', app);
-            Matrix.endIt();
-          }
-        });
+          //If the status of the app is different of active doesn't execute de stop command
+        } else if (status !== 'active') {
+          console.log(t('matrix.stop.stop_app_status_error') + ':', app);
+          Matrix.endIt();
+        } else {
+          console.log(t('matrix.stop.stopping_app') + ': ', app);
+          var commandTimeout;
+          
+          Matrix.loader.start();
 
-        //Send the stop command
-        Matrix.api.app.stop(app, Matrix.config.device.identifier, function (err) {
-          if (err) {
-            Matrix.loader.stop();
-            console.log(t('matrix.stop.stop_app_error') + ':', app, ' (' + err.message.red + ')');
-            Matrix.endIt();
-          }
+          //Watch the app status and verify if the behavior it's right
+          Matrix.firebase.app.watchStatus(did.identifier, appId, function (status) {
+            //stop command status behavior(active -> inactive)
+            if (status === 'inactive') {
+              Matrix.loader.stop();
+              clearTimeout(commandTimeout);
+              console.log(t('matrix.stop.stop_app_successfully') + ':', app);
+              Matrix.endIt();
+            }
+          });
 
-          //add timeout to start command
-          commandTimeout = setTimeout(function () {
-            Matrix.loader.stop();
-            console.log(t('matrix.stop.stop_timeout'));
-            Matrix.endIt();
-          }, commandTimeoutSeconds * 1000);
+          //Send the stop command
+          Matrix.api.app.stop(app, did, function (err) {
+            if (err) {
+              Matrix.loader.stop();
+              console.log(t('matrix.stop.stop_app_error') + ':', app, ' (' + err.message.red + ')');
+              Matrix.endIt();
+            }
 
-        });
-      }
+            //add timeout to start command
+            commandTimeout = setTimeout(function () {
+              Matrix.loader.stop();
+              console.log(t('matrix.stop.stop_timeout'));
+              Matrix.endIt();
+            }, commandTimeoutSeconds * 1000);
+
+          });
+        }
+      });
     });
   });
   
