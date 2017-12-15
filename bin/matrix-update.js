@@ -3,16 +3,54 @@
 var async = require('async');
 var debug;
 
+var appName;
+
 async.series([
   require('./matrix-init'),
   function (cb) {
     Matrix.loader.start();
     debug = debugLog('update');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+
+    if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
+
+    appName = Matrix.pkgs[0];
   },
   Matrix.validate.userAsync,
-  Matrix.validate.deviceAsync,
-  Matrix.firebaseInit
+  function(cb) { Matrix.firebaseInit(cb); },
+  function(cb) {
+    // group flow
+    if(!_.isUndefined(Matrix.config.group)) {
+      async.waterfall([
+        Matrix.validate.groupAsync,
+        searchApp,
+        (installOptions, done) => {
+          async.each(Matrix.config.group.devices, (device, callback) => {
+            install(device.identifier, installOptions, callback);
+          }, (err) => {
+            if (err) return done(err);
+            else return done(null);
+          });
+        }
+      ], (err) => {
+        if (err) return cb(err);
+        else return cb(null);
+      });
+    }
+    // single device flow
+    else {
+      async.waterfall([
+        Matrix.validate.deviceAsync,
+        searchApp,
+        (installOptions, done) => {
+          install(Matrix.config.device.identifier, installOptions, done);
+        }
+      ], (err) => {
+        if (err) return cb(err);
+        else return cb(null);
+      });
+    }
+  },
 ], function (err) {
   Matrix.loader.stop();
   if (err) {
@@ -21,27 +59,24 @@ async.series([
     return process.exit(1);
   }
 
-  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
+  return process.exit();
+});
 
-  var appName = Matrix.pkgs[0];
-  console.log('____ | ' + t('matrix.update.upgrading_to') + ':' + t('matrix.update.latest_version') + ' ', appName, ' ==> '.yellow, Matrix.config.device.identifier);
-
-  Matrix.loader.start();
-
+function searchApp(cb) {
   Matrix.firebase.app.search(appName, function(result) {
+    var appId = result.id;
 
     debug(result)
-
+    
     if (_.isUndefined(result)) {
-      Matrix.loader.stop();
       console.log(t('matrix.update.app_undefined', { app: appName.yellow }));
-      return process.exit();
-    }
+      return process.exit(1);
+    } 
 
     var versionId = result.meta.currentVersion;
 
     debug('VERSION: '.blue, versionId, 'APP: '.blue, appId);
-
+    
     var options = {
       policy: result.versions[versionId].policy,
       name: appName,
@@ -49,26 +84,28 @@ async.series([
       versionId: versionId
     }
 
-    Matrix.helpers.installApp(options, function(err) {
-      Matrix.loader.stop();
-      if (err) {
-        console.log(err);
-        process.exit(1);
-      }
+    return cb(null, options);
+  }); 
+}
 
-      console.log(t('matrix.update.app_update_successfully').green);
-      process.exit(0);
-    });
+function install(deviceId, options, cb) {
+  const deviceName = Matrix.helpers.lookupDeviceName(deviceId);
 
-  });
+  console.log('____ | ' + t('matrix.update.upgrading_to') + ':' + t('matrix.update.latest_version') + ' ', appName, ' ==> '.yellow, deviceId);
 
+  Matrix.helpers.installApp(deviceId, options, function(err) {
+    if (err) return cb(err);
 
-  function displayHelp() {
-    console.log('\n> matrix update ¬ \n');
-    console.log('\t                 matrix update -', t('matrix.update.help_update').grey)
-    console.log('\t           matrix update <app> -', t('matrix.update.help_update_app').grey)
-    console.log('\t matrix update <app> <version> -', t('matrix.update.help_update_app_version').grey)
-    console.log('\n')
-    process.exit();
-  }
-});
+    console.log(deviceName.green+': '+t('matrix.update.app_update_successfully').green);
+    return cb(null);
+  }); 
+}
+
+function displayHelp() {
+  console.log('\n> matrix update ¬ \n');
+  console.log('\t                 matrix update -', t('matrix.update.help_update').grey)
+  console.log('\t           matrix update <app> -', t('matrix.update.help_update_app').grey)
+  console.log('\t matrix update <app> <version> -', t('matrix.update.help_update_app_version').grey)
+  console.log('\n')
+  return process.exit(1);
+}

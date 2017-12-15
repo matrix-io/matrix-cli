@@ -25,7 +25,7 @@ function userAsync(cb) {
         return cb(new Error('Unable to refesh token!'));
       }
     } else {
-      return cb();
+      return cb(null);
     }
   }
 }
@@ -71,33 +71,33 @@ function user(exit) {
 }
 
 /**
+ * groups - Checks if a group is properly set
+ * @param {bool} exit If the process should exit on failed user validation. Defaults to true
+ * @returns {bool} 
+ */
+function groupAsync(cb) {
+  var err;
+  if (_.isEmpty(Matrix.config.group) || _.isUndefined(Matrix.config.group)) {
+    Matrix.loader.stop();
+    console.error('matrix list groups'.grey, ' - > '.yellow + t('matrix.validate.select_group').yellow, '\nmatrix use\n'.grey)
+    err = new Error(t('matrix.validate.no_group'));
+  } else {
+    debug('Checking group > ', Matrix.config.group);
+  }
+  cb(err); 
+}
+
+/**
  * device - Checks if a device is properly set
  * @param {bool} exit If the process should exit on failed user validation. Defaults to true
  * @returns {bool} 
  */
 function deviceAsync(cb) {
   var err;
-  if (_.isEmpty(Matrix.config.devices) || Matrix.config.devices.filter(d => _.isUndefined(d.token)).length > 0) {
+  if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
     Matrix.loader.stop();
     console.error('matrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     err = new Error(t('matrix.validate.no_device'));
-  }
-  cb(err);
-}
-
-
-/**
- * checkGroup - Checks if a group is properly set
- * @param {bool} exit If the process should exit on failed user validation. Defaults to true
- * @returns {bool} 
- */
-function checkGroupAsync(cb) {
-  var err;
-  // fix if
-  if (Matrix.config.groupName == null) {
-    Matrix.loader.stop();
-    console.error('matrix use <groupName>'.grey, ' - > '.yellow + t('matrix.validate.select_group').yellow)
-    err = new Error(t('matrix.validate.no_group'));
   }
   cb(err);
 }
@@ -110,7 +110,7 @@ function checkGroupAsync(cb) {
 function device(exit) {
   var result = true;
   if (_.isEmpty(exit)) exit = true;
-  if (_.isEmpty(Matrix.config.devices) || Matrix.config.devices.filter(d => _.isUndefined(d.token)).length > 0) {
+  if (_.isEmpty(Matrix.config.device) || _.isUndefined(Matrix.config.device.token)) {
     Matrix.loader.stop();
     console.error(t('matrix.validate.no_device') + '\n', '\nmatrix list devices'.grey, ' - > '.yellow + t('matrix.validate.select_device_id').yellow, '\nmatrix use\n'.grey)
     result = false;
@@ -188,5 +188,5 @@ module.exports = {
   firebaseError: firebaseError,
   deviceAsync: deviceAsync,
   userAsync: userAsync,
-  checkGroupAsync
+  groupAsync: groupAsync,
 };

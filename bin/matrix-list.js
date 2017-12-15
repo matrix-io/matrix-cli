@@ -22,8 +22,28 @@ async.series([
   listAll,
   listDevices,
   listGroups,
-  Matrix.validate.deviceAsync,
-  listApps,
+  function(cb) {
+    // group flow
+    if (!_.isEmpty(Matrix.config.group)) {
+      async.series([
+        Matrix.validate.groupAsync,
+        listGroupApps
+      ], function(err) {
+        if (err) return cb(err);
+        return cb(null);
+      }); 
+    } 
+    // single device flow
+    else {
+      async.series([
+        Matrix.validate.deviceAsync,
+        listApps
+      ], function(err) {
+        if (err) return cb(err);
+        return cb(null);
+      });
+    }
+  },
   // user register does fb init for login, bad if we do that 2x
 ], function (err) {
   Matrix.loader.stop();
@@ -41,7 +61,7 @@ async.series([
 function displayHelp() {
   console.log('\n> matrix list ¬\n');
   console.log('\t    matrix list devices -', t('matrix.list.help_devices').grey)
-    // console.log('\t     matrix list groups -', t('matrix.list.help_groups').grey)
+  console.log('\t     matrix list groups -', t('matrix.list.help_groups').grey)
   console.log('\t       matrix list apps -', t('matrix.list.help_apps').grey)
   console.log('\t        matrix list all -', t('matrix.list.help_all').grey)
   console.log('\n')
@@ -101,16 +121,6 @@ function listApps(cb) {
   if (target.match(/app/)) {
     Matrix.firebase.app.list(function(err, apps) {
       Matrix.loader.stop();
-
-      apps = apps.reduce((acc, cur) => {
-        var deviceId = Object.keys(cur)[0];
-        Object.keys(cur[deviceId]).forEach(appKey => {
-          acc[appKey] = cur[deviceId][appKey];
-          acc[appKey]['deviceId'] = deviceId;
-        });
-        return acc;
-      }, {});
-
       if (err) {
         console.error('- ', t('matrix.list.app_list_error') + ':', err);
         process.exit(1);
@@ -119,9 +129,9 @@ function listApps(cb) {
 
       //Retrieve status for each app
       async.forEach(Object.keys(apps), function(appId, done) {
-        Matrix.firebase.app.getStatus(apps[appId].deviceId, appId, function(status) {
+        Matrix.firebase.app.getStatus(appId, function(status) {
           if (_.isUndefined(status)) status = "inactive"; //Set default status to inactive
-          debug("Status Watch: " + Matrix.config.user.id + '>' + apps[appId].deviceId + '>' + appId + '>' + status);
+          debug("Status Watch: " + Matrix.config.user.id + '>' + Matrix.config.device.identifier + '>' + appId + '>' + status);
           apps[appId].status = status;
           done();
         });
@@ -130,6 +140,57 @@ function listApps(cb) {
         console.log(Matrix.helpers.displayApps(apps));
         process.exit();
       });
+    });
+  } else { cb(); }
+}
+
+function listGroupApps (cb) {
+  if (target.match(/app/)) {
+    async.map(Matrix.config.group.devices, (device, done) => {
+      const did = device.identifier;
+      Matrix.firebase.app.list(did, (err, apps) => {
+        if (err) return done(err);
+
+        if (_.isUndefined(apps) || _.isNull(apps)) apps = {};
+
+        //Retrieve status for each app
+        async.forEach(Object.keys(apps), function(appId, callback) {
+          Matrix.firebase.app.getStatus(did, appId, function(status) {
+            if (_.isUndefined(status)) status = "inactive"; //Set default status to inactive
+            debug("Status Watch: " + Matrix.config.user.id + '>' + did + '>' + appId + '>' + status);
+            apps[appId].status = status;
+            return callback();
+          });
+        }, function(err) {
+          if (err) return done(err);
+          else return done(null, apps);
+        });
+      });
+    }, (err, res) => {
+      Matrix.loader.stop();
+      if (err) {
+        console.error('- ', t('matrix.list.app_list_error') + ':', err);
+        return process.exit(1);
+      }
+      const cnt = Matrix.config.group.devices.length;
+      // unique apps
+      let apps = res.reduce((acc, appsObj) => {
+        Object.keys(appsObj).forEach(appId => {
+          if (_.isUndefined(acc[appId])) {
+            acc[appId] = appsObj[appId];
+          }
+        });
+        return acc;
+      }, {});
+      let ids = res.map(appsObj => Object.keys(appsObj));
+      ids = _.flatten(ids);
+      ids = _.countBy(ids, _.identity); // count appIds
+      apps = _.filter(apps, (value, key) => ids[key] === cnt);
+      // Print only apps installed in all devices of the group
+      console.log('Apps installed in all group devices'.grey);
+      console.log(Matrix.helpers.displayApps(apps));
+      return process.exit();
+
     });
   } else { cb(); }
 }
@@ -156,22 +217,17 @@ function listAll(cb) {
 
 function listGroups(cb) {
   if (target.match(/group/)) {
-    Matrix.firebase.user.getUserGroups(function(err, resp) {
+    Matrix.helpers.getUserGroups(function(err, groups) {
       Matrix.loader.stop();
-      if (_.isEmpty(resp)) {
+      if (_.isEmpty(groups)) {
         console.error(t('matrix.list.no_results'));
-        process.exit(1);
+        return process.exit(1);
       }
-      debug('Groups List>', resp);
-      if (!resp) resp = [];
-      else {
-        resp = Object.keys(resp).map(groupName => {
-          var devices = resp[groupName].filter(item => item !== false);
-          return {name: groupName, devices: devices};
-        });
-      }
-      console.log(Matrix.helpers.displayGroups(resp));
-      process.exit();
+
+      debug('Groups List>', groups);
+
+      console.log('\n'+Matrix.helpers.displayGroups(groups));
+      return process.exit();
     });
   } else { cb(); }
 }

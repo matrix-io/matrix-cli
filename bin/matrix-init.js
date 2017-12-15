@@ -89,8 +89,7 @@ function init(finished) {
   ], function continueInit(err) {
     if (err) console.error(err);
 
-
-
+    
     if (Matrix.config.environment.name === 'rc' || Matrix.config.environment.name === 'production') {
       options.clientId = 'AdMobilizeClientID'
       options.clientSecret = 'AdMobilizeClientSecret'
@@ -110,16 +109,15 @@ function init(finished) {
 
     Matrix.firebase = require('matrix-firebase');
     Matrix.firebaseInit = function initFirebase(cb) {
-      // TODO: Make firebase use many devices at once 
-      var currentDevice = (!_.isEmpty(Matrix.config.devices) && !_.isEmpty(Matrix.config.devices[0].identifier)) ? Matrix.config.devices[0].identifier : '';
-      var currentDevices = [];
-      if (!_.isEmpty(Matrix.config.devices)) {
-        currentDevices = Matrix.config.devices.map(d => d.identifier);
+      var currentDevice = (!_.isEmpty(Matrix.config.device) && !_.isEmpty(Matrix.config.device.identifier)) ? Matrix.config.device.identifier : '';
+      // make current device be an array of ids if using a group
+      if (!_.isEmpty(Matrix.config.group)) {
+        currentDevice = Matrix.config.group.devices.map(device => device.identifier);
       }
-      debug('Firebase Init', Matrix.config.user.id, currentDevices);
+      debug('Firebase Init', Matrix.config.user.id, currentDevice);
       Matrix.firebase.init(
         Matrix.config.user.id,
-        currentDevices,
+        currentDevice,
         Matrix.config.user.token,
         Matrix.config.environment.name,
         function (err) {

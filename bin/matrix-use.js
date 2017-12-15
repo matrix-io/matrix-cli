@@ -2,9 +2,7 @@
 
 var async = require('async');
 var debug;
-var target;
-var deviceIds = [];
-var isGroup = false;
+var userGroups;
 
 async.series([
   require('./matrix-init'),
@@ -14,32 +12,17 @@ async.series([
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync,
-  function (cb) { Matrix.firebaseInit(cb); },
+  function(cb) { 
+    Matrix.firebaseInit(cb); 
+  },
   function (cb) {
-    target = Matrix.pkgs.join(' ');
-
-    Matrix.firebase.user.getUserGroups(function(err, groups) {
-      if (err) {
-        console.error(err.message);
-        debug('Error:', err);
-        return process.exit(1);
-      }
-
-      if (!_.isEmpty(groups) && Object.keys(groups).find(key => key === target)) {
-        isGroup = true;
-
-        if (groups[target] instanceof Array) {
-          groups[target].forEach(device => {
-            if (device != null && device)
-              deviceIds.push(device);
-          });
-        }
-      }
-
+    Matrix.helpers.getUserGroups((err, groups) => {
+      if (err) return cb(err);
+      userGroups = groups;
       return cb(null);
     });
   }
-], function (err, arr) {
+], function (err) {
   Matrix.loader.stop();
   if (err) {
     console.error(err.message.red);
@@ -49,93 +32,80 @@ async.series([
 
   if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
+  var target = Matrix.pkgs.join(' ');
   var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: target });
+  var isGroup = Object.keys(userGroups).includes(target);
 
-  delete Matrix.config.groupName;
-
-  if (_.isEmpty(targetDeviceId)) {
+  if (isGroup) {
+    console.log('Using Group: '.grey + target);
+  }
+  else if (_.isEmpty(targetDeviceId)) {
     // not a name, must be a key?
     if (_.has(Matrix.config.deviceMap, target)) {
-      deviceIds.push(target);
-    } else if (!isGroup) {
-      console.log(target.red, t('matrix.use.invalid_nameid_groupname'))
+      targetDeviceId = target;
+    } 
+    else {
+      console.log(target.red, t('matrix.use.invalid_nameid'))
       process.exit(1);
-    } else {
-      console.log('Using group ' + target);
-      Matrix.config.groupName = target;
     }
   }
-  else {
-    deviceIds.push(targetDeviceId);
+
+  if (!_.isUndefined(Matrix.config.device)) {
+    delete Matrix.config.device;
+  }
+  if (!_.isUndefined(Matrix.config.group)) {
+    delete Matrix.config.group;
   }
 
-  Matrix.loader.start();  
 
-  Matrix.config.devices = []
+  if (isGroup) { 
+    // clean group in config
+    // during register the devices will be stored there
+    Matrix.config.group = {
+      name: target,
+      devices: []
+    }
 
-  //Create the object for keep device after session expired
-  if (!Matrix.config.keepDevice) Matrix.config.keepDevice = {};
-  
-  //Create key for the current user into the object for keep device after session expired
-  if (!_.has(Matrix.config.keepDevice, Matrix.config.user.id)) {
-    Matrix.config.keepDevice[Matrix.config.user.id] = [];
-  }
-
-  async.each(deviceIds, (targetDeviceId, cb) => {
-    if (!targetDeviceId || targetDeviceId == null) return cb(null);
-    // still API dependent, TODO: depreciate to firebase
-    Matrix.api.device.register(targetDeviceId, function(err, state) {
+    const deviceIds = userGroups[target];
+    
+    Matrix.loader.start();
+    Matrix.helpers.registerDevicesAsync(deviceIds, (err) => {
+      Matrix.loader.stop();
       if (err) {
-        Matrix.loader.stop();
         console.error(err.message);
-        debug('Error:', err);
         return process.exit(1);
       }
-      if (state.status === 'OK') {
-        target = Matrix.helpers.lookupDeviceName(targetDeviceId);
-  
-        // Save the device token
-        Matrix.config.devices.push({ 
-          identifier: targetDeviceId,
-          token: state.results.device_token 
-        });
-  
-        console.log('Using device:'.grey, target, 'ID:'.grey, targetDeviceId);
-        
-        //Put the data into the object for keep device after session expired
-        Matrix.config.keepDevice[Matrix.config.user.id].push({
-          identifier: targetDeviceId,
-          name: target
-        });
-        
-        return cb(null);
-      } else {
-        debug('Matrix Use Error Object:', state);
-        if (state.error === 'access_token not valid.') {
-          console.log(t('matrix.use.not_authorized').red, '\n', t('matrix.use.invalid_token'), '. ', t('matrix.use.try').grey, 'matrix login')
-        } else {
-          console.error('Error', state.status_code.red, state.error);
-        }
-        process.exit(1);
+
+      Matrix.helpers.syncSaveConfig();
+      console.log('Group devices: '.grey);
+      if (_.isEmpty(deviceIds)) console.log('Empty Group'.red);
+      deviceIds.forEach(did => 
+        console.log('Name: '.grey + Matrix.helpers.lookupDeviceName(did) + ' ID: '.grey + did)
+      );
+      deviceIds.forEach(did => Matrix.helpers.trackEvent('device-use', { did: did } ));
+      return process.exit();
+    });
+  } 
+  else {
+    // clean device in config
+    Matrix.config.device = {};
+
+    const deviceName = Matrix.helpers.lookupDeviceName(targetDeviceId);
+
+    Matrix.loader.start();  
+    Matrix.helpers.registerDeviceAsync(targetDeviceId, (err) => {
+      Matrix.loader.stop();
+      if (err) {
+        console.error(err.message);
+        return process.exit(1);
       }
-  
-    });
-  }, (err) => {
-    Matrix.loader.stop();
-    if (deviceIds.length === 0)
-      console.log('Empty Group. Add devices with matrix add <deviceId> ');
-    else {
-      deviceIds.forEach(device => {
-        Matrix.helpers.trackEvent('device-use', { did: device });
-      });
-    }
-    console.log('Done.'.green);
-    // Save config
-    Matrix.helpers.saveConfig((err) => {
-      process.exit(1);
-    });
-  });
-  
+
+      Matrix.helpers.syncSaveConfig();
+      console.log('Now using device:'.grey, deviceName, 'ID:'.grey, targetDeviceId);
+      Matrix.helpers.trackEvent('device-use', { did: targetDeviceId } );
+      return process.exit();
+    }); 
+  }
 });
 
 function displayHelp() {

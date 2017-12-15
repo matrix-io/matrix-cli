@@ -5,15 +5,15 @@ es:
     streaming_title: Streaming
     user_title: Usuario
     device_title: Dispositivo
+    device_group: Grupo de Dispositivos
     locale_title: Localización
-    group_title: Grupo de Dipositivos
     help_login: Iniciar sesión en la plataforma del MatrixOS
     help_register: Crea un usuario en la plataforma MatrixOS
     help_register_device: registrar nuevo dispositivo
     help_account: Maneja los detalles de la cuenta de usuario
     help_account_profile: actualizar la información del perfil de usuario
     help_logout: Cerrar la sesión en la plataforma MatrixOS
-    help_use: Indica el dispositivo activo
+    help_use: Indica el dispositivo activo / Indica el grupo activo
     help_set: 'Establece la configuración de ambiente, actualiza la configuración de una aplicación, cambia la localización del cli'
     help_sim: Maneja el simulador de MatrixOS local usando Docker
     help_list: 'Información acerca de los dispositivos, aplicaciónes e instalaciones'
@@ -33,13 +33,15 @@ es:
     help_log: Loguea la salida del dispositivo MatrixOS y las aplicaciones seleccionadas
     help_ping: Luces de activación en el dispositivo seleccionado
     help_remove: Eliminar un dispositivo de su cuenta y eliminar todos los datos
+    help_group: Comandos para grupos de dispositivos
     help_upgrade: Actualizar CLI en su computadora local
-    help_group: Comandos para grupos
     please_login: 'No se ha iniciado sesión con un usuario, Por favor'
     set_device: 'No se ha seleccionado un dispositivo. Usa' # `matrix use`
     validate:
       no_device: No se ha selecionado un dispositivo
+      no_group: No se ha selecionado un grupo
       select_device_id: selecciona el id de un dispositivo'
+      select_group: selecciona un grupo
     #SETUP:
     login:
       already_login_warning: 'Ya hay una cuenta registrada' #
@@ -53,9 +55,10 @@ es:
       not_authorized: 'No autorizado'
       device_not_found: El dispositivo no existe'
       invalid_token: 'Tu token es invalido'
-      invalid_nameid: 'No es un nombre de dispositivo ni un id de dispositivo'
+      invalid_nameid: 'No es un nombre de dispositivo o grupo ni un id de dispositivo'
       try: 'Intenta'
       command_help: 'establece como dispositivo activo el dispositivo con id'
+      command_help_group: 'establece como colección de dispositivos por nombre del grupo'
     set:
       help_device: 'configurar el ambiente del dispositivo'
       help_config: 'configurar las variables de aplicacion'
@@ -134,6 +137,12 @@ es:
       help_groups: 'mostrar grupos de dispositivos'
       help_apps: 'mostrar aplicaciones en el dispositivo actual'
       help_all: 'mostrar todos los dispositivos con aplicaciones instaladas'
+    group:
+      help_create: 'crear nuevo grupo'
+      help_list: 'lista de dispositivos en el <groupName>'
+      help_clear: 'elimina todos los dispositivos del grupo'
+      help_add: 'agrega dispositivos ids a un grupo'
+      help_remove: 'elimina todos los dispositivos ids del grupo'
     reboot:
       device_offline: Dispositivo no esta online # 
       rebooting: 'Reinciando dispositivo'

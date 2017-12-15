@@ -5,7 +5,8 @@ var debug;
 var deviceIds;
 
 // group subcomand (create, list, clear, add, remove)
-var target, groupName;
+var target;
+var groupName;
 
 async.series([
   require('./matrix-init'),
@@ -28,38 +29,52 @@ async.series([
   createGroup,
   listGroup,
   clearGroup,
-  Matrix.validate.checkGroupAsync,
+  Matrix.validate.groupAsync,
   addDevices,
   removeDevices,
 ], function(err) {
   Matrix.loader.stop();
-  if (err) {
-    console.error(err.message.red);
-    debug('Error:', err.message);
-    return process.exit(1);
-  }
-
   console.log('Unknown parameter'.yellow + ' ' + target);
   displayHelp();
 });
 
+// create new group
 function createGroup(cb) {
   if (target.match(/create/)) {
 
     if (_.isUndefined(groupName)) {
       console.error('No group name provided.');
       displayHelp();
-      process.exit(1);
+      return process.exit(1);
     }
-    Matrix.firebase.user.getUserGroups((err, groups) => {
-      if (groups != null && Object.keys(groups).find((key) => key === groupName)) {
-        console.log(groupName + ' Group already exists.')
-        process.exit(1);
+
+    async.waterfall([
+      Matrix.helpers.getUserGroups,
+      (groups, done) => {
+        let err;
+        if (Object.keys(groups).find((key) => key === groupName)) {
+          err = new Error(groupName + ' Group already exists.')
+          return done(err);
+        }
+        return done(null);
+      },
+      (done) => {
+        Matrix.loader.stop();
+        // write group to firebase
+        // [false] to make sure firebase creates an empty array
+        Matrix.firebase.user.setGroup(groupName, [false], () => {
+          debug('group set >', groupName);
+          console.log(groupName+' Group created'.grey);
+          return done(null); 
+        });
       }
-      Matrix.firebase.user.setGroup(groupName, [false], () => {
-        console.log(groupName+' Group created');
-        process.exit(1);
-      });
+    ], (err) => {
+      if (err) {
+        debug('create group >', err);
+        console.error(err.message.red);
+        return process.exit(1);
+      }
+      return process.exit();
     });
   }
   else {
@@ -67,39 +82,49 @@ function createGroup(cb) {
   }
 }
 
+// list devices from a group
 function listGroup(cb) {
   if (target.match(/list/)) {
 
     if (_.isUndefined(groupName)) {
       console.error('No group name provided.');
       displayHelp();
-      process.exit(1);
+      return process.exit(1);
     }
 
-    Matrix.firebase.user.getUserGroups((err, groups) => {
-      if (groups == null || !Object.keys(groups).find((key) => key === groupName)) {
-        console.log('No such group ' + groupName);
-        process.exit(1);
-      }
+    async.waterfall([
+      Matrix.helpers.getUserGroups,
+      // check if group exists
+      (groups, done) => {
+        let err;
+        if (!Object.keys(groups).find((key) => key === groupName)) {
+          err = new Error('No group named ' + groupName);
+          return done(err);
+        }
+        return done(null);
+      },
+      (done) => Matrix.helpers.getDevicesFromGroup(groupName, done),
+      (devices, done) => {
+        Matrix.loader.stop();
+        if (_.isEmpty(devices)) {
+          console.log('Empty Group.'.red);
+          return done(null);
+        }
 
-      Matrix.firebase.user.getDevicesFromGroup(groupName ,(err, devices) => {
-        if (err) {
-          console.log(err);
-          process.exit(1);
-        }
-  
-        if (devices == null || _.isEmpty(devices) || devices[0] === false) {
-          console.log('Empty Group.');
-          process.exit(1);
-        }
-  
-        console.log('Devices in group', groupName, ':');
-        devices.forEach(deviceId => {
-          if(deviceId)
-            console.log(deviceId + ' ' + Matrix.helpers.lookupDeviceName(deviceId));
+        debug('list group devices >', devices);
+        console.log('Devices in group '.grey + groupName + ':'.grey);
+        devices.forEach(did => {
+          if (did) console.log('ID: '.grey + did + ' Name: '.grey + Matrix.helpers.lookupDeviceName(did));
         });
-        process.exit(1);
-      });
+        return done(null);
+      }
+    ], (err) => {
+      if (err) {
+        debug('list group >', err);
+        console.error(err.message.red);
+        return process.exit(1);
+      }
+      return process.exit();
     });
   }
   else {
@@ -107,18 +132,20 @@ function listGroup(cb) {
   }
 }
 
+// remove a group 
 function clearGroup(cb) {
   if (target.match(/clear/)) {
     
     if (_.isUndefined(groupName)) {
       console.error('No group name provided.');
       displayHelp();
-      process.exit(1);
+      return process.exit(1);
     }
 
     Matrix.firebase.user.removeGroup(groupName, () => {
-      console.log(groupName+ ' Group Removed.');
-      process.exit(1);
+      Matrix.loader.stop();
+      console.log(groupName+ ' Group Removed.'.grey);
+      return process.exit(1);
     });
   }
   else {
@@ -126,117 +153,80 @@ function clearGroup(cb) {
   }
 }
 
+// add device ids to a group
 function addDevices(cb) {
   if (target.match(/add/)) {
 
-    deviceIds = deviceIds.map(deviceId => {
-      var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: deviceId });
+    deviceIds = filterDeviceIds(deviceIds);
 
-      if (_.isEmpty(targetDeviceId)) {
-        if (_.has(Matrix.config.deviceMap, deviceId)) {
-          return deviceId;
-        }
-        else {
-          console.log(deviceId.red, t('matrix.use.invalid_nameid'))
-          process.exit(1);
-        }
+    async.waterfall([
+      (done) => Matrix.helpers.getDevicesFromGroup(Matrix.config.group.name, done),
+      (oldDeviceIds, done) => {
+        // concat new ids with old and remove duplicates
+        let newDeviceIdsList = deviceIds.concat(oldDeviceIds);
+        newDeviceIdsList = newDeviceIdsList.filter((id, idx, arr) => arr.indexOf(id) == idx);
+
+        Matrix.firebase.user.setGroup(Matrix.config.group.name, newDeviceIdsList, (err) => {
+          Matrix.loader.stop();
+          if (err) return done(err);
+
+          debug('group add devices > ', deviceIds);
+          debug('group add devices new list > ', newDeviceIdsList);
+          console.log( (newDeviceIdsList.length-oldDeviceIds.length) + ' device(s) added to group ' + Matrix.config.group.name);
+          return done(null, newDeviceIdsList);
+        });
+      },
+      // register all devices (old and new ones)
+      (deviceIds, done) => Matrix.helpers.registerDevicesAsync(deviceIds, done),
+      (done) => Matrix.helpers.saveConfig(done)
+    ], (err) => {
+      if (err) {
+        debug('group add device error: ', err);
+        console.error(err.message.red);
+        return process.exit(1);
       }
-      else return targetDeviceId;
-    })
-    .filter((deviceId, index, arr) => {
-      // remove duplicates
-      return arr.indexOf(deviceId) == index;
+      return process.exit();
     });
-
-    Matrix.firebase.user.getDevicesFromGroup(Matrix.config.groupName, (err, oldDevicesIds) => {
-
-      if (oldDevicesIds && !_.isEmpty(oldDevicesIds)) {
-        oldDevicesIds = oldDevicesIds.filter(id => id);
-        deviceIds = deviceIds.concat(oldDevicesIds);
-
-        // remove duplicates
-        deviceIds = deviceIds.filter((id, index, arr) => arr.indexOf(id) == index);
-        // remove not ids
-        deviceIds = deviceIds.filter((id, index, arr) => id);
-      }
-
-      Matrix.firebase.user.setGroup(Matrix.config.groupName, deviceIds, (err) => {
-        if (err) {
-          console.log(err);
-          process.exit(1);
-        }
-        
-        if (oldDevicesIds && !_.isEmpty(oldDevicesIds)) {
-          console.log( (deviceIds.length - oldDevicesIds.length) + ' device(s) added to group ' + Matrix.config.groupName);
-        } else {
-          console.log( deviceIds.length + ' device(s) added to group ' + Matrix.config.groupName);
-        }
-
-        registerDevices(deviceIds);
-      });
-    });
-
   } else {
     cb();
   }
 }
 
+// remove device ids from group
 function removeDevices(cb) {
   if (target.match(/remove/)) {
 
-    deviceIds = deviceIds.map(deviceId => {
-      var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: deviceId });
+    deviceIds = filterDeviceIds(deviceIds);
 
-      if (_.isEmpty(targetDeviceId)) {
-        if (_.has(Matrix.config.deviceMap, deviceId)) {
-          return deviceId;
-        }
-        else {
-          console.log(deviceId.red, t('matrix.use.invalid_nameid'))
-          process.exit(1);
-        }
-      }
-      else return targetDeviceId;
-    })
-    .filter((deviceId, index, arr) => {
-      // remove duplicates
-      return arr.indexOf(deviceId) == index;
-    });
+    async.waterfall([
+      (done) => Matrix.helpers.getDevicesFromGroup(Matrix.config.group.name, done),
+      (oldDeviceIds, done) => {
+        // remove devices in id list from old devices id list
+        let newDeviceIdsList = oldDeviceIds.filter(oldid => !deviceIds.includes(oldid));
 
-    Matrix.firebase.user.getDevicesFromGroup(Matrix.config.groupName, (err, oldDevicesIds) => {
+        // if new array is empty, create list with [false] to avoid firebase deletion of empty array
+        let setList = _.isEmpty(newDeviceIdsList) ? [false] : newDeviceIdsList;
 
-      if (oldDevicesIds && !_.isEmpty(oldDevicesIds)) {
-        var oldLength = oldDevicesIds.length;
+        Matrix.firebase.user.setGroup(Matrix.config.group.name, setList, (err) => {
+          Matrix.loader.stop();
+          if (err) return done(err);
 
-        deviceIds = oldDevicesIds.filter(oldDeviceId => {
-          return !deviceIds.includes(oldDeviceId);
+          debug('group remove devices > ', deviceIds);
+          debug('group remove devices new list > ', newDeviceIdsList);
+          console.log( (oldDeviceIds.length-newDeviceIdsList.length) + ' device(s) removed from group ' + Matrix.config.group.name);
+          return done(null, newDeviceIdsList);
         });
+      },
+      // register all devices (ones that are left)
+      (deviceIds, done) => Matrix.helpers.registerDevicesAsync(deviceIds, done),
+      (done) => Matrix.helpers.saveConfig(done)
+    ], (err) => {
+      if (err) {
+        debug('group remove device error: ', err);
+        console.error(err.message.red);
+        return process.exit(1);
       }
-      else {
-        deviceIds = [false]
-      }
-
-      if (_.isEmpty(deviceIds)) {
-        deviceIds = [false];
-      }
-
-      Matrix.firebase.user.setGroup(Matrix.config.groupName, deviceIds, (err) => {
-        if (err) {
-          console.log(err);
-          process.exit(1);
-        }
-
-        if (oldDevicesIds && !_.isEmpty(oldDevicesIds)) {
-          if (deviceIds.length == 1 && deviceIds[0] === false)
-            console.log( oldLength + ' device(s) removed from group ' + Matrix.config.groupName);
-          else          
-            console.log( (oldLength - deviceIds.length) + ' device(s) removed from group ' + Matrix.config.groupName);
-        } else {
-          console.log( 0 + ' device(s) removed from group ' + Matrix.config.groupName);
-        }
-
-        registerDevices(deviceIds);
-      });
+      return process.exit();
     });
   }
   else {
@@ -244,70 +234,25 @@ function removeDevices(cb) {
   }
 }
 
-function registerDevices(deviceIds) {
-  Matrix.config.devices = []
-  
-  //Create the object for keep device after session expired
-  if (!Matrix.config.keepDevice) Matrix.config.keepDevice = {};
-  
-  //Create key for the current user into the object for keep device after session expired
-  if (!_.has(Matrix.config.keepDevice, Matrix.config.user.id)) {
-    Matrix.config.keepDevice[Matrix.config.user.id] = [];
-  }
+// convert device names into ids and remove duplicates
+function filterDeviceIds(dids) {
+  return dids.map(deviceId => {
+    var targetDeviceId = _.findKey(Matrix.config.deviceMap, { name: deviceId });
 
-  async.each(deviceIds, (targetDeviceId, cb) => {
-    if (!targetDeviceId || targetDeviceId == null) return cb(null);
-    // still API dependent, TODO: depreciate to firebase
-    Matrix.api.device.register(targetDeviceId, function(err, state) {
-      if (err) {
-        Matrix.loader.stop();
-        console.error(err.message);
-        debug('Error:', err);
+    if (_.isEmpty(targetDeviceId)) {
+      if (_.has(Matrix.config.deviceMap, deviceId)) {
+        return deviceId;
+      }
+      else {
+        console.log(deviceId.red, t('matrix.use.invalid_nameid'))
         return process.exit(1);
       }
-      if (state.status === 'OK') {
-        target = Matrix.helpers.lookupDeviceName(targetDeviceId);
-  
-        // Save the device token
-        Matrix.config.devices.push({ 
-          identifier: targetDeviceId,
-          token: state.results.device_token 
-        });
-  
-        console.log('Using device:'.grey, target, 'ID:'.grey, targetDeviceId);
-        
-        //Put the data into the object for keep device after session expired
-        Matrix.config.keepDevice[Matrix.config.user.id].push({
-          identifier: targetDeviceId,
-          name: target
-        });
-        
-        return cb(null);
-      } else {
-        debug('Matrix Use Error Object:', state);
-        if (state.error === 'access_token not valid.') {
-          console.log(t('matrix.use.not_authorized').red, '\n', t('matrix.use.invalid_token'), '. ', t('matrix.use.try').grey, 'matrix login')
-        } else {
-          console.error('Error', state.status_code.red, state.error);
-        }
-        process.exit(1);
-      }
-  
-    });
-  }, (err) => {
-    Matrix.loader.stop();
-    if (deviceIds.length === 0)
-      console.log('Empty Group. Add devices with matrix add <deviceId> ');
-    else {
-      deviceIds.forEach(device => {
-        Matrix.helpers.trackEvent('device-use', { did: device });
-      });
     }
-    console.log('Done.'.green);
-    // Save config
-    Matrix.helpers.saveConfig((err) => {
-      process.exit(1);
-    });
+    else return targetDeviceId;
+  })
+  .filter((deviceId, index, arr) => {
+    // remove duplicates
+    return arr.indexOf(deviceId) == index;
   });
 }
 
