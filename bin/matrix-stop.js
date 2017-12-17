@@ -12,10 +12,29 @@ async.series([
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
   },
   Matrix.validate.userAsync,
-  Matrix.validate.deviceAsync,
   function (cb) {
     Matrix.firebaseInit(cb)
-  }
+  },
+  function(cb) {
+    // group flow
+    if (!_.isEmpty(Matrix.config.group)) {
+      async.series([
+        Matrix.validate.groupAsync
+      ], function(err) {
+        if (err) return cb(err);
+        return cb(null);
+      }); 
+    } 
+    // single device flow
+    else {
+      async.series([
+        Matrix.validate.deviceAsync
+      ], function(err) {
+        if (err) return cb(err);
+        return cb(null);
+      });
+    }
+  },
 ], function (err) {
 
   if (err) {
@@ -32,33 +51,31 @@ async.series([
     process.exit(1);
   }
 
-  //did for get appId just one time 
-  var deviceIdentifier = Matrix.config.device.identifier;
-  if(Matrix.config.device.identifier == null) {
-    Matrix.config.device.identifier = Matrix.config.devices;
-    deviceIdentifier = Matrix.config.device.identifier[0];
-    async.map(Matrix.config.device.identifier, function(data){
-      Matrix.helpers.trackEvent('app-stop', {aid: app, did: data.identifier});
+  if (!_.isUndefined(Matrix.config.group)) {
+    Matrix.config.device = {};
+    Matrix.config.device.identifier = Matrix.config.group.devices;
+    async.map(Matrix.config.group.devices, function(data){
+      Matrix.helpers.trackEvent('app-start', { aid: app, did: data.identifier });
     });
   } else {
-    Matrix.helpers.trackEvent('app-stop', { aid: app, did: Matrix.config.device.identifier });
+    Matrix.helpers.trackEvent('app-start', { aid: app, did: Matrix.config.device.identifier });
   }
 
-  Matrix.api.device.setId(Matrix.config.device.identifier);
-  Matrix.loader.stop();
-  console.log(t('matrix.stop.stopping_app') + ': ', app, Matrix.config.device.identifier);
-  Matrix.loader.start();
+  async.map(Matrix.config.device.identifier, function(did) {
+    Matrix.api.device.setId(did.identifier);
+    Matrix.loader.stop();
+    console.log(t('matrix.stop.stopping_app') + ': ', app, did.identifier);
+    Matrix.loader.start();
 
-  //Get the app id for name
-  Matrix.firebase.app.getIDForName(deviceIdentifier.identifier, app, function (err, appId) {
-    if (err) {
-      Matrix.loader.stop();
-      console.log(t('matrix.stop.app_undefined').red);
-      return Matrix.endIt(1, 0);
-    }
-    debug('appId>', appId);
-    //Get the current status of app
-    async.map(Matrix.config.device.identifier, function(did) {
+    //Get the app id for name
+    Matrix.firebase.app.getIDForName(did.identifier, app, function (err, appId) {
+      if (err) {
+        Matrix.loader.stop();
+        console.log(t('matrix.stop.app_undefined').red);
+        return Matrix.endIt(1, 0);
+      }
+      debug('appId>', appId);
+      //Get the current status of app
       Matrix.firebase.app.getStatus(did.identifier, appId, function (status) {
         debug('Get current status: ' + Matrix.config.user.id + '>' + did.identifier + '>' + appId + '>' + status);
         Matrix.loader.stop();
@@ -78,6 +95,10 @@ async.series([
           var commandTimeout;
           
           Matrix.loader.start();
+          
+          //this is for node-sdk so the payload has each device token for time
+          Matrix.config.device = did;
+          Matrix.api.setConfig(Matrix.config);
 
           //Watch the app status and verify if the behavior it's right
           Matrix.firebase.app.watchStatus(did.identifier, appId, function (status) {
