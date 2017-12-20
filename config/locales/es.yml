@@ -139,7 +139,7 @@ es:
       help_all: 'mostrar todos los dispositivos con aplicaciones instaladas'
     group:
       help_create: 'crear nuevo grupo'
-      help_list: 'lista de dispositivos en el <groupName>'
+      help_read: 'mostrar lista de dispositivos en el <groupName>'
       help_clear: 'elimina todos los dispositivos del grupo'
       help_add: 'agrega dispositivos ids a un grupo'
       help_remove: 'elimina todos los dispositivos ids del grupo'

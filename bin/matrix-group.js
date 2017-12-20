@@ -4,9 +4,10 @@ var async = require('async')
 var debug;
 var deviceIds;
 
-// group subcomand (create, list, clear, add, remove)
+// group subcomand (create, read, clear, add, remove)
 var target;
 var groupName;
+var commands = ['create', 'read', 'clear', 'add', 'remove'];
 
 async.series([
   require('./matrix-init'),
@@ -24,17 +25,23 @@ async.series([
       cb();
     }
   },
+  function (cb) {
+    if (!commands.includes(target)) {
+      return cb(new Error('Unknown parameter'.yellow + ' ' + target));
+    }
+    return cb(null);
+  },
   Matrix.validate.userAsync,
   function (cb) { Matrix.firebaseInit(cb); },
   createGroup,
-  listGroup,
+  readGroup,
   clearGroup,
   Matrix.validate.groupAsync,
   addDevices,
   removeDevices,
 ], function(err) {
   Matrix.loader.stop();
-  console.log('Unknown parameter'.yellow + ' ' + target);
+  console.log(err.message);
   displayHelp();
 });
 
@@ -82,9 +89,9 @@ function createGroup(cb) {
   }
 }
 
-// list devices from a group
-function listGroup(cb) {
-  if (target.match(/list/)) {
+// read devices from a group
+function readGroup(cb) {
+  if (target.match(/read/)) {
 
     if (_.isUndefined(groupName)) {
       console.error('No group name provided.');
@@ -112,7 +119,7 @@ function listGroup(cb) {
         }
 
         debug('list group devices >', devices);
-        console.log('Devices in group '.grey + groupName + ':'.grey);
+        console.log('\nDevices in group '.grey + groupName + ':'.grey);
         devices.forEach(did => {
           if (did) console.log('ID: '.grey + did + ' Name: '.grey + Matrix.helpers.lookupDeviceName(did));
         });
@@ -259,7 +266,7 @@ function filterDeviceIds(dids) {
 function displayHelp() {
   console.log('\n> matrix group ¬\n');
   console.log('\tmatrix group create <groupName> -', t('matrix.group.help_create').grey)
-  console.log('\tmatrix group list <groupName> -', t('matrix.group.help_list').grey)
+  console.log('\tmatrix group read <groupName> -', t('matrix.group.help_read').grey)
   console.log('\tmatrix group clear <groupName> -', t('matrix.group.help_clear').grey)
   console.log('\tmatrix group add [<deviceId>...] -', t('matrix.group.help_add').grey)
   console.log('\tmatrix group remove [<deviceId>...] -', t('matrix.group.help_remove').grey)

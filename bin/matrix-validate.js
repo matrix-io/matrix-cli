@@ -79,7 +79,7 @@ function groupAsync(cb) {
   var err;
   if (_.isEmpty(Matrix.config.group) || _.isUndefined(Matrix.config.group)) {
     Matrix.loader.stop();
-    console.error('matrix list groups'.grey, ' - > '.yellow + t('matrix.validate.select_group').yellow, '\nmatrix use\n'.grey)
+    console.error('matrix list groups'.grey, ' - > '.yellow + t('matrix.validate.select_group').yellow, '\nmatrix use <groupName>\n'.grey)
     err = new Error(t('matrix.validate.no_group'));
   } else {
     debug('Checking group > ', Matrix.config.group);

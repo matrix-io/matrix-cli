@@ -154,7 +154,7 @@ en:
       help_all: 'display all devices with installed apps'
     group:
       help_create: 'create a new group'
-      help_list: 'list devices ids in <groupName>'
+      help_read: 'read devices ids in <groupName>'
       help_clear: 'remove all devices from a group'
       help_add: 'add devices ids to a group'
       help_remove: 'remove devices ids from a group' 
