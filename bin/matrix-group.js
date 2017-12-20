@@ -94,9 +94,14 @@ function readGroup(cb) {
   if (target.match(/read/)) {
 
     if (_.isUndefined(groupName)) {
-      console.error('No group name provided.');
-      displayHelp();
-      return process.exit(1);
+      if (!_.isUndefined(Matrix.config.group.name)) {
+        groupName = Matrix.config.group.name;
+      }
+      else {
+        console.error('No group name provided.');
+        displayHelp();
+        return process.exit(1);
+      }
     }
 
     async.waterfall([
@@ -144,9 +149,14 @@ function clearGroup(cb) {
   if (target.match(/clear/)) {
     
     if (_.isUndefined(groupName)) {
-      console.error('No group name provided.');
-      displayHelp();
-      return process.exit(1);
+      if (!_.isUndefined(Matrix.config.group.name)) {
+        groupName = Matrix.config.group.name;
+      }
+      else {
+        console.error('No group name provided.');
+        displayHelp();
+        return process.exit(1);
+      }
     }
 
     Matrix.firebase.user.removeGroup(groupName, () => {
