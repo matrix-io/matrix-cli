@@ -94,7 +94,7 @@ function readGroup(cb) {
   if (target.match(/read/)) {
 
     if (_.isUndefined(groupName)) {
-      if (!_.isUndefined(Matrix.config.group.name)) {
+      if (!_.isUndefined(Matrix.config.group)) {
         groupName = Matrix.config.group.name;
       }
       else {
@@ -149,7 +149,7 @@ function clearGroup(cb) {
   if (target.match(/clear/)) {
     
     if (_.isUndefined(groupName)) {
-      if (!_.isUndefined(Matrix.config.group.name)) {
+      if (!_.isUndefined(Matrix.config.group)) {
         groupName = Matrix.config.group.name;
       }
       else {
@@ -161,6 +161,10 @@ function clearGroup(cb) {
 
     Matrix.firebase.user.removeGroup(groupName, () => {
       Matrix.loader.stop();
+      if (!_.isUndefined(Matrix.config.group) && Matrix.config.group.name === groupName) {
+        delete Matrix.config.group;
+        Matrix.helpers.syncSaveConfig();
+      }
       console.log(groupName+ ' Group Removed.'.grey);
       return process.exit(1);
     });
