@@ -15,6 +15,7 @@ var run = function(cmd, options, done) {
   }
   var args = cmd.split(' ');
   var isM = cmd.split(' ').shift();
+
   if (isM === 'matrix') {
     // matrix included, remove
     args.shift();
@@ -24,7 +25,8 @@ var run = function(cmd, options, done) {
     options.checks = [options.checks]
   }
   // console.log(args)
-  var proc = require('child_process').spawn('matrix', args);
+  var main = __dirname + '/../bin/matrix';
+  var proc = require('child_process').spawn(main, args);
 
   var responseCount = 0; //options.responses.length;
   var checkCount = 0; //options.checks.length;
@@ -49,7 +51,7 @@ var run = function(cmd, options, done) {
   var handleOutput = function(out) {
     out = out.toString();
     output.push(out.split('\n'))
-    if (process.env.hasOwnProperty('DEBUG')) {
+    if (process.env.hasOwnProperty('DEBUG') && out.length > 4) {
       console.log(out);
     }
     // called for each line of out
@@ -105,11 +107,25 @@ module.exports = {
     fileContent = _.merge(valuesObject, fileContent);
     return require('fs').writeFileSync(require('os').homedir() + '/.matrix/store.json', JSON.stringify(fileContent));
   },
+  setDevEnv: function(done) {
+    run('matrix set env dev', {
+      checks: ['dev'],
+      postCheck: function(done) {
+        var config = fn.readConfig();
+        if (!config.hasOwnProperty('environment') && config.environment.name !== 'dev') {
+          return done(new Error('Not in dev env'));
+        }
+        else {
+          done();
+        }
+      }
+    }, done);
+  },
   login: function(done) {
     run('matrix login', {
       responses: [
-        ['username', 'testuser@testing.admobilize.com\n'],
-        ['password', 'test1234\n'],
+        ['username', 'matrix_test@admobilize.com\n'],
+        ['password', '123tapioca\n'],
         ['Share usage information', 'n\n']
       ],
       checks: [
@@ -149,6 +165,26 @@ module.exports = {
         done();
       }
     }, done)
+  },
+  useGroup: function(done) {
+    if (!M.hasOwnProperty('GROUP_NAME')) {
+      return done(new Error('No group.'));
+    }
+
+    console.log('Use Group', M.GROUP_NAME);
+
+    run('matrix use ' + M.GROUP_NAME, {
+      checks: ['test-group'],
+      postCheck: function(done) {
+        var config = fn.readConfig();
+        if (!config.hasOwnProperty('group')) {
+          console.log(config);
+          console.log(require('os').homedir() + '/.matrix/store.json')
+          return done(new Error('No Config File Found'));
+        }
+        return done();
+      }
+    }, done);
   },
   useDevice: function(done) {
     // if we haven't done the whole test, get deviceid from the config

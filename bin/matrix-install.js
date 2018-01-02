@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var async = require('async')
-var debug;
+var debug, appName, version;
 
 async.series([
   require('./matrix-init'),
@@ -9,13 +9,48 @@ async.series([
     Matrix.loader.start();
     debug = debugLog('install');
     Matrix.localization.init(Matrix.localesFolder, Matrix.config.locale, cb);
+
+    appName = Matrix.pkgs[0];
+    version = Matrix.pkgs[1];
+
+    if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
   },
   Matrix.validate.userAsync,
-  Matrix.validate.deviceAsync,
   // user register does fb init for login, bad if we do that 2x
+  function (cb) { Matrix.firebaseInit(cb); },
   function (cb) {
-    Matrix.firebaseInit(cb)
-  }
+    // group flow
+    if (!_.isUndefined(Matrix.config.group)) {
+      async.waterfall([
+        Matrix.validate.groupAsync,
+        searchApp,
+        (installOptions, done) => {
+          async.each(Matrix.config.group.devices, (device, callback) => {
+            install(device.identifier, installOptions, callback);
+          }, (err) => {
+            if (err) return done(err);
+            else return done(null);
+          });
+        } 
+      ], (err) => {
+        if (err) return cb(err);
+        else return cb(null);
+      });
+    }
+    // single device flow
+    else {
+      async.waterfall([
+        Matrix.validate.deviceAsync,
+        searchApp,
+        (installOptions, done) => {
+          install(Matrix.config.device.identifier, installOptions, done);
+        }
+      ], (err) => {
+        if (err) return cb(err);
+        else return cb(null);
+      });
+    }
+  },
 ], function (err) {
   Matrix.loader.stop();
   if (err) {
@@ -23,24 +58,35 @@ async.series([
     debug('Error:', err.message);
     return process.exit(1);
   }
-  
-  if (!Matrix.pkgs.length || showTheHelp) return displayHelp();
 
-  var appName = Matrix.pkgs[0];
-  var version = Matrix.pkgs[1];
+  return process.exit();
+});
+
+function install(deviceId, options, cb) {
+  var deviceName = Matrix.helpers.lookupDeviceName(deviceId);
+
+  Matrix.helpers.trackEvent('app-install', { aid: appName, did: deviceId });
   
   // TODO lookup policy from config file, pass to function
-  console.log('____ | ' + t('matrix.install.installing') + ' ', appName, ' ==> '.yellow, Matrix.config.device.identifier)
+  console.log('____ | ' + t('matrix.install.installing') + ' ', appName, ' ==> '.yellow, deviceId)
 
+  Matrix.helpers.installApp(deviceId, options, function(err) {
+    if (err) return cb(err);
+    
+    return cb(null);
+  });
+}
+
+function searchApp(cb) {
   Matrix.loader.start();
+  
   //Search the app to install
   Matrix.firebase.app.search(appName, function(result) {
+    Matrix.loader.stop();
     //Validate if found the app
     if (_.isUndefined(result)) {
       debug(result) 
-      Matrix.loader.stop();
-      console.log(t('matrix.install.app_x_not_found', { app: appName.yellow }));
-      return process.exit();
+      return cb(new Error(t('matrix.install.app_x_not_found', { app: appName.yellow })));
     }
 
     var versionId;
@@ -51,9 +97,7 @@ async.series([
       });
       //If the version doesn't exist show the error and end the process
       if (_.isUndefined(versionId)) {
-        Matrix.loader.stop();
-        console.log(t('matrix.install.app_version_x_not_found', { version: version }));
-        return process.exit();
+        return cb(new Error(t('matrix.install.app_version_x_not_found', { version: version })));
       }
     } else {
       //If in the command doesn't set the version use a current version of app
@@ -69,27 +113,14 @@ async.series([
       versionId: versionId
     }
 
-    Matrix.helpers.trackEvent('app-install', { aid: appName, did: Matrix.config.device.identifier });
-
-    Matrix.helpers.installApp(options, function(err) {
-      Matrix.loader.stop();
-      if (err) {
-        console.log(err);
-        process.exit(1);
-      }
-
-      console.log(t('matrix.install.app_install_success').green);
-      process.exit(0);
-    });
-
+    return cb(null, options);
   });
+}
 
-
-  function displayHelp() {
-    console.log('\n> matrix install ¬\n');
-    console.log('\t    matrix install app <app> -', t('matrix.install.help_app', { app: '<app>' }).grey)
-    console.log('\t    matrix install sensor <sensor> -', t('matrix.install.help_sensor', { sensor: '<sensor>' }).grey)
-    console.log('\n')
-    process.exit(1);
-  }
-});
+function displayHelp() {
+  console.log('\n> matrix install ¬\n');
+  console.log('\t    matrix install app <app> -', t('matrix.install.help_app', { app: '<app>' }).grey)
+  console.log('\t    matrix install sensor <sensor> -', t('matrix.install.help_sensor', { sensor: '<sensor>' }).grey)
+  console.log('\n')
+  return process.exit(1);
+}

@@ -25,7 +25,7 @@ function userAsync(cb) {
         return cb(new Error('Unable to refesh token!'));
       }
     } else {
-      return cb();
+      return cb(null);
     }
   }
 }
@@ -68,6 +68,23 @@ function user(exit) {
     if (exit) process.exit(1);
   }
   return result;
+}
+
+/**
+ * groups - Checks if a group is properly set
+ * @param {bool} exit If the process should exit on failed user validation. Defaults to true
+ * @returns {bool} 
+ */
+function groupAsync(cb) {
+  var err;
+  if (_.isEmpty(Matrix.config.group) || _.isUndefined(Matrix.config.group)) {
+    Matrix.loader.stop();
+    console.error('matrix list groups'.grey, ' - > '.yellow + t('matrix.validate.select_group').yellow, '\nmatrix use <groupName>\n'.grey)
+    err = new Error(t('matrix.validate.no_group'));
+  } else {
+    debug('Checking group > ', Matrix.config.group);
+  }
+  cb(err); 
 }
 
 /**
@@ -171,4 +188,5 @@ module.exports = {
   firebaseError: firebaseError,
   deviceAsync: deviceAsync,
   userAsync: userAsync,
+  groupAsync: groupAsync,
 };

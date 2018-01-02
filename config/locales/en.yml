@@ -6,6 +6,7 @@ en:
     user_title: User
     no_user_message: No user selected
     device_title: Device
+    device_group: Device Group
     locale_title: Locale
     env_title: Env
     v_title: V
@@ -35,13 +36,16 @@ en:
     help_uninstall: <app> Uninstall the app
     help_update: <app-name> <version> Install a specific application version
     help_upgrade: Updates CLI on your local computer
-    help_use: <device-id>Indicate active device
+    help_use: <device-id> Indicate active device \ <group-name> Indicate active group
+    help_group: commands for groups of devices 
     please_login: No user logged in
     expired: Expired session > `matrix login`
     set_device: No Device Set. Use # `matrix use`
     validate:
       no_device: No Device Selected
+      no_group: No group Selected
       select_device_id: select a device id'
+      select_group: select a group name
     #SETUP:
     account:
       no_profile: No profile data available
@@ -57,9 +61,10 @@ en:
       not_authorized: 'Not Authorized'
       device_not_found: Device doesn`t exist #
       invalid_token: 'Your token is invalid'
-      invalid_nameid: 'is not a device name or a device id'
+      invalid_nameid: 'is not a device or group name or a device id'
       try: 'Try'
       command_help: 'set active device to device id'
+      command_help_group: 'set active collection of devices by group name'
     register:
       creating_device: 'Registering a new device.'
     remove:
@@ -147,6 +152,12 @@ en:
       help_groups: 'display groups of devices'
       help_apps: 'display apps on current device'
       help_all: 'display all devices with installed apps'
+    group:
+      help_create: 'create a new group'
+      help_read: 'read devices ids in <groupName>'
+      help_clear: 'remove all devices from a group'
+      help_add: 'add devices ids to a group'
+      help_remove: 'remove devices ids from a group' 
     reboot:
         device_offline: device is not online # 
         rebooting: 'Device rebooting'
