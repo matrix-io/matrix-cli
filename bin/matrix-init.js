@@ -22,6 +22,7 @@ t = Matrix.localization.get; // international translator
 
 
 Matrix.helpers = require('../lib/helpers');
+Matrix.error = Matrix.helpers.error;
 //sets Matrix.config with local variables
 Matrix.config = _.assign(Matrix.config, Matrix.helpers.getConfig());
 //set default locale
