@@ -265,7 +265,7 @@ es:
       devices:
         device_id: ID de dispositivo
         name: Nombre
-        ok: ok
+        status: Estado
         description: Descripción
         last_online: Última sesión
       groups:

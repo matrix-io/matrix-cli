@@ -305,7 +305,7 @@ en:
       devices:
         device_id: Device ID
         name: Name
-        ok: ok
+        status: Online
         description: Description
         last_online: Last Online
       groups:
